@@ -3,26 +3,37 @@
  * @author Lorin Meub
  * @editor Lorin Meub
  * @date 19.05.2025
- * @time 14:02
+ * @time 15:35
  */
 
 #pragma once
 #include "Element.h"
-#include "Coin.h"
-#include "Fruit.h"
 
+/**
+ * Defines the possible contents of a grid cell in the game board
+ */
+enum class CellContent {
+    EMPTY,    // Empty cell that can be moved through
+    WALL,     // Wall that blocks movement
+    COIN,     // Collectible coin worth 10 points
+    FRUIT     // Special fruit worth 100 points
+};
+
+/**
+ * Represents a single cell in the game grid
+ * Manages the cell's content and properties
+ */
 class GridPoint : public Element {
 public:
     GridPoint();
     virtual ~GridPoint();
 
-    void setWalkable(bool walkable);
-    void setCoin(Coin* coin);
-    void setFruit(Fruit* fruit);
-    Coin* removeCoin();
-    Fruit* removeFruit();
-    bool hasCoin() const;
-    bool hasFruit() const;
+    // Content management
+    void setContent(CellContent content);  // Set what's in this cell
+    CellContent getContent() const;        // Get current cell contents
+    void setWalkable(bool walkable);       // Set if characters can move through
+    bool isCollectible() const;            // Check if contains coin/fruit
+    int getPointValue() const;             // Get point value if collectible
 
     // From Element
     virtual void draw() override;
@@ -30,5 +41,5 @@ public:
 
 private:
     bool walkable;
-    Coin* coin;    Fruit* fruit;
+    CellContent content;
 };

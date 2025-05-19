@@ -9,15 +9,16 @@
 #include "PacMan.h"
 #include "GameBoard.h"
 #include "Score.h"
-#include "Coin.h"
-#include "Fruit.h"
 #include "Ghost.h"
 #include <iostream>
 
+// Initialize PacMan with game board and score tracking
 PacMan::PacMan(GameBoard* board, Score* scorePtr) 
-    : gameBoard(board), score(scorePtr), lives(3), powered(false) {}
+    : GameCharacter(), gameBoard(board), score(scorePtr), lives(3), powered(false) {}
 
+// Handle keyboard input for PacMan movement
 void PacMan::processInput(char input) {
+    // Get current position to calculate new position
     int newX = getX();
     int newY = getY();
 
@@ -47,6 +48,8 @@ void PacMan::processInput(char input) {
     }
 }
 
+// Attempt to move PacMan to a new position
+// Returns true if the move was successful, false if blocked
 bool PacMan::tryMove(int newX, int newY) {
     if (!gameBoard) return false;
     
@@ -57,22 +60,22 @@ bool PacMan::tryMove(int newX, int newY) {
     return false;
 }
 
+// Check and collect any coins or fruits at the current position
 void PacMan::checkCollectibles() {
     if (!gameBoard || !score) return;
 
-    Element* element = gameBoard->getElement(getX(), getY());
+    GridPoint& currentCell = gameBoard->getGridPoint(getX(), getY());
+    CellContent content = currentCell.getContent();
     
-    if (Coin* coin = dynamic_cast<Coin*>(element)) {
+    if (content == CellContent::COIN) {
         collectCoin();
-        gameBoard->setElement(getX(), getY(), nullptr);
-        score->increase(coin->getPoints());
-        delete coin;
+        currentCell.setContent(CellContent::EMPTY);
+        score->increase(10);
     }
-    else if (Fruit* fruit = dynamic_cast<Fruit*>(element)) {
+    else if (content == CellContent::FRUIT) {
         collectFruit();
-        gameBoard->setElement(getX(), getY(), nullptr);
-        score->increase(fruit->getPoints());
-        delete fruit;
+        currentCell.setContent(CellContent::EMPTY);
+        score->increase(100);
     }
 }
 
@@ -88,30 +91,34 @@ void PacMan::collectFruit() {
     }
 }
 
+// Check for collision with any ghost
+// Returns true if PacMan should lose a life, false if ghost was eaten or no collision
 bool PacMan::checkGhostCollision() {
     if (!gameBoard) return false;
     
     for (Ghost* ghost : gameBoard->getGhosts()) {
         if (ghost->getX() == getX() && ghost->getY() == getY()) {
             if (powered) {
-                // Eat ghost
+                // Eat ghost when powered up
                 score->increase(200);
                 return false;
             }
-            return true;
+            return true;  // Ghost collision when not powered
         }
     }
     return false;
 }
 
+// Update PacMan's state each game tick
 void PacMan::update() {
-    // Check for collisions
+    // Check for collisions and handle life loss
     if (checkGhostCollision()) {
         lives--;
         // Reset position will be handled by game class
     }
 }
 
+// Draw PacMan's representation on the game board
 void PacMan::draw() {
     // Simple representation of PacMan based on direction
     char representation;

@@ -2,20 +2,36 @@
 #define PACMAN_H
 
 #include "GameCharacter.h"
+#include "GameBoard.h"
+#include "Score.h"
 
+/**
+ * Represents the player-controlled PacMan character
+ * Handles movement, collectibles, and ghost interactions
+ */
 class PacMan : public GameCharacter {
 public:
-    PacMan();
+    // Constructor/Destructor
+    PacMan(GameBoard* board, Score* scorePtr);  // Initialize with game board and score
     virtual ~PacMan();
 
-    void handleInput(char input);
-    void collectCoin();
-    void collectFruit();
-    bool checkGhostCollision();
+    // Game actions
+    void processInput(char input);  // Handle keyboard input for movement
+    bool tryMove(int newX, int newY);  // Attempt to move to new position
+    void checkCollectibles();  // Check and collect items at current position
+    void collectCoin();  // Handle coin collection
+    void collectFruit();  // Handle fruit collection
+    bool checkGhostCollision();  // Check for ghost encounters
 
     // From GameCharacter
-    virtual void update() override;
-    virtual void draw() override;
+    virtual void update() override;  // Update game state
+    virtual void draw() override;  // Draw PacMan character
+
+private:
+    GameBoard* gameBoard;  // Reference to game board
+    Score* score;  // Reference to score tracker
+    int lives;  // Remaining lives
+    bool powered;  // Power pellet status
 };
 
 #endif // PACMAN_H
