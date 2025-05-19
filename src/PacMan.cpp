@@ -14,7 +14,7 @@
 
 // Initialize PacMan with game board and score tracking
 PacMan::PacMan(GameBoard* board, Score* scorePtr) 
-    : GameCharacter(), gameBoard(board), score(scorePtr), lives(3), powered(false) {}
+    : GameCharacter(), gameBoard(board), score(scorePtr), lives(3), powered(false), powerTimer(0) {}
 
 // Handle keyboard input for PacMan movement
 void PacMan::processInput(char input) {
@@ -96,6 +96,18 @@ void PacMan::collectFruit() {
     }
 }
 
+void PacMan::collectPowerPellet() {
+    powered = true;
+    powerTimer = POWER_DURATION;
+    
+    // Set all ghosts to scared state
+    if (gameBoard) {
+        for (Ghost* ghost : gameBoard->getGhosts()) {
+            ghost->setScared(true);
+        }
+    }
+}
+
 // Check for collision with any ghost
 // Returns true if PacMan should lose a life, false if ghost was eaten or no collision
 bool PacMan::checkGhostCollision() {
@@ -116,6 +128,20 @@ bool PacMan::checkGhostCollision() {
 
 // Update PacMan's state each game tick
 void PacMan::update() {
+    // Update power pellet timer
+    if (powered && powerTimer > 0) {
+        powerTimer--;
+        if (powerTimer == 0) {
+            powered = false;
+            // Reset ghost states
+            if (gameBoard) {
+                for (Ghost* ghost : gameBoard->getGhosts()) {
+                    ghost->setScared(false);
+                }
+            }
+        }
+    }
+
     // Check for collisions and handle life loss
     if (checkGhostCollision()) {
         lives--;
