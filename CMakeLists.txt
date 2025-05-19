@@ -3,16 +3,8 @@ project(Pacman)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(${PROJECT_NAME}
-    src/Element.cpp
-    src/GameBoard.cpp
-    src/GameCharacter.cpp
-    src/GameController.cpp
-    src/Ghost.cpp
-    src/GridPoint.cpp
-    src/Leaderboard.cpp
-    src/PacMan.cpp
-    src/Renderer.cpp
-    src/Score.cpp
-    src/main.cpp
+file(GLOB_RECURSE SOURCES 
+    "src/*.cpp"
 )
+
+add_executable(${PROJECT_NAME} ${SOURCES})
