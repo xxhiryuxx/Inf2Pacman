@@ -21,6 +21,7 @@ public:
     void checkCollectibles();  // Check and collect items at current position
     void collectCoin();  // Handle coin collection
     void collectFruit();  // Handle fruit collection
+    void collectPowerPellet();  // Handle power pellet collection
     bool checkGhostCollision();  // Check for ghost encounters
 
     // From GameCharacter
@@ -32,6 +33,8 @@ private:
     Score* score;  // Reference to score tracker
     int lives;  // Remaining lives
     bool powered;  // Power pellet status
+    int powerTimer{0};  // Timer for power pellet effect
+    static const int POWER_DURATION = 200;  // Duration of power pellet effect (in game ticks)
 };
 
 #endif // PACMAN_H
