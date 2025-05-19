@@ -1,3 +1,11 @@
+/**
+ * @file GridPoint.h
+ * @author Lorin Meub
+ * @editor Lorin Meub
+ * @date 19.05.2025
+ * @time 14:02
+ */
+
 #pragma once
 #include "Element.h"
 #include "Coin.h"
@@ -22,8 +30,5 @@ public:
 
 private:
     bool walkable;
-    Coin* coin;
-    Fruit* fruit;
+    Coin* coin;    Fruit* fruit;
 };
-
-#endif // GRIDPOINT_H

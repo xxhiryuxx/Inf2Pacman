@@ -1,3 +1,11 @@
+/**
+ * @file GameController.h
+ * @author Lorin Meub
+ * @editor Lorin Meub
+ * @date 19.05.2025
+ * @time 14:02
+ */
+
 #pragma once
 
 class GameController {
@@ -9,8 +17,5 @@ public:
     void interpretInput();
     void forwardToPacMan();
 
-private:
-    char currentInput;
+private:    char currentInput;
 };
-
-#endif // GAMECONTROLLER_H

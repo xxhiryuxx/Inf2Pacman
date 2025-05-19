@@ -1,3 +1,11 @@
+/**
+ * @file Coin.cpp
+ * @author Lorin Meub
+ * @editor Lorin Meub
+ * @date 19.05.2025
+ * @time 14:02
+ */
+
 #include "Coin.h"
 #include <iostream>
 

@@ -1,3 +1,11 @@
+/**
+ * @file GameBoard.h
+ * @author Lorin Meub
+ * @editor Lorin Meub
+ * @date 19.05.2025
+ * @time 14:02
+ */
+
 #pragma once
 #include "Element.h"
 #include "GridPoint.h"
@@ -35,8 +43,5 @@ private:
     std::vector<Ghost*> ghosts;
     int remainingCoins;
 
-    void loadDefaultLevel();
-    void clearBoard();
+    void loadDefaultLevel();    void clearBoard();
 };
-
-#endif // GAMEBOARD_H

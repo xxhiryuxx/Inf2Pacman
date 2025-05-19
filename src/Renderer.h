@@ -1,3 +1,11 @@
+/**
+ * @file Renderer.h
+ * @author Lorin Meub
+ * @editor Lorin Meub
+ * @date 19.05.2025
+ * @time 14:02
+ */
+
 #pragma once
 
 class GameBoard;
@@ -11,8 +19,5 @@ public:
     void drawGameBoard(const GameBoard& board);
     void drawScore(const Score& score);
 
-private:
-    void clearScreen();
+private:    void clearScreen();
 };
-
-#endif // RENDERER_H

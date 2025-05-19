@@ -1,3 +1,11 @@
+/**
+ * @file GameBoard.h
+ * @author Lorin Meub
+ * @editor Lorin Meub
+ * @date 19.05.2025
+ * @time 14:02
+ */
+
 #include "GameBoard.h"
 
 GameBoard::GameBoard(int width, int height) : width(width), height(height) {
