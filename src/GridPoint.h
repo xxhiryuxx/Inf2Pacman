@@ -13,10 +13,11 @@
  * Defines the possible contents of a grid cell in the game board
  */
 enum class CellContent {
-    EMPTY,    // Empty cell that can be moved through
-    WALL,     // Wall that blocks movement
-    COIN,     // Collectible coin worth 10 points
-    FRUIT     // Special fruit worth 100 points
+    EMPTY,        // Empty cell that can be moved through
+    WALL,         // Wall that blocks movement
+    COIN,         // Collectible coin worth 10 points
+    FRUIT,        // Special fruit worth 100 points
+    POWER_PELLET  // Power-up that makes ghosts vulnerable
 };
 
 /**

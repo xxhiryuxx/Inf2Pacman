@@ -77,6 +77,11 @@ void PacMan::checkCollectibles() {
         currentCell.setContent(CellContent::EMPTY);
         score->increase(100);
     }
+    else if (content == CellContent::POWER_PELLET) {
+        collectPowerPellet();
+        currentCell.setContent(CellContent::EMPTY);
+        score->increase(50);
+    }
 }
 
 void PacMan::collectCoin() {
