@@ -1,3 +1,11 @@
+/**
+ * @file Ghost.h
+ * @author Lorin Meub
+ * @editor Lorin Meub
+ * @date 19.05.2025
+ * @time 17:56
+ */
+
 #pragma once
 #include "Element.h"
 
@@ -10,5 +18,3 @@ public:
     virtual void draw() override;
     virtual bool isWalkable() override;
 };
-
-#endif // WALL_H

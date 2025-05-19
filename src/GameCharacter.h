@@ -38,3 +38,5 @@ public:
 protected:
     Direction currentDirection;
 };
+
+#endif

@@ -44,13 +44,62 @@ Direction Ghost::chooseNextDirection() {
     if (validDirs.empty()) return lastDirection;
 
     if (scared) {
-        // When scared, move randomly
+        // When scared, move randomly but try to avoid PacMan
+        PacMan* pacman = gameBoard->getPacMan();
+        if (pacman) {
+            // Find direction that maximizes distance to PacMan
+            Direction bestDir = validDirs[0];
+            int maxDistance = -1;
+            
+            for (Direction dir : validDirs) {
+                int newX = getX();
+                int newY = getY();
+                switch(dir) {
+                    case Direction::UP: newY--; break;
+                    case Direction::DOWN: newY++; break;
+                    case Direction::LEFT: newX--; break;
+                    case Direction::RIGHT: newX++; break;
+                }
+                
+                int distance = calculateDistance(newX, newY, pacman->getX(), pacman->getY());
+                if (distance > maxDistance) {
+                    maxDistance = distance;
+                    bestDir = dir;
+                }
+            }
+            return bestDir;
+        }
+        
+        // Fallback to random movement if no PacMan reference
         int randomIndex = rand() % validDirs.size();
         return validDirs[randomIndex];
     } else {
         // When not scared, try to move towards PacMan
-        // For now, just move in a valid direction
-        // TODO: Implement proper pathfinding
+        PacMan* pacman = gameBoard->getPacMan();
+        if (pacman) {
+            // Find direction that minimizes distance to PacMan
+            Direction bestDir = validDirs[0];
+            int minDistance = INT_MAX;
+            
+            for (Direction dir : validDirs) {
+                int newX = getX();
+                int newY = getY();
+                switch(dir) {
+                    case Direction::UP: newY--; break;
+                    case Direction::DOWN: newY++; break;
+                    case Direction::LEFT: newX--; break;
+                    case Direction::RIGHT: newX++; break;
+                }
+                
+                int distance = calculateDistance(newX, newY, pacman->getX(), pacman->getY());
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    bestDir = dir;
+                }
+            }
+            return bestDir;
+        }
+        
         return validDirs[0];
     }
 }

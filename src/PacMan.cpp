@@ -13,8 +13,19 @@
 #include <iostream>
 
 // Initialize PacMan with game board and score tracking
-PacMan::PacMan(GameBoard* board, Score* scorePtr) 
-    : GameCharacter(), gameBoard(board), score(scorePtr), lives(3), powered(false), powerTimer(0) {}
+PacMan::PacMan(GameBoard* board, Score* scorePtr)
+    : GameCharacter(board->getStartPosition())
+    , gameBoard(board)
+    , score(scorePtr)
+    , lives(3)
+    , powered(false)
+    , powerTimer(0)
+{
+}
+
+PacMan::~PacMan() {
+    // GameBoard and Score are owned by Game class
+}
 
 // Handle keyboard input for PacMan movement
 void PacMan::processInput(char input) {
@@ -43,67 +54,63 @@ void PacMan::processInput(char input) {
             return;
     }
 
-    if (tryMove(newX, newY)) {
-        checkCollectibles();
-    }
+    tryMove(newX, newY);
 }
 
 // Attempt to move PacMan to a new position
 // Returns true if the move was successful, false if blocked
 bool PacMan::tryMove(int newX, int newY) {
-    if (!gameBoard) return false;
-    
-    if (gameBoard->isWalkable(newX, newY)) {
-        setPosition(newX, newY);
-        return true;
+    if (!gameBoard->isValidMove(newX, newY)) {
+        return false;
     }
-    return false;
+
+    position.x = newX;
+    position.y = newY;
+    return true;
 }
 
 // Check and collect any coins or fruits at the current position
 void PacMan::checkCollectibles() {
-    if (!gameBoard || !score) return;
+    auto currentCell = gameBoard->getGridPoint(position);
+    if (!currentCell) return;
 
-    GridPoint& currentCell = gameBoard->getGridPoint(getX(), getY());
-    CellContent content = currentCell.getContent();
-    
-    if (content == CellContent::COIN) {
-        collectCoin();
-        currentCell.setContent(CellContent::EMPTY);
-        score->increase(10);
-    }
-    else if (content == CellContent::FRUIT) {
-        collectFruit();
-        currentCell.setContent(CellContent::EMPTY);
-        score->increase(100);
-    }
-    else if (content == CellContent::POWER_PELLET) {
-        collectPowerPellet();
-        currentCell.setContent(CellContent::EMPTY);
-        score->increase(50);
+    switch (currentCell->getContent()) {
+        case CellContent::COIN:
+            collectCoin();
+            break;
+        case CellContent::FRUIT:
+            collectFruit();
+            break;
+        case CellContent::POWER_PELLET:
+            collectPowerPellet();
+            break;
+        default:
+            break;
     }
 }
 
 void PacMan::collectCoin() {
-    if (score) {
-        score->increase(10);
-    }
+    score->addPoints(10);  // Standard coin value
+    gameBoard->getGridPoint(position)->setContent(CellContent::EMPTY);
 }
 
 void PacMan::collectFruit() {
-    if (score) {
-        score->increase(100);
-    }
+    score->addPoints(100);  // Fruit bonus
+    gameBoard->getGridPoint(position)->setContent(CellContent::EMPTY);
 }
 
 void PacMan::collectPowerPellet() {
     powered = true;
     powerTimer = POWER_DURATION;
-    
-    // Set all ghosts to scared state
-    if (gameBoard) {
-        for (Ghost* ghost : gameBoard->getGhosts()) {
-            ghost->setScared(true);
+    score->addPoints(50);  // Power pellet bonus
+    gameBoard->getGridPoint(position)->setContent(CellContent::EMPTY);
+}
+
+void PacMan::updatePowerTimer() {
+    if (powerTimer > 0) {
+        powerTimer--;
+        if (powerTimer == 0) {
+            powered = false;
         }
     }
 }
@@ -128,47 +135,49 @@ bool PacMan::checkGhostCollision() {
 
 // Update PacMan's state each game tick
 void PacMan::update() {
-    // Update power pellet timer
-    if (powered && powerTimer > 0) {
-        powerTimer--;
-        if (powerTimer == 0) {
-            powered = false;
-            // Reset ghost states
-            if (gameBoard) {
-                for (Ghost* ghost : gameBoard->getGhosts()) {
-                    ghost->setScared(false);
-                }
-            }
-        }
+    if (powered) {
+        updatePowerTimer();
     }
+    checkCollectibles();
 
     // Check for collisions and handle life loss
     if (checkGhostCollision()) {
         lives--;
-        // Reset position will be handled by game class
+        position = gameBoard->getStartPosition();
+        powered = false;
+        powerTimer = 0;
     }
 }
 
 // Draw PacMan's representation on the game board
 void PacMan::draw() {
-    // Simple representation of PacMan based on direction
-    char representation;
-    switch(currentDirection) {
-        case Direction::RIGHT:
-            representation = '>';
-            break;        case Direction::LEFT:
-            representation = '<';
-            break;
-        case Direction::UP:
-            representation = '^';
-            break;
-        case Direction::DOWN:
-            representation = 'v';
-            break;
-    }
-    if (powered) {
-        std::cout << "\033[1;33m" << representation << "\033[0m";  // Yellow when powered
-    } else {
-        std::cout << "\033[1;33m" << representation << "\033[0m";  // Yellow normally
-    }
+    // PacMan is represented by 'C' when normal, 'O' when powered
+    return powered ? 'O' : 'C';
+}
+
+bool PacMan::isPowered() const {
+    return powered;
+}
+
+int PacMan::getPowerTimer() const {
+    return powerTimer;
+}
+
+int PacMan::getLives() const {
+    return lives;
+}
+
+void PacMan::loseLife() {
+    lives--;
+    position = gameBoard->getStartPosition();
+    powered = false;
+    powerTimer = 0;
+}
+
+bool PacMan::isAlive() const {
+    return lives > 0;
+}
+
+Position PacMan::getPosition() const {
+    return position;
 }

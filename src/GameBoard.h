@@ -9,10 +9,11 @@
 #pragma once
 #include "GridPoint.h"
 #include <vector>
-#include "PacMan.h"
-#include "Ghost.h"
-#include <vector>
 #include <memory>
+
+// Forward declarations
+class PacMan;
+class Ghost;
 
 class GameBoard {
 public:
@@ -33,6 +34,10 @@ public:
     int getRemainingCoins() const;
     PacMan* getPacMan() const { return pacman; }
     std::vector<Ghost*>& getGhosts() { return ghosts; }
+
+    // Ghost spawn/respawn handling
+    void respawnGhost(Ghost* ghost);
+    void spawnPowerPellets();
 
 private:
     int width;

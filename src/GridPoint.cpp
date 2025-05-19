@@ -9,59 +9,59 @@
 #include "GridPoint.h"
 #include <iostream>
 
-GridPoint::GridPoint() : walkable(true), coin(nullptr), fruit(nullptr) {}
+GridPoint::GridPoint() : walkable(true), content(CellContent::EMPTY) {}
 
-GridPoint::~GridPoint() {
-    delete coin;
-    delete fruit;
-}
+GridPoint::~GridPoint() {}
 
 void GridPoint::setWalkable(bool isWalkable) {
     walkable = isWalkable;
 }
 
-void GridPoint::setCoin(Coin* newCoin) {
-    if (coin) delete coin;
-    coin = newCoin;
+void GridPoint::setContent(CellContent newContent) {
+    content = newContent;
+    // Update walkable state based on content
+    walkable = (content != CellContent::WALL);
 }
 
-void GridPoint::setFruit(Fruit* newFruit) {
-    if (fruit) delete fruit;
-    fruit = newFruit;
+CellContent GridPoint::getContent() const {
+    return content;
 }
 
-Coin* GridPoint::removeCoin() {
-    Coin* temp = coin;
-    coin = nullptr;
-    return temp;
+bool GridPoint::isCollectible() const {
+    return content == CellContent::COIN || 
+           content == CellContent::FRUIT || 
+           content == CellContent::POWER_PELLET;
 }
 
-Fruit* GridPoint::removeFruit() {
-    Fruit* temp = fruit;
-    fruit = nullptr;
-    return temp;
-}
-
-bool GridPoint::hasCoin() const {
-    return coin != nullptr;
-}
-
-bool GridPoint::hasFruit() const {
-    return fruit != nullptr;
-}
-
-void GridPoint::draw() {
-    if (!walkable) {
-        std::cout << "#";
-    } else if (fruit) {
-        fruit->draw();
-    } else if (coin) {
-        coin->draw();
-    } else {
-        std::cout << " ";
+int GridPoint::getPointValue() const {
+    switch(content) {
+        case CellContent::COIN:
+            return 10;
+        case CellContent::FRUIT:
+            return 100;
+        case CellContent::POWER_PELLET:
+            return 50;
+        default:
+            return 0;
     }
 }
 
-bool GridPoint::isWalkable() {
+char GridPoint::draw() const {
+    switch(content) {
+        case CellContent::WALL:
+            return '#';  // Wall
+        case CellContent::COIN:
+            return '.';  // Coin
+        case CellContent::FRUIT:
+            return 'F';  // Fruit
+        case CellContent::POWER_PELLET:
+            return 'O';  // Power Pellet
+        case CellContent::EMPTY:
+        default:
+            return ' ';  // Empty space
+    }
+}
+
+bool GridPoint::isWalkable() const {
     return walkable;
 }

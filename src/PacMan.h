@@ -1,9 +1,9 @@
-#ifndef PACMAN_H
-#define PACMAN_H
-
+#pragma once
 #include "GameCharacter.h"
-#include "GameBoard.h"
-#include "Score.h"
+
+// Forward declarations
+class GameBoard;
+class Score;
 
 /**
  * Represents the player-controlled PacMan character
@@ -36,5 +36,3 @@ private:
     int powerTimer{0};  // Timer for power pellet effect
     static const int POWER_DURATION = 200;  // Duration of power pellet effect (in game ticks)
 };
-
-#endif // PACMAN_H

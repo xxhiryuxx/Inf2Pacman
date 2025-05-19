@@ -16,8 +16,10 @@ class Element {
 public:
     Element();  // Initialize element
     virtual ~Element();
-    virtual void draw() = 0;  // Draw element on screen
-    virtual bool isWalkable() = 0;  // Can other elements move through this?
+
+    // Pure virtual methods
+    virtual char draw() const = 0;  // Draw element on screen, returns character representation
+    virtual bool isWalkable() const = 0;  // Can other elements move through this?
 
     // Position management
     void setPosition(int newX, int newY) { x = newX; y = newY; }  // Set grid position

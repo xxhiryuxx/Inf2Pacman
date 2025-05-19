@@ -37,8 +37,8 @@ public:
     int getPointValue() const;             // Get point value if collectible
 
     // From Element
-    virtual void draw() override;
-    virtual bool isWalkable() override;
+    virtual char draw() const override;    // Returns character representation
+    virtual bool isWalkable() const override;
 
 private:
     bool walkable;
