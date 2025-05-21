@@ -4,7 +4,6 @@
 
 // Forward declarations
 class GameBoard;
-class Score;
 
 /**
  * Represents the player-controlled PacMan character
@@ -13,7 +12,7 @@ class Score;
 class PacMan : public GameCharacter {
 public:
     // Constructor/Destructor
-    PacMan(GameBoard* board, Score* scorePtr);  // Initialize with game board and score
+    PacMan(GameBoard* board);  // Initialize with game board and score
     virtual ~PacMan();
 
     // Game actions
@@ -32,7 +31,6 @@ public:
 
 private:
     GameBoard* gameBoard;  // Reference to game board
-    Score* score;  // Reference to score tracker
     int lives;  // Remaining lives
     bool powered;  // Power pellet status
     int powerTimer{0};  // Timer for power pellet effect

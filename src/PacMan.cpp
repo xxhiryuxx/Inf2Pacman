@@ -6,10 +6,9 @@
 #include <iostream>
 
 // Initialize PacMan with game board and score tracking
-PacMan::PacMan(GameBoard* board, Score* scorePtr)
+PacMan::PacMan(GameBoard* board)
     : GameCharacter(board->getStartPosition())
     , gameBoard(board)
-    , score(scorePtr)
     , lives(3)
     , powered(false)
     , powerTimer(0)
@@ -60,20 +59,7 @@ bool PacMan::tryMove(int newX, int newY) {
     position.x = newX;
     position.y = newY;
 
-    if (gameBoard->collectPoint(position.x, position.y)) {
-        score->increase(10);
-    }
-
     return true;
-}
-
-void PacMan::updatePowerTimer() {
-    if (powerTimer > 0) {
-        powerTimer--;
-        if (powerTimer == 0) {
-            powered = false;
-        }
-    }
 }
 
 // Check for collision with any ghost
@@ -89,48 +75,19 @@ bool PacMan::checkGhostCollision() {
     return false;
 }
 
-// Update PacMan's state each game tick
-void PacMan::update() {
-    if (powered) {
-        updatePowerTimer();
-    }
-
-    // Check for collisions and handle life loss
-    if (checkGhostCollision()) {
-        lives--;
-        position = gameBoard->getStartPosition();
-        powered = false;
-        powerTimer = 0;
-    }
-}
-
-// Draw PacMan's representation on the game board
-char PacMan::draw() const {
-    // PacMan is represented by 'C' when normal, 'O' when powered
-    return powered ? 'O' : 'C';
-}
-
-bool PacMan::isPowered() const {
-    return powered;
-}
-
-int PacMan::getPowerTimer() const {
-    return powerTimer;
-}
-
-int PacMan::getLives() const {
-    return lives;
-}
-
-void PacMan::loseLife() {
+// Check for collisions and handle life loss
+if (checkGhostCollision()) {
     lives--;
     position = gameBoard->getStartPosition();
     powered = false;
     powerTimer = 0;
 }
 
-bool PacMan::isAlive() const {
-    return lives > 0;
+
+// Draw PacMan's representation on the game board
+char PacMan::draw() const {
+    // PacMan is represented by 'C' when normal, 'O' when powered
+    return powered ? 'O' : 'C';
 }
 
 Position PacMan::getPosition() const {
