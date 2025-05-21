@@ -146,3 +146,9 @@ void Ghost::draw() {
         std::cout << "\033[1;31m" << representation << "\033[0m";  // Red normally
     }
 }
+
+void Ghost::returnToSpawn() {
+    if (gameBoard) {
+        gameBoard->respawnGhost(this);
+    }
+}

@@ -35,6 +35,14 @@ bool GameBoard::isWalkable(int x, int y) const {
     return false;
 }
 
+GridPoint& GameBoard::getGridPoint(const Position& pos) {
+    return getGridPoint(pos.x, pos.y);
+}
+
+const GridPoint& GameBoard::getGridPoint(const Position& pos) const {
+    return getGridPoint(pos.x, pos.y);
+}
+
 void GameBoard::updateRandomFruit() {
     static std::random_device rd;
     static std::mt19937 gen(rd());
@@ -86,14 +94,6 @@ void GameBoard::loadDefaultLevel() {
     }    // Create ghost spawn area in the center
     int centerX = width / 2;
     int centerY = height / 2;
-    for (int y = centerY-2; y <= centerY+1; y++) {
-        for (int x = centerX-2; x <= centerX+2; x++) {
-            grid[y][x].setContent(CellContent::EMPTY);
-            // Add walls around spawn area
-            if (y == centerY-2 || y == centerY+1) {
-                grid[y][x].setContent(CellContent::WALL);
-            }
-            if (x == centerX-2 || x == centerX+2) {
                 grid[y][x].setContent(CellContent::WALL);
             }
         }

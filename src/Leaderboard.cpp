@@ -83,3 +83,7 @@ void Leaderboard::addEntry(const std::string& name, int score) {
     // Save immediately when we have a new high score
     saveToFile();
 }
+
+void Leaderboard::addScore(int score) {
+    addEntry("Player", score);
+}

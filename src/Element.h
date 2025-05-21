@@ -12,6 +12,12 @@
  * Base class for all game elements (characters, walls, collectibles)
  * Provides common functionality for positioning and rendering
  */
+struct Position {
+    int x;
+    int y;
+    bool operator==(const Position& other) const { return x == other.x && y == other.y; }
+};
+
 class Element {
 public:
     Element();  // Initialize element

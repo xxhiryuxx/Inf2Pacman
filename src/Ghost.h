@@ -27,6 +27,9 @@ public:
     void setGameBoard(GameBoard* board) { gameBoard = board; } // Set game board reference
     void setScared(bool isScared) { scared = isScared; }      // Set ghost state when PacMan is powered
     bool isScared() const { return scared; }                   // Check if ghost is in scared state
+    int getPointValue() const { return 200; }                  // Eating a ghost gives 200 points
+    void returnToSpawn();                                      // Return ghost to spawn position
+    Position getPosition() const { return Position{getX(), getY()}; } // Get ghost's current position
 
     // From GameCharacter
     virtual void update() override;  // Update ghost state each game tick

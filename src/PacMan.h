@@ -23,6 +23,7 @@ public:
     void collectFruit();  // Handle fruit collection
     void collectPowerPellet();  // Handle power pellet collection
     bool checkGhostCollision();  // Check for ghost encounters
+    Position getPosition() const; // Add this
 
     // From GameCharacter
     virtual void update() override;  // Update game state

@@ -179,5 +179,5 @@ bool PacMan::isAlive() const {
 }
 
 Position PacMan::getPosition() const {
-    return position;
+    return Position{getX(), getY()};
 }

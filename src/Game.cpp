@@ -7,13 +7,17 @@
  */
 
 #include "Game.h"
+#include "Ghost.h"
+#include "PacMan.h"
+#include "Score.h"
+#include "Leaderboard.h"
 #include <iostream>
 #include <string>
 #include <chrono>
 #include <thread>
 
 Game::Game() : 
-    board(new GameBoard()),
+    board(new GameBoard(10,10)),
     score(new Score()),
     leaderboard(new Leaderboard()),
     controller(new GameController()),
@@ -66,10 +70,6 @@ void Game::gameLoop() {
 
 void Game::processInput() {
     char input = controller->getInput();
-    
-    switch (currentState) {
-        case GameState::PLAYING:
-            if (input == 'p' || input == 'P') {
                 pause();
                 return;
             }
@@ -117,7 +117,8 @@ void Game::handleCollisions() {
     auto ghosts = board->getGhosts();
     
     // Check collisions with collectibles
-    auto currentCell = board->getGridPoint(pacman->getPosition());
+    auto pos = pacman->getPosition();
+    auto currentCell = board->getGridPoint(pos.x, pos.y);
     if (currentCell->isCollectible()) {
         if (currentCell->getContent() == CellContent::POWER_PELLET) {
             pacman->collectPowerPellet();
@@ -220,3 +221,10 @@ void Game::saveScore() {
     leaderboard->addScore(score->getScore());
     leaderboard->saveToFile();
 }
+
+class GameBoard {
+public:
+    void update();
+
+    Cell* getGridPoint(int x, int y);
+};

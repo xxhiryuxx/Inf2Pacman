@@ -18,10 +18,13 @@ class Ghost;
 class GameBoard {
 public:
     GameBoard(int width, int height);
-    ~GameBoard();    void initialize();
+    ~GameBoard();    
+    void initialize();
     void draw();
     GridPoint& getGridPoint(int x, int y);
     const GridPoint& getGridPoint(int x, int y) const;
+    GridPoint& getGridPoint(const Position& pos);
+    const GridPoint& getGridPoint(const Position& pos) const;
     bool isWalkable(int x, int y) const;
     void updateRandomFruit();
     
@@ -47,5 +50,6 @@ private:
     std::vector<Ghost*> ghosts;
     int remainingCoins;
 
-    void loadDefaultLevel();    void clearBoard();
+    void loadDefaultLevel();    
+    void clearBoard();
 };
