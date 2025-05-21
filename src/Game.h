@@ -36,7 +36,6 @@ public:
 private:
     static constexpr int FRAME_RATE = 60;
     static constexpr std::chrono::milliseconds FRAME_DURATION{1000 / FRAME_RATE};
-    
     GameBoard* board;
     GameController* controller;
     Renderer* renderer;

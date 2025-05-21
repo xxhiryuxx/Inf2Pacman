@@ -1,62 +1,66 @@
 #include "GameBoard.h"
-#include <iostream>
-#include <vector>
 
-const int WIDTH = 15;
-const int HEIGHT = 15;
-
-class GameBoard {
-private:
-    std::vector<std::vector<char>> board;
-
-public:
-    GameBoard() {
-        board.resize(HEIGHT, std::vector<char>(WIDTH, '.'));
-
-        // Ränder als Wände
-        for (int i = 0; i < HEIGHT; ++i) {
-            board[i][0] = '#';
-            board[i][WIDTH - 1] = '#';
-        }
-        for (int j = 0; j < WIDTH; ++j) {
-            board[0][j] = '#';
-            board[HEIGHT - 1][j] = '#';
-        }
-
-        // Beispielhafte innere Wände
-        for (int i = 3; i < 12; ++i) {
-            board[5][i] = '#';
-            board[i][7] = '#';
-        }
-    }
-
-    void draw() const {
-        for (const auto& row : board) {
-            for (const auto& cell : row) {
-                std::cout << cell;
+GameBoard::GameBoard() : grid(HEIGHT, std::vector<GridPoint>(WIDTH)), pacman(nullptr) {
+    // Initialize basic board with walls and coins
+    for (int y = 0; y < HEIGHT; ++y) {
+        for (int x = 0; x < WIDTH; ++x) {
+            if (x == 0 || x == WIDTH-1 || y == 0 || y == HEIGHT-1) {
+                grid[y][x].setContent(CellContent::WALL);
+            } else {
+                grid[y][x].setContent(CellContent::COIN);
             }
-            std::cout << std::endl;
         }
     }
 
-    bool isWall(int x, int y) const {
-        return board[y][x] == '#';
-    }
+    // Create PacMan at position (1,1)
+    pacman = new PacMan(this, nullptr);
+    pacman->setPosition(1, 1);
 
-    bool collectPoint(int x, int y) {
-        if (board[y][x] == '.') {
-            board[y][x] = ' ';
-            return true;
-        }
-        return false;
-    }
-};
-
-// Beispielnutzung
-/*
-int main() {
-    GameBoard gb;
-    gb.draw();
-    return 0;
+    // Create one ghost at opposite corner
+    Ghost* ghost = new Ghost(this);
+    ghost->setPosition(WIDTH-2, HEIGHT-2);
+    ghosts.push_back(ghost);
 }
-*/
+
+GameBoard::~GameBoard() {
+    delete pacman;
+    for (auto ghost : ghosts) {
+        delete ghost;
+    }
+}
+
+void GameBoard::update() {
+    if (pacman) {
+        pacman->update();
+    }
+    for (auto ghost : ghosts) {
+        ghost->update();
+    }
+}
+
+GridPoint* GameBoard::getGridPoint(int x, int y) {
+    if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) {
+        return nullptr;
+    }
+    return &grid[y][x];
+}
+
+PacMan* GameBoard::getPacMan() const {
+    return pacman;
+}
+
+std::vector<Ghost*> GameBoard::getGhosts() const {
+    return ghosts;
+}
+
+int GameBoard::getRemainingCollectibles() const {
+    int count = 0;
+    for (int y = 0; y < HEIGHT; ++y) {
+        for (int x = 0; x < WIDTH; ++x) {
+            if (grid[y][x].isCollectible()) {
+                count++;
+            }
+        }
+    }
+    return count;
+}

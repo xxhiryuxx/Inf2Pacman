@@ -55,6 +55,10 @@ void Game::gameLoop() {
 }
 
 void Game::processInput() {
+    char input = controller->getInput();
+    
+    switch (currentState) {
+        case GameState::PLAYING:
             if (input == 'p' || input == 'P') {
                 pause();
                 return;
@@ -86,26 +90,25 @@ void Game::processInput() {
     }
 }
 
-void Game::update() {
-    // board->update(); // No longer needed if GameBoard does not require update
-    updateGhosts();
-}
 
-void Game::updateGhosts() {
-    auto ghosts = board->getGhosts();
-    for (auto ghost : ghosts) {
-        ghost->update();
+void Game::update() {
+    if (board) {
+        board->update();  // This now handles both PacMan and ghost updates
     }
 }
 
 void Game::handleCollisions() {
+    if (!board) return;
+    
     auto pacman = board->getPacMan();
+    if (!pacman) return;
+    
     auto ghosts = board->getGhosts();
     
     // Check collisions with collectibles
     auto pos = pacman->getPosition();
-    auto currentCell = board->getGridPoint(pos.x, pos.y);
-    if (currentCell->isCollectible()) {
+    auto currentCell = board->getGridPoint(pos.x, pos.y);    
+    if (currentCell && currentCell->isCollectible()) {
         if (currentCell->getContent() == CellContent::POWER_PELLET) {
             pacman->collectPowerPellet();
             for (auto ghost : ghosts) {
@@ -115,9 +118,9 @@ void Game::handleCollisions() {
         currentCell->setContent(CellContent::EMPTY);
     }
     
-    // Check ghost collisions
+    // Check ghost collisions    
     for (auto ghost : ghosts) {
-        if (pacman->getPosition() == ghost->getPosition()) {
+        if (ghost && pacman->getPosition() == ghost->getPosition()) {
             handlePacmanGhostCollision(ghost);
         }
     }
@@ -132,6 +135,8 @@ void Game::handlePacmanGhostCollision(Ghost* ghost) {
 }
 
 void Game::render() {
+    if (!renderer || !board) return;
+    
     renderer->clear();
     board->render();
     
@@ -140,13 +145,13 @@ void Game::render() {
             renderer->renderMenu();
             break;
         case GameState::PLAYING:
-            renderer->renderScore(score->getScore());
+            // Just render the game board
             break;
         case GameState::PAUSED:
             renderer->renderPauseScreen();
             break;
         case GameState::GAME_OVER:
-            renderer->renderGameOver(score->getScore());
+            renderer->renderGameOver(0);  // Simple game over without score
             break;
     }
     

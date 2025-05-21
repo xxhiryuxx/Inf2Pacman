@@ -16,6 +16,7 @@ public:
     void renderPauseScreen();
     void renderGameOver(int finalScore);
     void renderMessage(const std::string& message);
+    void renderScore(int score);
 
 private:
     static constexpr int SCREEN_WIDTH = 80;
