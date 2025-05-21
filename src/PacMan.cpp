@@ -5,9 +5,6 @@
 #include "Ghost.h"
 #include <iostream>
 
-// gameboard needs implementation
-// issues with gridpoint.h
-
 // Initialize PacMan with game board and score tracking
 PacMan::PacMan(GameBoard* board, Score* scorePtr)
     : GameCharacter(board->getStartPosition())
@@ -62,41 +59,12 @@ bool PacMan::tryMove(int newX, int newY) {
 
     position.x = newX;
     position.y = newY;
-    return true;
-}
 
-// Check and collect any coins or fruits at the current position
-void PacMan::checkCollectibles() {
-    auto currentCell = gameBoard->getGridPoint(position);
-    if (!currentCell) return;
-
-    switch (currentCell->getContent()) {
-        case CellContent::COIN:
-            collectCoin();
-            break;
-        case CellContent::FRUIT:
-            collectFruit();
-            break;
-        case CellContent::POWER_PELLET:
-            collectPowerPellet();
-            break;
-        default:
-            break;
+    if (gameBoard->collectPoint(position.x, position.y)) {
+        score->increase(10);
     }
-}
 
-void PacMan::collectCoin() {
-    gameBoard->getGridPoint(position)->setContent(CellContent::EMPTY);
-}
-
-void PacMan::collectFruit() {
-    gameBoard->getGridPoint(position)->setContent(CellContent::EMPTY);
-}
-
-void PacMan::collectPowerPellet() {
-    powered = true;
-    powerTimer = POWER_DURATION;
-    gameBoard->getGridPoint(position)->setContent(CellContent::EMPTY);
+    return true;
 }
 
 void PacMan::updatePowerTimer() {
@@ -126,7 +94,6 @@ void PacMan::update() {
     if (powered) {
         updatePowerTimer();
     }
-    checkCollectibles();
 
     // Check for collisions and handle life loss
     if (checkGhostCollision()) {

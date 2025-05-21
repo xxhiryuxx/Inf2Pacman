@@ -1,18 +1,10 @@
 #include "GridPoint.h"
 #include <iostream>
 
-GridPoint::GridPoint() : walkable(true), content(CellContent::EMPTY) {}
-
-GridPoint::~GridPoint() {}
-
-void GridPoint::setWalkable(bool isWalkable) {
-    walkable = isWalkable;
-}
+GridPoint::GridPoint() : content(CellContent::EMPTY) {}
 
 void GridPoint::setContent(CellContent newContent) {
     content = newContent;
-    // Update walkable state based on content
-    walkable = (content != CellContent::WALL);
 }
 
 CellContent GridPoint::getContent() const {
@@ -52,8 +44,4 @@ char GridPoint::draw() const {
         default:
             return ' ';  // Empty space
     }
-}
-
-bool GridPoint::isWalkable() const {
-    return walkable;
 }

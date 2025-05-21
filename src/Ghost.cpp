@@ -29,7 +29,7 @@ void Ghost::moveAutomatically() {
         case Direction::RIGHT: newX++; break;
     }
     
-    if (gameBoard->isWalkable(newX, newY)) {
+    if (!gameBoard->isWall(newX, newY)) {
         setPosition(newX, newY);
     }
 }
@@ -105,10 +105,10 @@ std::vector<Direction> Ghost::getValidDirections() {
     int y = getY();
     
     // Check each direction
-    if (gameBoard->isWalkable(x, y-1)) valid.push_back(Direction::UP);
-    if (gameBoard->isWalkable(x, y+1)) valid.push_back(Direction::DOWN);
-    if (gameBoard->isWalkable(x-1, y)) valid.push_back(Direction::LEFT);
-    if (gameBoard->isWalkable(x+1, y)) valid.push_back(Direction::RIGHT);
+    if (!gameBoard->isWall(x, y-1)) valid.push_back(Direction::UP);
+    if (!gameBoard->isWall(x, y+1)) valid.push_back(Direction::DOWN);
+    if (!gameBoard->isWall(x-1, y)) valid.push_back(Direction::LEFT);
+    if (!gameBoard->isWall(x+1, y)) valid.push_back(Direction::RIGHT);
     
     // Remove opposite of last direction to prevent back-and-forth movement
     Direction opposite;
@@ -141,7 +141,7 @@ char Ghost::draw() const {
         std::cout << "\033[1;31m" << representation << "\033[0m";  // Red normally
     }
 
-    return;
+    return representation;
 }
 
 void Ghost::returnToSpawn() {

@@ -2,6 +2,7 @@
 #include "Ghost.h"
 #include "PacMan.h"
 #include "Renderer.h"
+#include "GameBoard.h"
 #include <iostream>
 #include <string>
 #include <chrono>
@@ -10,7 +11,7 @@
 // gameboard needs implementation to fix bugs in this file
 
 Game::Game() : 
-    board(new GameBoard(10,10)),
+    board(new GameBoard()),
     controller(new GameController()),
     renderer(new Renderer()),
     currentState(GameState::MENU),
@@ -25,9 +26,7 @@ Game::~Game() {
     delete renderer;
 }
 
-void Game::initializeGameBoard() {
-    board->initialize();
-}
+// Removed: initializeGameBoard() is no longer needed as GameBoard initializes itself in its constructor.
 
 void Game::startGame() {
     gameRunning = true;
@@ -88,7 +87,7 @@ void Game::processInput() {
 }
 
 void Game::update() {
-    board->update();
+    // board->update(); // No longer needed if GameBoard does not require update
     updateGhosts();
 }
 
@@ -199,9 +198,3 @@ bool Game::checkGameEnd() {
     return board->getRemainingCollectibles() == 0;
 }
 
-class GameBoard {
-public:
-    void update();
-
-    Cell* getGridPoint(int x, int y);
-};

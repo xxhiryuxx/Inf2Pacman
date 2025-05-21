@@ -48,16 +48,21 @@ void Renderer::renderMenu() {
 
 void Renderer::renderBoard(const GameBoard* board) {
     if (!board) return;
-    
-    // Copy board state to buffer
-    auto boardState = board->getState();
-    int startRow = (SCREEN_HEIGHT - board->getHeight()) / 2;
-    int startCol = (SCREEN_WIDTH - board->getWidth()) / 2;
-    
-    for (int y = 0; y < board->getHeight(); ++y) {
-        for (int x = 0; x < board->getWidth(); ++x) {
+
+    int width = board->getWidth();
+    int height = board->getHeight();
+    int startRow = (SCREEN_HEIGHT - height) / 2;
+    int startCol = (SCREEN_WIDTH - width) / 2;
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
             if (startRow + y < SCREEN_HEIGHT && startCol + x < SCREEN_WIDTH) {
-                buffer[startRow + y][startCol + x] = boardState[y][x];
+                char c = ' ';
+                if (board->isWall(x, y))
+                    c = '#';
+                else
+                    c = '.'; // oder board->getCharAt(x,y) falls vorhanden
+                buffer[startRow + y][startCol + x] = c;
             }
         }
     }
