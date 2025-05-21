@@ -89,22 +89,28 @@ void GameController::forwardToPacMan() {
         return;
     }
 
+    // Use try_move to handle actual movement based on the direction
+    int newX = pacman->getX();
+    int newY = pacman->getY();
+    
     switch (lastDirection) {
         case Direction::UP:
-            pacman->moveUp();
+            newY--;
             break;
         case Direction::DOWN:
-            pacman->moveDown();
+            newY++;
             break;
         case Direction::LEFT:
-            pacman->moveLeft();
+            newX--;
             break;
         case Direction::RIGHT:
-            pacman->moveRight();
+            newX++;
             break;
         default:
-            break;
+            return;
     }
+    
+    pacman->tryMove(newX, newY);
 }
 
 Direction GameController::getLastDirection() const {

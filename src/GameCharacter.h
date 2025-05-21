@@ -1,14 +1,7 @@
 #pragma once
 
 #include "Element.h"
-
-enum class Direction {
-    NONE,
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
-};
+#include "GameController.h"
 
 /**
  * Base class for all movable game characters (PacMan and Ghosts)

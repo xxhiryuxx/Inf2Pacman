@@ -20,9 +20,9 @@ CellContent GridPoint::getContent() const {
 }
 
 bool GridPoint::isCollectible() const {
-    return content == CellContent::COIN || 
-           content == CellContent::FRUIT || 
-           content == CellContent::POWER_PELLET;
+    return  content == CellContent::COIN || 
+            content == CellContent::FRUIT || 
+            content == CellContent::POWER_PELLET;
 }
 
 int GridPoint::getPointValue() const {

@@ -4,11 +4,11 @@
 #include <map>
 
 enum class Direction {
+    NONE,
     UP,
     DOWN,
     LEFT,
-    RIGHT,
-    NONE
+    RIGHT
 };
 
 class GameController {
