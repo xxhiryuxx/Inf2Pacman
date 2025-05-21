@@ -1,15 +1,6 @@
-/**
- * @file Renderer.h
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
-
 #pragma once
 
 #include "GameBoard.h"
-#include "Leaderboard.h"
 #include <string>
 #include <vector>
 
@@ -22,10 +13,8 @@ public:
     void display();
     void renderMenu();
     void renderBoard(const GameBoard* board);
-    void renderScore(int score);
     void renderPauseScreen();
     void renderGameOver(int finalScore);
-    void renderHighScores(const Leaderboard* leaderboard);
     void renderMessage(const std::string& message);
 
 private:

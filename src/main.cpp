@@ -1,13 +1,4 @@
-/**
- * @file main.cpp
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
-
 #include "Game.h"
-#include "Leaderboard.h"
 #include <iostream>
 #include <cstdlib>
 
@@ -21,11 +12,6 @@ int main() {
 
     // Display welcome message
     std::cout << "\n=== WELCOME TO PACMAN ===\n" << std::endl;
-
-    // Initialize and display leaderboard
-    Leaderboard leaderboard;
-    leaderboard.loadFromFile();
-    leaderboard.displayLeaderboard();
 
     std::cout << "\nPress Enter to start the game...";
     std::cin.get();

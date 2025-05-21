@@ -1,15 +1,9 @@
-/**
- * @file GameCharacter.h
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
-
 #pragma once
+
 #include "Element.h"
 
 enum class Direction {
+    NONE,
     UP,
     DOWN,
     LEFT,
@@ -32,11 +26,9 @@ public:
     virtual void update() = 0;  // Update character state each game tick
     
     // From Element
-    virtual void draw() override = 0;  // Draw character representation
-    virtual bool isWalkable() override;  // Characters can't be walked through
+    virtual char draw() const override = 0;  // Draw character representation
+    virtual bool isWalkable() const override;  // Characters can't be walked through
 
 protected:
     Direction currentDirection;
 };
-
-#endif

@@ -1,14 +1,7 @@
-/**
- * @file PacMan.cpp
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
-
+#include "GameCharacter.h"
+#include "GameController.h"
 #include "PacMan.h"
 #include "GameBoard.h"
-#include "Score.h"
 #include "Ghost.h"
 #include <iostream>
 
@@ -90,19 +83,16 @@ void PacMan::checkCollectibles() {
 }
 
 void PacMan::collectCoin() {
-    score->addPoints(10);  // Standard coin value
     gameBoard->getGridPoint(position)->setContent(CellContent::EMPTY);
 }
 
 void PacMan::collectFruit() {
-    score->addPoints(100);  // Fruit bonus
     gameBoard->getGridPoint(position)->setContent(CellContent::EMPTY);
 }
 
 void PacMan::collectPowerPellet() {
     powered = true;
     powerTimer = POWER_DURATION;
-    score->addPoints(50);  // Power pellet bonus
     gameBoard->getGridPoint(position)->setContent(CellContent::EMPTY);
 }
 
@@ -122,12 +112,7 @@ bool PacMan::checkGhostCollision() {
     
     for (Ghost* ghost : gameBoard->getGhosts()) {
         if (ghost->getX() == getX() && ghost->getY() == getY()) {
-            if (powered) {
-                // Eat ghost when powered up
-                score->increase(200);
-                return false;
-            }
-            return true;  // Ghost collision when not powered
+            return true;  // Ghost collision
         }
     }
     return false;
@@ -150,7 +135,7 @@ void PacMan::update() {
 }
 
 // Draw PacMan's representation on the game board
-void PacMan::draw() {
+char PacMan::draw() const {
     // PacMan is represented by 'C' when normal, 'O' when powered
     return powered ? 'O' : 'C';
 }

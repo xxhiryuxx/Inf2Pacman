@@ -1,16 +1,7 @@
-/**
- * @file Game.cpp
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
-
 #include "Game.h"
 #include "Ghost.h"
 #include "PacMan.h"
-#include "Score.h"
-#include "Leaderboard.h"
+#include "Renderer.h"
 #include <iostream>
 #include <string>
 #include <chrono>
@@ -18,8 +9,6 @@
 
 Game::Game() : 
     board(new GameBoard(10,10)),
-    score(new Score()),
-    leaderboard(new Leaderboard()),
     controller(new GameController()),
     renderer(new Renderer()),
     currentState(GameState::MENU),
@@ -30,15 +19,12 @@ Game::Game() :
 
 Game::~Game() {
     delete board;
-    delete score;
-    delete leaderboard;
     delete controller;
     delete renderer;
 }
 
 void Game::initializeGameBoard() {
     board->initialize();
-    score->display();
 }
 
 void Game::startGame() {
@@ -60,7 +46,6 @@ void Game::gameLoop() {
             
             if (checkGameEnd()) {
                 setState(GameState::GAME_OVER);
-                saveScore();
             }
         }
         
@@ -69,7 +54,7 @@ void Game::gameLoop() {
 }
 
 void Game::processInput() {
-    char input = controller->getInput();
+            if (input == 'p' || input == 'P') {
                 pause();
                 return;
             }
@@ -126,7 +111,6 @@ void Game::handleCollisions() {
                 ghost->setScared(true);
             }
         }
-        score->addPoints(currentCell->getPointValue());
         currentCell->setContent(CellContent::EMPTY);
     }
     
@@ -140,7 +124,6 @@ void Game::handleCollisions() {
 
 void Game::handlePacmanGhostCollision(Ghost* ghost) {
     if (ghost->isScared()) {
-        score->addPoints(ghost->getPointValue());
         ghost->returnToSpawn();
     } else {
         setState(GameState::GAME_OVER);
@@ -163,9 +146,6 @@ void Game::render() {
             break;
         case GameState::GAME_OVER:
             renderer->renderGameOver(score->getScore());
-            break;
-        case GameState::HIGH_SCORE:
-            renderer->renderHighScores(leaderboard);
             break;
     }
     
@@ -215,11 +195,6 @@ void Game::resume() {
 
 bool Game::checkGameEnd() {
     return board->getRemainingCollectibles() == 0;
-}
-
-void Game::saveScore() {
-    leaderboard->addScore(score->getScore());
-    leaderboard->saveToFile();
 }
 
 class GameBoard {

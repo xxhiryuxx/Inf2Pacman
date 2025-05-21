@@ -1,13 +1,13 @@
-/**
- * @file GameController.cpp
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
-
 #include "GameController.h"
+#include "Renderer.h"
+
+#ifdef _WIN32
 #include <conio.h>
+#else
+#include <termios.h>
+#include <unistd.h>
+#include <fcntl.h>
+#endif
 
 GameController::GameController()
     : pacman(nullptr)
@@ -37,11 +37,34 @@ void GameController::setPacMan(PacMan* player) {
 }
 
 char GameController::getInput() {
+#ifdef _WIN32
     if (_kbhit()) {
         currentInput = _getch();
         return currentInput;
     }
     return 0;
+#else
+    struct termios oldt, newt;
+    int oldf;
+    char ch = 0;
+
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
+    fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
+
+    if (read(STDIN_FILENO, &ch, 1) == 1) {
+        currentInput = ch;
+        ch = currentInput;
+    }
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    fcntl(STDIN_FILENO, F_SETFL, oldf);
+
+    return ch;
+#endif
 }
 
 void GameController::interpretInput() {

@@ -1,15 +1,6 @@
-/**
- * @file Game.h
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
-
 #pragma once
+
 #include "GameBoard.h"
-#include "Score.h"
-#include "Leaderboard.h"
 #include "GameController.h"
 #include "Renderer.h"
 #include <chrono>
@@ -37,8 +28,6 @@ public:
     bool checkGameEnd();
     void handleCollisions();
     void updateGhosts();
-    void saveScore();
-    void loadLeaderboard();
     void setState(GameState newState);
     GameState getState() const;
     void pause();
@@ -49,8 +38,6 @@ private:
     static constexpr std::chrono::milliseconds FRAME_DURATION{1000 / FRAME_RATE};
     
     GameBoard* board;
-    Score* score;
-    Leaderboard* leaderboard;
     GameController* controller;
     Renderer* renderer;
     GameState currentState;

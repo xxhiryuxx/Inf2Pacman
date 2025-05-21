@@ -1,37 +1,17 @@
-/**
- * @file Renderer.cpp
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
-
 #include "Renderer.h"
 #include "GameBoard.h"
-#include "Score.h"
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
-#include <windows.h>
 
 Renderer::Renderer() 
     : buffer(SCREEN_HEIGHT, std::vector<char>(SCREEN_WIDTH, ' '))
 {
-    // Set up Windows console for better rendering
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO cursorInfo;
-    GetConsoleCursorInfo(hConsole, &cursorInfo);
-    cursorInfo.bVisible = false;
-    SetConsoleCursorInfo(hConsole, &cursorInfo);
+    clearScreen();
 }
 
 Renderer::~Renderer() {
-    // Restore cursor visibility
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO cursorInfo;
-    cursorInfo.dwSize = 1;
-    cursorInfo.bVisible = true;
-    SetConsoleCursorInfo(hConsole, &cursorInfo);
+    // No platform-specific cleanup needed
 }
 
 void Renderer::clear() {
@@ -81,15 +61,6 @@ void Renderer::renderBoard(const GameBoard* board) {
     }
 }
 
-void Renderer::renderScore(int score) {
-    std::string scoreText = "Score: " + std::to_string(score);
-    for (size_t i = 0; i < scoreText.length(); ++i) {
-        if (i < SCREEN_WIDTH) {
-            buffer[0][i] = scoreText[i];
-        }
-    }
-}
-
 void Renderer::renderPauseScreen() {
     centerText("GAME PAUSED", SCREEN_HEIGHT / 2 - 1);
     centerText("Press P to continue", SCREEN_HEIGHT / 2 + 1);
@@ -102,25 +73,6 @@ void Renderer::renderGameOver(int finalScore) {
     centerText("GAME OVER", SCREEN_HEIGHT / 2 - 3);
     centerText("Final Score: " + std::to_string(finalScore), SCREEN_HEIGHT / 2 - 1);
     centerText("Press ENTER to return to menu", SCREEN_HEIGHT / 2 + 2);
-}
-
-void Renderer::renderHighScores(const Leaderboard* leaderboard) {
-    clear();
-    drawBorder();
-    
-    centerText("HIGH SCORES", 3);
-    drawHorizontalLine(4);
-    
-    if (leaderboard) {
-        auto scores = leaderboard->getScores();
-        int row = 6;
-        for (const auto& score : scores) {
-            centerText(padString(std::to_string(score), 6), row++);
-            if (row >= SCREEN_HEIGHT - 2) break;
-        }
-    }
-    
-    centerText("Press ENTER to continue", SCREEN_HEIGHT - 3);
 }
 
 void Renderer::renderMessage(const std::string& message) {
@@ -180,9 +132,9 @@ std::string Renderer::padString(const std::string& str, int width) const {
 }
 
 void Renderer::clearScreen() {
-    #ifdef _WIN32
+#ifdef _WIN32
     system("cls");
-    #else
+#else
     system("clear");
-    #endif
+#endif
 }
