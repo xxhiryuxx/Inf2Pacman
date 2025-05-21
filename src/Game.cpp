@@ -171,18 +171,6 @@ void Game::maintainFrameRate() {
     lastUpdateTime = std::chrono::steady_clock::now();
 }
 
-void Game::checkPowerPelletTimeout() {
-    auto pacman = board->getPacMan();
-    if (pacman->isPowered()) {
-        pacman->updatePowerTimer();
-        if (pacman->getPowerTimer() <= 0) {
-            for (auto ghost : board->getGhosts()) {
-                ghost->setScared(false);
-            }
-        }
-    }
-}
-
 void Game::setState(GameState newState) {
     currentState = newState;
 }
