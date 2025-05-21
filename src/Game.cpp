@@ -7,6 +7,8 @@
 #include <chrono>
 #include <thread>
 
+// gameboard needs implementation to fix bugs in this file
+
 Game::Game() : 
     board(new GameBoard(10,10)),
     controller(new GameController()),

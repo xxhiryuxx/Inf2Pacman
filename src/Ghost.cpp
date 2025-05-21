@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <algorithm>
 
+// gameboard needs implementation
+
 Ghost::Ghost(GameBoard* board) 
     : gameBoard(board), lastDirection(Direction::RIGHT), scared(false) {}
 

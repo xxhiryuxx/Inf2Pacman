@@ -9,6 +9,8 @@
 #include <fcntl.h>
 #endif
 
+// problems with missing functions in file pacman
+
 GameController::GameController()
     : pacman(nullptr)
     , currentInput(0)

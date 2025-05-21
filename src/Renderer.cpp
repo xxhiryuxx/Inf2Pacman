@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <algorithm>
 
+// gameboard needs implementation
+
 Renderer::Renderer() 
     : buffer(SCREEN_HEIGHT, std::vector<char>(SCREEN_WIDTH, ' '))
 {

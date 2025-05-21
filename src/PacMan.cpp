@@ -5,6 +5,9 @@
 #include "Ghost.h"
 #include <iostream>
 
+// gameboard needs implementation
+// issues with gridpoint.h
+
 // Initialize PacMan with game board and score tracking
 PacMan::PacMan(GameBoard* board, Score* scorePtr)
     : GameCharacter(board->getStartPosition())
