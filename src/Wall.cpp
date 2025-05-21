@@ -1,22 +1,14 @@
-/**
- * @file Ghost.h
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 17:56
- */
-
 #include "Wall.h"
-#include <iostream>
 
 Wall::Wall() {}
 
 Wall::~Wall() {}
 
-void Wall::draw() {
-    std::cout << "#";
+
+char Wall::draw() const {
+    return '#';
 }
 
-bool Wall::isWalkable() {
+bool Wall::isWalkable() const {
     return false;
 }

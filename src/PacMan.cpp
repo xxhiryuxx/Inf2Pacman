@@ -1,11 +1,4 @@
-/**
- * @file PacMan.cpp
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
-
+#include "GameCharacter.h"
 #include "PacMan.h"
 #include "GameBoard.h"
 #include "Score.h"
@@ -14,13 +7,14 @@
 
 // Initialize PacMan with game board and score tracking
 PacMan::PacMan(GameBoard* board, Score* scorePtr)
-    : GameCharacter(board->getStartPosition())
-    , gameBoard(board)
+    : gameBoard(board)
     , score(scorePtr)
     , lives(3)
     , powered(false)
     , powerTimer(0)
 {
+    // Set initial position to (1,1) or any valid starting point
+    setPosition(1, 1);
 }
 
 PacMan::~PacMan() {
@@ -60,21 +54,17 @@ void PacMan::processInput(char input) {
 // Attempt to move PacMan to a new position
 // Returns true if the move was successful, false if blocked
 bool PacMan::tryMove(int newX, int newY) {
-    if (!gameBoard->isValidMove(newX, newY)) {
+    if (!gameBoard->isWalkable(newX, newY)) {
         return false;
     }
-
-    position.x = newX;
-    position.y = newY;
+    setPosition(newX, newY);
     return true;
 }
 
 // Check and collect any coins or fruits at the current position
 void PacMan::checkCollectibles() {
-    auto currentCell = gameBoard->getGridPoint(position);
-    if (!currentCell) return;
-
-    switch (currentCell->getContent()) {
+    auto& currentCell = gameBoard->getGridPoint(getX(), getY());
+    switch (currentCell.getContent()) {
         case CellContent::COIN:
             collectCoin();
             break;
@@ -90,30 +80,22 @@ void PacMan::checkCollectibles() {
 }
 
 void PacMan::collectCoin() {
-    score->addPoints(10);  // Standard coin value
-    gameBoard->getGridPoint(position)->setContent(CellContent::EMPTY);
+    score->increase(10);  // Standard coin value
+    gameBoard->getGridPoint(getX(), getY()).setContent(CellContent::EMPTY);
 }
 
 void PacMan::collectFruit() {
-    score->addPoints(100);  // Fruit bonus
-    gameBoard->getGridPoint(position)->setContent(CellContent::EMPTY);
+    score->increase(100);  // Fruit bonus
+    gameBoard->getGridPoint(getX(), getY()).setContent(CellContent::EMPTY);
 }
 
 void PacMan::collectPowerPellet() {
     powered = true;
     powerTimer = POWER_DURATION;
-    score->addPoints(50);  // Power pellet bonus
-    gameBoard->getGridPoint(position)->setContent(CellContent::EMPTY);
+    score->increase(50);  // Power pellet bonus
+    gameBoard->getGridPoint(getX(), getY()).setContent(CellContent::EMPTY);
 }
 
-void PacMan::updatePowerTimer() {
-    if (powerTimer > 0) {
-        powerTimer--;
-        if (powerTimer == 0) {
-            powered = false;
-        }
-    }
-}
 
 // Check for collision with any ghost
 // Returns true if PacMan should lose a life, false if ghost was eaten or no collision
@@ -135,49 +117,28 @@ bool PacMan::checkGhostCollision() {
 
 // Update PacMan's state each game tick
 void PacMan::update() {
-    if (powered) {
-        updatePowerTimer();
-    }
     checkCollectibles();
 
     // Check for collisions and handle life loss
     if (checkGhostCollision()) {
         lives--;
-        position = gameBoard->getStartPosition();
+        setPosition(1, 1); // Reset to starting position
         powered = false;
         powerTimer = 0;
     }
 }
 
 // Draw PacMan's representation on the game board
-void PacMan::draw() {
+
+char PacMan::draw() const {
     // PacMan is represented by 'C' when normal, 'O' when powered
     return powered ? 'O' : 'C';
-}
-
-bool PacMan::isPowered() const {
-    return powered;
-}
-
-int PacMan::getPowerTimer() const {
-    return powerTimer;
-}
-
-int PacMan::getLives() const {
-    return lives;
-}
-
-void PacMan::loseLife() {
-    lives--;
-    position = gameBoard->getStartPosition();
-    powered = false;
-    powerTimer = 0;
-}
-
-bool PacMan::isAlive() const {
-    return lives > 0;
 }
 
 Position PacMan::getPosition() const {
     return Position{getX(), getY()};
 }
+
+// Removed stray line
+
+    // PacMan is represented by 'C' when normal, 'O' when powered

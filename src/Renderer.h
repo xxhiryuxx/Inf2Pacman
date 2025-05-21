@@ -1,10 +1,3 @@
-/**
- * @file Renderer.h
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
 
 #pragma once
 
@@ -40,3 +33,4 @@ private:
     
     std::vector<std::vector<char>> buffer;
 };
+    void drawHorizontalLine(int row);

@@ -1,10 +1,3 @@
-/**
- * @file Renderer.cpp
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
 
 #include "Renderer.h"
 #include "GameBoard.h"
@@ -185,4 +178,4 @@ void Renderer::clearScreen() {
     #else
     system("clear");
     #endif
-}
+}void Renderer::clearScreen() {

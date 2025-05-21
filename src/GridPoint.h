@@ -1,11 +1,3 @@
-/**
- * @file GridPoint.h
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 15:35
- */
-
 #pragma once
 #include "Element.h"
 

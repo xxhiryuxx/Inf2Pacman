@@ -1,10 +1,3 @@
-/**
- * @file Leaderboard.cpp
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
 
 #include "Leaderboard.h"
 #include <fstream>
@@ -57,8 +50,8 @@ void Leaderboard::displayLeaderboard() {
     
     size_t count = std::min(entries.size(), size_t(5));
     for (size_t i = 0; i < count; ++i) {
-        std::cout << (i + 1) << ". " << entries[i].name 
-                 << ": " << entries[i].score << std::endl;
+        std::cout   << (i + 1) << ". " << entries[i].name 
+                    << ": " << entries[i].score << std::endl;
     }
     std::cout << "------------------------\n";
 }
@@ -82,8 +75,4 @@ void Leaderboard::addEntry(const std::string& name, int score) {
     
     // Save immediately when we have a new high score
     saveToFile();
-}
-
-void Leaderboard::addScore(int score) {
-    addEntry("Player", score);
 }

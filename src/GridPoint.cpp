@@ -1,10 +1,3 @@
-/**
- * @file GridPoint.cpp
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
 
 #include "GridPoint.h"
 #include <iostream>
@@ -28,9 +21,9 @@ CellContent GridPoint::getContent() const {
 }
 
 bool GridPoint::isCollectible() const {
-    return content == CellContent::COIN || 
-           content == CellContent::FRUIT || 
-           content == CellContent::POWER_PELLET;
+    return  content == CellContent::COIN || 
+            content == CellContent::FRUIT || 
+            content == CellContent::POWER_PELLET;
 }
 
 int GridPoint::getPointValue() const {

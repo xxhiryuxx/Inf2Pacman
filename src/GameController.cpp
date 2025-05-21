@@ -1,11 +1,3 @@
-/**
- * @file GameController.cpp
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
-
 #include "GameController.h"
 #include <conio.h>
 
@@ -63,23 +55,7 @@ void GameController::forwardToPacMan() {
     if (!pacman || lastDirection == Direction::NONE) {
         return;
     }
-
-    switch (lastDirection) {
-        case Direction::UP:
-            pacman->moveUp();
-            break;
-        case Direction::DOWN:
-            pacman->moveDown();
-            break;
-        case Direction::LEFT:
-            pacman->moveLeft();
-            break;
-        case Direction::RIGHT:
-            pacman->moveRight();
-            break;
-        default:
-            break;
-    }
+    pacman->moveDirection(lastDirection);
 }
 
 Direction GameController::getLastDirection() const {

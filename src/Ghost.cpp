@@ -1,13 +1,7 @@
-/**
- * @file Ghost.cpp
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
 
 #include "Ghost.h"
 #include "GameBoard.h"
+#include "PacMan.h"
 #include <iostream>
 #include <cstdlib>
 #include <algorithm>
@@ -137,14 +131,8 @@ void Ghost::update() {
     moveAutomatically();
 }
 
-void Ghost::draw() {
-    char representation = scared ? 'S' : 'G';  // 'S' for scared ghost, 'G' for normal
-    
-    if (scared) {
-        std::cout << "\033[1;34m" << representation << "\033[0m";  // Blue when scared
-    } else {
-        std::cout << "\033[1;31m" << representation << "\033[0m";  // Red normally
-    }
+char Ghost::draw() const {
+    return scared ? 'S' : 'G';
 }
 
 void Ghost::returnToSpawn() {

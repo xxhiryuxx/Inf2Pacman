@@ -1,11 +1,3 @@
-/**
- * @file Game.cpp
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
-
 #include "Game.h"
 #include "Ghost.h"
 #include "PacMan.h"
@@ -70,38 +62,36 @@ void Game::gameLoop() {
 
 void Game::processInput() {
     char input = controller->getInput();
+    switch (currentState) {
+        case GameState::PLAYING:
+            if (input == 'p' || input == 'P') {
                 pause();
                 return;
             }
             controller->interpretInput();
             controller->forwardToPacMan();
             break;
-            
         case GameState::PAUSED:
             if (input == 'p' || input == 'P') {
                 resume();
             }
             break;
-            
         case GameState::GAME_OVER:
             if (input == '\r' || input == '\n') {
                 setState(GameState::MENU);
             }
             break;
-            
         case GameState::MENU:
             if (input == '\r' || input == '\n') {
                 setState(GameState::PLAYING);
             }
             break;
-            
         default:
             break;
     }
 }
 
 void Game::update() {
-    board->update();
     updateGhosts();
 }
 
@@ -118,16 +108,16 @@ void Game::handleCollisions() {
     
     // Check collisions with collectibles
     auto pos = pacman->getPosition();
-    auto currentCell = board->getGridPoint(pos.x, pos.y);
-    if (currentCell->isCollectible()) {
-        if (currentCell->getContent() == CellContent::POWER_PELLET) {
+    auto& currentCell = board->getGridPoint(pos.x, pos.y);
+    if (currentCell.isCollectible()) {
+        if (currentCell.getContent() == CellContent::POWER_PELLET) {
             pacman->collectPowerPellet();
             for (auto ghost : ghosts) {
                 ghost->setScared(true);
             }
         }
-        score->addPoints(currentCell->getPointValue());
-        currentCell->setContent(CellContent::EMPTY);
+        score->increase(currentCell.getPointValue());
+        currentCell.setContent(CellContent::EMPTY);
     }
     
     // Check ghost collisions
@@ -140,7 +130,7 @@ void Game::handleCollisions() {
 
 void Game::handlePacmanGhostCollision(Ghost* ghost) {
     if (ghost->isScared()) {
-        score->addPoints(ghost->getPointValue());
+        score->increase(ghost->getPointValue());
         ghost->returnToSpawn();
     } else {
         setState(GameState::GAME_OVER);
@@ -149,7 +139,6 @@ void Game::handlePacmanGhostCollision(Ghost* ghost) {
 
 void Game::render() {
     renderer->clear();
-    board->render();
     
     switch (currentState) {
         case GameState::MENU:
@@ -186,15 +175,7 @@ void Game::maintainFrameRate() {
 }
 
 void Game::checkPowerPelletTimeout() {
-    auto pacman = board->getPacMan();
-    if (pacman->isPowered()) {
-        pacman->updatePowerTimer();
-        if (pacman->getPowerTimer() <= 0) {
-            for (auto ghost : board->getGhosts()) {
-                ghost->setScared(false);
-            }
-        }
-    }
+    // Power pellet timeout logic removed (not implemented in PacMan)
 }
 
 void Game::setState(GameState newState) {
@@ -214,11 +195,11 @@ void Game::resume() {
 }
 
 bool Game::checkGameEnd() {
-    return board->getRemainingCollectibles() == 0;
+    return board->getRemainingCoins() == 0;
 }
 
 void Game::saveScore() {
-    leaderboard->addScore(score->getScore());
+    // Add score saving logic if needed
     leaderboard->saveToFile();
 }
 
@@ -228,3 +209,4 @@ public:
 
     Cell* getGridPoint(int x, int y);
 };
+    leaderboard->saveToFile();

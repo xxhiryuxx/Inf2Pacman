@@ -27,7 +27,7 @@ public:
 
     // From GameCharacter
     virtual void update() override;  // Update game state
-    virtual void draw() override;  // Draw PacMan character
+    virtual char draw() const override;  // Draw PacMan character
 
 private:
     GameBoard* gameBoard;  // Reference to game board

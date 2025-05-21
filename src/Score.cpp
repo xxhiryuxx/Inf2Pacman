@@ -1,10 +1,3 @@
-/**
- * @file Score.cpp
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
 
 #include "Score.h"
 #include <iostream>
@@ -24,3 +17,4 @@ int Score::getScore() const {
 void Score::display() {
     std::cout << "Score: " << currentScore << std::endl;
 }
+

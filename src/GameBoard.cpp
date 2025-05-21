@@ -1,11 +1,3 @@
-/**
- * @file GameBoard.cpp
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 15:35
- */
-
 #include "GameBoard.h"
 #include "Ghost.h"
 #include <random>
@@ -91,15 +83,23 @@ void GameBoard::loadDefaultLevel() {
             if (x < width-4) grid[y][x+1].setContent(CellContent::WALL);
             if (y > 3) grid[y-1][x].setContent(CellContent::WALL);
         }
-    }    // Create ghost spawn area in the center
+    }
+
+    // Create ghost spawn area in the center
     int centerX = width / 2;
     int centerY = height / 2;
-                grid[y][x].setContent(CellContent::WALL);
-            }
+    // Example: make a 3x3 area for ghost spawn
+    for (int y = centerY-1; y <= centerY+1; ++y) {
+        for (int x = centerX-1; x <= centerX+1; ++x) {
+            grid[y][x].setContent(CellContent::EMPTY);
         }
     }
     // Add ghost exit
-    grid[centerY-2][centerX].setContent(CellContent::EMPTY);    // Fill remaining empty spaces with coins
+    if (centerY-2 >= 0 && centerX >= 0 && centerY-2 < height && centerX < width) {
+        grid[centerY-2][centerX].setContent(CellContent::EMPTY);
+    }
+
+    // Fill remaining empty spaces with coins
     for (int y = 1; y < height-1; ++y) {
         for (int x = 1; x < width-1; ++x) {
             if (grid[y][x].getContent() == CellContent::EMPTY) {

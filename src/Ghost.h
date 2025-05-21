@@ -1,11 +1,3 @@
-/**
- * @file Ghost.h
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 15:35
- */
-
 #pragma once
 #include "GameCharacter.h"
 #include <vector>
@@ -33,7 +25,7 @@ public:
 
     // From GameCharacter
     virtual void update() override;  // Update ghost state each game tick
-    virtual void draw() override;    // Draw ghost representation
+    virtual char draw() const override;    // Draw ghost representation
 
 private:
     // AI helper methods

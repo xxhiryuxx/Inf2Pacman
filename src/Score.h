@@ -1,10 +1,3 @@
-/**
- * @file Score.h
- * @author Lorin Meub
- * @editor Lorin Meub
- * @date 19.05.2025
- * @time 14:02
- */
 
 #pragma once
 
@@ -24,4 +17,4 @@ public:
 
 private:
     int currentScore;            // Current score value
-};
+};    void increase(int points);     // Add points to current score
