@@ -1,0 +1,33 @@
+{
+  "configurations": [
+    {
+      "name": "macOS",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "/opt/homebrew/include"
+      ],
+      "defines": [],
+      "macFrameworkPath": [
+        "/System/Library/Frameworks",
+        "/Library/Frameworks"
+      ],
+      "compilerPath": "/usr/bin/clang++",
+      "cStandard": "c11",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "macos-clang-x64"
+    },
+    {
+      "name": "Windows",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "C:/raylib/include"
+      ],
+      "defines": [],
+      "compilerPath": "C:/MinGW/bin/g++.exe",
+      "cStandard": "c11",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "windows-gcc-x64"
+    }
+  ],
+  "version": 4
+}

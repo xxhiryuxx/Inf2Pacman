@@ -44,10 +44,10 @@ struct Game {
 
     void movePacman() {
         int dx = 0, dy = 0;
-        if (IsKeyPressed(KEY_W)) dy = -1;
-        if (IsKeyPressed(KEY_S)) dy = 1;
-        if (IsKeyPressed(KEY_A)) dx = -1;
-        if (IsKeyPressed(KEY_D)) dx = 1;
+        if (IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP)) dy = -1;
+        if (IsKeyPressed(KEY_S) || IsKeyPressed(KEY_DOWN)) dy = 1;
+        if (IsKeyPressed(KEY_A) || IsKeyPressed(KEY_LEFT)) dx = -1;
+        if (IsKeyPressed(KEY_D) || IsKeyPressed(KEY_RIGHT)) dx = 1;
         int nx = pacman.x + dx, ny = pacman.y + dy;
         if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) return;
         if (field[ny][nx] == WALL) return;
@@ -141,6 +141,7 @@ struct Game {
         }
 
         BeginDrawing();
+        BeginDrawing();
         ClearBackground(BLACK);
         if (gameOver)
             DrawText("Game Over! You were caught.", 100, SCREEN_HEIGHT / 2, 30, RED);
@@ -148,8 +149,13 @@ struct Game {
             DrawText("Congratulations! All coins collected.", 80, SCREEN_HEIGHT / 2, 30, GREEN);
         EndDrawing();
 
-        WaitTime(3.0);
+        // einfach nur 3 Sekunden warten ohne weitere Zeichenbefehle
+        double startTime = GetTime();
+        while (!WindowShouldClose() && GetTime() - startTime < 3.0) {
+            // nichts tun – warten
+        }
         CloseWindow();
+        TraceLog(LOG_INFO, "Closing window.");
     }
 };
 
