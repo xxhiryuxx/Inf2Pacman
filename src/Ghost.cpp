@@ -28,8 +28,8 @@ void Ghost::moveAutomatically() {
         case Direction::LEFT: newX--; break;
         case Direction::RIGHT: newX++; break;
     }
-    
-    if (!gameBoard->isWall(newX, newY)) {
+    GridPoint* nextPoint = gameBoard->getGridPoint(newX, newY);
+    if (nextPoint && nextPoint->getContent() != CellContent::WALL) {
         setPosition(newX, newY);
     }
 }
@@ -103,12 +103,16 @@ std::vector<Direction> Ghost::getValidDirections() {
     std::vector<Direction> valid;
     int x = getX();
     int y = getY();
+      // Check each direction
+    GridPoint* up = gameBoard->getGridPoint(x, y-1);
+    GridPoint* down = gameBoard->getGridPoint(x, y+1);
+    GridPoint* left = gameBoard->getGridPoint(x-1, y);
+    GridPoint* right = gameBoard->getGridPoint(x+1, y);
     
-    // Check each direction
-    if (!gameBoard->isWall(x, y-1)) valid.push_back(Direction::UP);
-    if (!gameBoard->isWall(x, y+1)) valid.push_back(Direction::DOWN);
-    if (!gameBoard->isWall(x-1, y)) valid.push_back(Direction::LEFT);
-    if (!gameBoard->isWall(x+1, y)) valid.push_back(Direction::RIGHT);
+    if (up && up->getContent() != CellContent::WALL) valid.push_back(Direction::UP);
+    if (down && down->getContent() != CellContent::WALL) valid.push_back(Direction::DOWN);
+    if (left && left->getContent() != CellContent::WALL) valid.push_back(Direction::LEFT);
+    if (right && right->getContent() != CellContent::WALL) valid.push_back(Direction::RIGHT);
     
     // Remove opposite of last direction to prevent back-and-forth movement
     Direction opposite;
@@ -142,10 +146,4 @@ char Ghost::draw() const {
     }
 
     return representation;
-}
-
-void Ghost::returnToSpawn() {
-    if (gameBoard) {
-        gameBoard->respawnGhost(this);
-    }
 }
