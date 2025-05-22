@@ -1,5 +1,3 @@
-Player1 1000
-Player2 800
-Player3 600
-Player4 400
-Player5 200
+Alice 150
+Bob 120
+Lorin 430
