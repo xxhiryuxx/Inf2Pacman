@@ -44,10 +44,15 @@ struct Game {
 
     void movePacman() {
         int dx = 0, dy = 0;
-        if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) dy = -1;
-        if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) dy = 1;
-        if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) dx = -1;
-        if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) dx = 1;
+        if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) {
+            dy = -1;
+        } else if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
+            dy = 1;
+        } else if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) {
+            dx = -1;
+        } else if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
+            dx = 1;
+        }
         int nx = pacman.x + dx, ny = pacman.y + dy;
         if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) return;
         if (field[ny][nx] == WALL) return;
