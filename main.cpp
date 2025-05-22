@@ -60,7 +60,7 @@ public:
     void save() {
         std::ofstream fileOut(filename);
         if (fileOut.is_open()) {
-            for (auto &entry : entries) {
+            for (const auto& entry : entries) {
                 fileOut << entry.second << " " << entry.first << "\n";
             }
             fileOut.close();
@@ -79,7 +79,6 @@ struct Game {
     int fruitX, fruitY;
 
     Leaderboard leaderboard;
-
     std::string playerName;
 
     Game() 
@@ -90,6 +89,7 @@ struct Game {
           fruitPresent(false),
           leaderboard("Leaderboard.txt")
     {
+        // Spielfeld initialisieren: Rand mit Wänden, Rest mit Münzen, eine feste Wandstelle (3,3)
         for (int y = 0; y < HEIGHT; ++y) {
             for (int x = 0; x < WIDTH; ++x) {
                 if (y == 0 || y == HEIGHT - 1 || x == 0 || x == WIDTH - 1 || (y == 3 && x == 3)) {
@@ -100,8 +100,16 @@ struct Game {
                 }
             }
         }
+
         pacman = {1, 1};
-        ghosts = {{WIDTH - 2, HEIGHT - 2}, {1, HEIGHT - 2}, {WIDTH - 2, 1}, {WIDTH / 2, HEIGHT / 2}};
+        ghosts = {
+            {WIDTH - 2, HEIGHT - 2}, 
+            {1, HEIGHT - 2}, 
+            {WIDTH - 2, 1}, 
+            {WIDTH / 2, HEIGHT / 2}
+        };
+
+        // Startposition von Pacman frei machen und Münze entfernen
         field[pacman.y][pacman.x] = EMPTY;
         coinsLeft--;
     }
@@ -116,7 +124,7 @@ struct Game {
         std::cout << "Move (WASD + Enter): ";
         char input;
         std::cin >> input;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // clear input buffer
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Input-Puffer leeren
         input = std::tolower(input);
 
         int dx = 0, dy = 0;
@@ -124,22 +132,27 @@ struct Game {
         else if (input == 's') dy = 1;
         else if (input == 'a') dx = -1;
         else if (input == 'd') dx = 1;
+        else return; // Ungültige Eingabe -> kein Zug
 
         int nx = pacman.x + dx;
         int ny = pacman.y + dy;
 
+        // Prüfe Spielfeldgrenzen und Wände
         if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) return;
         if (field[ny][nx] == WALL) return;
 
+        // Bewege Pacman
         pacman.x = nx;
         pacman.y = ny;
 
+        // Münze einsammeln
         if (field[ny][nx] == COIN) {
             field[ny][nx] = EMPTY;
             score += 10;
             coinsLeft--;
         }
 
+        // Frucht einsammeln
         if (fruitPresent && fruitX == nx && fruitY == ny) {
             score += 100;
             fruitPresent = false;
@@ -148,21 +161,28 @@ struct Game {
 
     void moveGhosts() {
         for (auto &g : ghosts) {
-            int dir = rand() % 4;
-            int dx = 0, dy = 0;
-            if (dir == 0) dx = 1;
-            else if (dir == 1) dx = -1;
-            else if (dir == 2) dy = 1;
-            else if (dir == 3) dy = -1;
+            int tries = 0;
+            bool moved = false;
+            // Versuche bis zu 4 mal, einen gültigen Zug zu finden
+            while (tries < 4 && !moved) {
+                int dir = rand() % 4;
+                int dx = 0, dy = 0;
+                if (dir == 0) dx = 1;
+                else if (dir == 1) dx = -1;
+                else if (dir == 2) dy = 1;
+                else if (dir == 3) dy = -1;
 
-            int nx = g.x + dx;
-            int ny = g.y + dy;
+                int nx = g.x + dx;
+                int ny = g.y + dy;
 
-            if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) continue;
-            if (field[ny][nx] == WALL) continue;
-
-            g.x = nx;
-            g.y = ny;
+                if (nx >= 0 && nx < WIDTH && ny >= 0 && ny < HEIGHT && field[ny][nx] != WALL) {
+                    g.x = nx;
+                    g.y = ny;
+                    moved = true;
+                }
+                tries++;
+            }
+            // Falls kein Zug möglich, bleibt der Geist stehen
         }
     }
 
@@ -170,13 +190,14 @@ struct Game {
         for (auto &g : ghosts) {
             if (g.x == pacman.x && g.y == pacman.y) {
                 gameOver = true;
+                return;
             }
         }
     }
 
     void spawnFruit() {
         if (fruitPresent) return;
-        if (rand() % 20 != 0) return;
+        if (rand() % 20 != 0) return; // 1 zu 20 Chance pro Zug
 
         std::vector<std::pair<int, int>> emptyCells;
         for (int y = 0; y < HEIGHT; ++y) {
@@ -196,6 +217,7 @@ struct Game {
     }
 
     void draw() {
+        // Bildschirm "leeren" (einfach viele neue Zeilen)
         std::cout << std::string(50, '\n');
 
         for (int y = 0; y < HEIGHT; ++y) {
