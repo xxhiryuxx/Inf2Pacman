@@ -141,7 +141,6 @@ struct Game {
         }
 
         BeginDrawing();
-        BeginDrawing();
         ClearBackground(BLACK);
         if (gameOver)
             DrawText("Game Over! You were caught.", 100, SCREEN_HEIGHT / 2, 30, RED);
