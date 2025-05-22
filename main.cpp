@@ -91,17 +91,27 @@ struct Game {
     }
 
     void spawnFruit() {
-        if (fruitPresent) return;
-        if (rand() % 20 == 0) {
-            int x, y;
-            do {
-                x = rand() % WIDTH;
-                y = rand() % HEIGHT;
-            } while (field[y][x] != EMPTY || (x == pacman.x && y == pacman.y));
-            fruitX = x; fruitY = y;
-            fruitPresent = true;
+    if (fruitPresent) return;
+    if (rand() % 20 != 0) return;
+
+    std::vector<std::pair<int, int>> emptyCells;
+
+    for (int y = 0; y < HEIGHT; ++y) {
+        for (int x = 0; x < WIDTH; ++x) {
+            if (field[y][x] == EMPTY && !(x == pacman.x && y == pacman.y)) {
+                emptyCells.push_back({x, y});
+            }
         }
     }
+
+    if (!emptyCells.empty()) {
+        auto [x, y] = emptyCells[rand() % emptyCells.size()];
+        fruitX = x;
+        fruitY = y;
+        fruitPresent = true;
+    }
+}
+
 
     void draw() {
         ClearBackground(BLACK);
