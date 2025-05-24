@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "GameBoard.h"
 #include "Ghost.h"
 #include "PacMan.h"
 #include "Score.h"
@@ -202,11 +203,3 @@ void Game::saveScore() {
     // Add score saving logic if needed
     leaderboard->saveToFile();
 }
-
-class GameBoard {
-public:
-    void update();
-
-    Cell* getGridPoint(int x, int y);
-};
-    leaderboard->saveToFile();

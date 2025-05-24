@@ -22,6 +22,7 @@ public:
     void updateRandomFruit();
     
     // Getters
+    std::vector<std::vector<char>> getState() const;
     int getWidth() const { return width; }
     int getHeight() const { return height; }
     int getPointsAt(int x, int y) const;  // Returns point value of collectible at position

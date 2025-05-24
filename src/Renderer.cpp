@@ -1,31 +1,17 @@
-
 #include "Renderer.h"
 #include "GameBoard.h"
 #include "Score.h"
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
-#include <windows.h>
 
 Renderer::Renderer() 
     : buffer(SCREEN_HEIGHT, std::vector<char>(SCREEN_WIDTH, ' '))
 {
-    // Set up Windows console for better rendering
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO cursorInfo;
-    GetConsoleCursorInfo(hConsole, &cursorInfo);
-    cursorInfo.bVisible = false;
-    SetConsoleCursorInfo(hConsole, &cursorInfo);
+    configureConsole();
 }
 
-Renderer::~Renderer() {
-    // Restore cursor visibility
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO cursorInfo;
-    cursorInfo.dwSize = 1;
-    cursorInfo.bVisible = true;
-    SetConsoleCursorInfo(hConsole, &cursorInfo);
-}
+Renderer::~Renderer() {}
 
 void Renderer::clear() {
     for (auto& row : buffer) {
@@ -97,6 +83,7 @@ void Renderer::renderGameOver(int finalScore) {
     centerText("Press ENTER to return to menu", SCREEN_HEIGHT / 2 + 2);
 }
 
+/*
 void Renderer::renderHighScores(const Leaderboard* leaderboard) {
     clear();
     drawBorder();
@@ -115,6 +102,7 @@ void Renderer::renderHighScores(const Leaderboard* leaderboard) {
     
     centerText("Press ENTER to continue", SCREEN_HEIGHT - 3);
 }
+*/
 
 void Renderer::renderMessage(const std::string& message) {
     centerText(message, SCREEN_HEIGHT - 1);
@@ -178,4 +166,16 @@ void Renderer::clearScreen() {
     #else
     system("clear");
     #endif
-}void Renderer::clearScreen() {
+}
+
+void Renderer::configureConsole() {
+#ifdef _WIN32
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(hConsole, &cursorInfo);
+    cursorInfo.bVisible = false;
+    SetConsoleCursorInfo(hConsole, &cursorInfo);
+#else
+    // macOS/Linux: Kein spezielles Setup nötig
+#endif
+}

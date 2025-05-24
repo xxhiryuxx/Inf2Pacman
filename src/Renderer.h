@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "GameBoard.h"
@@ -30,7 +29,7 @@ private:
     void drawHorizontalLine(int row);
     std::string padString(const std::string& str, int width) const;
     void clearScreen();
+    void configureConsole();
     
     std::vector<std::vector<char>> buffer;
 };
-    void drawHorizontalLine(int row);

@@ -145,3 +145,14 @@ void GameBoard::respawnGhost(Ghost* ghost) {
         nextPosition = (nextPosition + 1) % respawnPositions.size();
     }
 }
+
+
+std::vector<std::vector<char>> GameBoard::getState() const {
+    std::vector<std::vector<char>> state(height, std::vector<char>(width));
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            state[y][x] = grid[y][x].draw();
+        }
+    }
+    return state;
+}
