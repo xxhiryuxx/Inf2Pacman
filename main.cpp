@@ -5,7 +5,7 @@
 
 const int WIDTH = 15;
 const int HEIGHT = 10;
-const int TILE_SIZE = 40;
+const int TILE_SIZE = 50;  // Größeres Spielfeld
 const int SCREEN_WIDTH = WIDTH * TILE_SIZE;
 const int SCREEN_HEIGHT = HEIGHT * TILE_SIZE;
 
@@ -26,17 +26,17 @@ struct Game {
     int fruitX, fruitY;
 
     Game() : field(HEIGHT, std::vector<Cell>(WIDTH, COIN)), score(0), gameOver(false), coinsLeft(0), fruitPresent(false) {
-        // Symmetrisches Labyrinth mit zentralem Ghost-Spawn (7,4) und (7,5)
+        // Pac-Man-ähnliches Labyrinth
         std::vector<std::vector<int>> layout = {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+            {1,0,0,0,0,1,0,0,0,0,0,1,0,0,1},
+            {1,0,1,1,0,1,0,1,1,1,0,1,0,1,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
-            {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1},
-            {1,0,1,0,1,0,0,0,0,0,1,0,1,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,1,0,1,0,0,0,0,0,1,0,1,0,1},
-            {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1},
-            {1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+            {1,0,1,1,0,1,1,1,1,1,0,1,1,0,1},
+            {1,0,0,0,0,1,0,0,0,1,0,0,0,0,1},
+            {1,1,1,1,0,1,0,1,0,1,0,1,1,1,1},
+            {1,0,0,0,0,0,0,1,0,0,0,0,0,0,1},
+            {1,0,1,1,1,1,0,1,1,1,1,1,0,0,1},
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
         };
 
@@ -51,33 +51,36 @@ struct Game {
             }
         }
 
-        pacman = {1, 1};
-        ghosts = {{7,4}, {7,5}, {6,4}, {8,5}}; // Zentrale Spawn-Positionen für Geister
+        pacman = {7, 5};  // Start in der Mitte
+        ghosts = {{7,4}, {7,5}, {6,4}, {8,5}};
         field[pacman.y][pacman.x] = EMPTY;
         coinsLeft--;
     }
 
     void movePacman() {
+        static int pacmanDelay = 0;
+        pacmanDelay++;
+        if (pacmanDelay % 2 != 0) return; // Pacman bewegt sich nur jedes zweite Frame
+
         int dx = 0, dy = 0;
-        if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) {
-            dy = -1;
-        } else if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
-            dy = 1;
-        } else if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) {
-            dx = -1;
-        } else if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
-            dx = 1;
-        }
+        if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) dy = -1;
+        else if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) dy = 1;
+        else if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) dx = -1;
+        else if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) dx = 1;
+        
         int nx = pacman.x + dx, ny = pacman.y + dy;
         if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) return;
         if (field[ny][nx] == WALL) return;
-        pacman.x = nx; pacman.y = ny;
+        
+        pacman.x = nx;
+        pacman.y = ny;
 
         if (field[ny][nx] == COIN) {
             field[ny][nx] = EMPTY;
             score += 10;
             coinsLeft--;
         }
+        
         if (fruitPresent && fruitX == nx && fruitY == ny) {
             score += 100;
             fruitPresent = false;
@@ -85,18 +88,21 @@ struct Game {
     }
 
     void moveGhosts() {
-        if (rand() % 10 < 7) {  // 70% chance to move
-            for (auto &g : ghosts) {
-                int dir = rand() % 4;
-                int dx = 0, dy = 0;
-                if (dir == 0) dx = 1;
-                if (dir == 1) dx = -1;
-                if (dir == 2) dy = 1;
-                if (dir == 3) dy = -1;
-                int nx = g.x + dx, ny = g.y + dy;
-                if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) continue;
-                if (field[ny][nx] == WALL) continue;
-                g.x = nx; g.y = ny;
+        static int ghostDelay = 0;
+        ghostDelay++;
+        if (ghostDelay % 4 != 0) return; // Geister bewegen sich nur jedes vierte Frame (deutlich langsamer)
+
+        for (auto &g : ghosts) {
+            int dir = rand() % 4;
+            int dx = (dir == 0) ? 1 : (dir == 1) ? -1 : 0;
+            int dy = (dir == 2) ? 1 : (dir == 3) ? -1 : 0;
+            
+            int nx = g.x + dx, ny = g.y + dy;
+            if (nx >= 0 && nx < WIDTH && ny >= 0 && ny < HEIGHT) {
+                if (field[ny][nx] != WALL) {
+                    g.x = nx;
+                    g.y = ny;
+                }
             }
         }
     }
@@ -136,31 +142,69 @@ struct Game {
                 int px = x * TILE_SIZE;
                 int py = y * TILE_SIZE;
 
-                // Always draw base tile
                 DrawRectangle(px, py, TILE_SIZE, TILE_SIZE, BLACK);
 
                 if (field[y][x] == WALL)
-                    DrawRectangle(px, py, TILE_SIZE, TILE_SIZE, DARKGRAY);
+                    DrawRectangle(px, py, TILE_SIZE, TILE_SIZE, BLUE); // Blaue Wände
                 else if (field[y][x] == COIN)
-                    DrawCircle(px + TILE_SIZE / 2, py + TILE_SIZE / 2, 5, GOLD);
+                    DrawCircle(px + TILE_SIZE / 2, py + TILE_SIZE / 2, 7, GOLD);
 
-                if (fruitPresent && x == fruitX && y == fruitY)
-                    DrawCircle(px + TILE_SIZE / 2, py + TILE_SIZE / 2, 8, RED);
+                if (fruitPresent && x == fruitX && y == fruitY) {
+                    // Detailreiche Frucht: Kirsche
+                    int fx = px + TILE_SIZE / 2;
+                    int fy = py + TILE_SIZE / 2;
+                    DrawCircle(fx - 8, fy + 4, 8, RED);
+                    DrawCircle(fx + 8, fy + 4, 8, RED);
+                    DrawLine(fx - 8, fy + 4, fx - 2, fy - 10, DARKGREEN);
+                    DrawLine(fx + 8, fy + 4, fx + 2, fy - 10, DARKGREEN);
+                    DrawCircle(fx, fy - 10, 3, GREEN);
+                }
             }
         }
 
+        // Geister zeichnen mit "Augen" und "Fransen"
         for (auto &g : ghosts) {
-            DrawCircle(g.x * TILE_SIZE + TILE_SIZE / 2, g.y * TILE_SIZE + TILE_SIZE / 2, 14, PURPLE);
+            int gx = g.x * TILE_SIZE + TILE_SIZE / 2;
+            int gy = g.y * TILE_SIZE + TILE_SIZE / 2;
+            int radius = 20;
+
+            // Körper
+            DrawCircle(gx, gy, radius, PURPLE);
+
+            // Fransen unten
+            for (int i = -radius; i < radius; i += 8) {
+                DrawTriangle(
+                    (Vector2){(float)(gx + i), (float)(gy + radius)},
+                    (Vector2){(float)(gx + i + 8), (float)(gy + radius)},
+                    (Vector2){(float)(gx + i + 4), (float)(gy + radius - 8)},
+                    PURPLE
+                );
+            }
+
+            // Augen
+            DrawCircle(gx - 7, gy - 6, 6, WHITE);
+            DrawCircle(gx + 7, gy - 6, 6, WHITE);
+            DrawCircle(gx - 7, gy - 6, 2, BLUE);
+            DrawCircle(gx + 7, gy - 6, 2, BLUE);
         }
 
-        DrawCircle(pacman.x * TILE_SIZE + TILE_SIZE / 2, pacman.y * TILE_SIZE + TILE_SIZE / 2, 14, YELLOW);
+        // Pacman zeichnen mit "Mund" (Sektor)
+        int px = pacman.x * TILE_SIZE + TILE_SIZE / 2;
+        int py = pacman.y * TILE_SIZE + TILE_SIZE / 2;
+        int pradius = 20;
 
-        DrawText(TextFormat("Score: %d", score), 10, SCREEN_HEIGHT - 30, 20, WHITE);
+        // Körper
+        DrawCircleSector((Vector2){(float)px, (float)py}, pradius, 30, 330, 32, YELLOW);
+
+        // Auge
+        DrawCircle(px + pradius / 4, py - pradius / 2, 3, BLACK);
+
+        DrawText(TextFormat("Score: %d", score), 10, SCREEN_HEIGHT - 30, 24, WHITE);
     }
 
     void run() {
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pac-Man mit Raylib");
-        SetTargetFPS(10);
+        SetTargetFPS(30);
 
         while (!WindowShouldClose() && !gameOver && coinsLeft > 0) {
             BeginDrawing();
@@ -180,7 +224,6 @@ struct Game {
             DrawText("Glückwunsch! Alle Münzen gesammelt.", 80, SCREEN_HEIGHT / 2, 30, GREEN);
         EndDrawing();
 
-        // 3 Sekunden warten ohne weitere Zeichenbefehle
         double startTime = GetTime();
         while (!WindowShouldClose() && GetTime() - startTime < 5.0) {
             BeginDrawing();
