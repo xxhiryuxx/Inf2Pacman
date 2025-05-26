@@ -5,7 +5,7 @@
 
 const int WIDTH = 15;
 const int HEIGHT = 10;
-const int TILE_SIZE = 50;  // Größeres Spielfeld
+const int TILE_SIZE = 50;
 const int SCREEN_WIDTH = WIDTH * TILE_SIZE;
 const int SCREEN_HEIGHT = HEIGHT * TILE_SIZE;
 
@@ -26,7 +26,6 @@ struct Game {
     int fruitX, fruitY;
 
     Game() : field(HEIGHT, std::vector<Cell>(WIDTH, COIN)), score(0), gameOver(false), coinsLeft(0), fruitPresent(false) {
-        // Pac-Man-ähnliches Labyrinth
         std::vector<std::vector<int>> layout = {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
             {1,0,0,0,0,1,0,0,0,0,0,1,0,0,1},
@@ -51,8 +50,8 @@ struct Game {
             }
         }
 
-        pacman = {7, 5};  // Start in der Mitte
-        ghosts = {{7,4}, {7,5}, {6,4}, {8,5}};
+        pacman = {7, 5};  // Startposition in der Mitte
+        ghosts = {{6,4}, {8,4}, {6,6}, {8,6}};  // Geister um die Mitte herum
         field[pacman.y][pacman.x] = EMPTY;
         coinsLeft--;
     }
@@ -90,7 +89,7 @@ struct Game {
     void moveGhosts() {
         static int ghostDelay = 0;
         ghostDelay++;
-        if (ghostDelay % 4 != 0) return; // Geister bewegen sich nur jedes vierte Frame (deutlich langsamer)
+        if (ghostDelay % 4 != 0) return; // Geister bewegen sich nur jedes vierte Frame
 
         for (auto &g : ghosts) {
             int dir = rand() % 4;
@@ -150,7 +149,7 @@ struct Game {
                     DrawCircle(px + TILE_SIZE / 2, py + TILE_SIZE / 2, 7, GOLD);
 
                 if (fruitPresent && x == fruitX && y == fruitY) {
-                    // Detailreiche Frucht: Kirsche
+                    // Kirsche als Frucht
                     int fx = px + TILE_SIZE / 2;
                     int fy = py + TILE_SIZE / 2;
                     DrawCircle(fx - 8, fy + 4, 8, RED);
@@ -162,7 +161,7 @@ struct Game {
             }
         }
 
-        // Geister zeichnen mit "Augen" und "Fransen"
+        // Geister mit Augen und Fransen
         for (auto &g : ghosts) {
             int gx = g.x * TILE_SIZE + TILE_SIZE / 2;
             int gy = g.y * TILE_SIZE + TILE_SIZE / 2;
@@ -188,15 +187,11 @@ struct Game {
             DrawCircle(gx + 7, gy - 6, 2, BLUE);
         }
 
-        // Pacman zeichnen mit "Mund" (Sektor)
+        // Pac-Man als Sektor mit Auge
         int px = pacman.x * TILE_SIZE + TILE_SIZE / 2;
         int py = pacman.y * TILE_SIZE + TILE_SIZE / 2;
         int pradius = 20;
-
-        // Körper
         DrawCircleSector((Vector2){(float)px, (float)py}, pradius, 30, 330, 32, YELLOW);
-
-        // Auge
         DrawCircle(px + pradius / 4, py - pradius / 2, 3, BLACK);
 
         DrawText(TextFormat("Score: %d", score), 10, SCREEN_HEIGHT - 30, 24, WHITE);
@@ -207,31 +202,35 @@ struct Game {
         SetTargetFPS(30);
 
         while (!WindowShouldClose() && !gameOver && coinsLeft > 0) {
-            BeginDrawing();
+            if (IsKeyPressed(KEY_ESCAPE)) break;
+
             movePacman();
             moveGhosts();
             checkCollision();
             spawnFruit();
+
+            BeginDrawing();
             draw();
             EndDrawing();
         }
 
-        BeginDrawing();
-        ClearBackground(BLACK);
-        if (gameOver)
-            DrawText("Game Over! Du wurdest gefangen.", 100, SCREEN_HEIGHT / 2, 30, RED);
-        else
-            DrawText("Glückwunsch! Alle Münzen gesammelt.", 80, SCREEN_HEIGHT / 2, 30, GREEN);
-        EndDrawing();
-
-        double startTime = GetTime();
-        while (!WindowShouldClose() && GetTime() - startTime < 5.0) {
+        if (!WindowShouldClose()) {
             BeginDrawing();
             ClearBackground(BLACK);
+            if (gameOver)
+                DrawText("Game Over!", SCREEN_WIDTH/2 - MeasureText("Game Over!", 40)/2, SCREEN_HEIGHT/2 - 20, 40, RED);
+            else
+                DrawText("Gewonnen!", SCREEN_WIDTH/2 - MeasureText("Gewonnen!", 40)/2, SCREEN_HEIGHT/2 - 20, 40, GREEN);
             EndDrawing();
+
+            double startTime = GetTime();
+            while (GetTime() - startTime < 3.0 && !WindowShouldClose()) {
+                // Damit das Fenster nicht "einfriert"
+                PollInputEvents();
+            }
         }
+
         CloseWindow();
-        TraceLog(LOG_INFO, "Closing window.");
     }
 };
 
