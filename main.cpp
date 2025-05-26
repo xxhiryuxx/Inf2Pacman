@@ -99,7 +99,7 @@ struct Game {
     void moveGhosts() {
         static int ghostDelay = 0;
         ghostDelay++;
-        if (ghostDelay % 4 != 0) return;
+        if (ghostDelay % 30 != 0) return;
 
         for (auto &g : ghosts) {
             int dir = rand() % 4;
