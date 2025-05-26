@@ -26,9 +26,23 @@ struct Game {
     int fruitX, fruitY;
 
     Game() : field(HEIGHT, std::vector<Cell>(WIDTH, COIN)), score(0), gameOver(false), coinsLeft(0), fruitPresent(false) {
+        // Symmetrisches Labyrinth mit zentralem Ghost-Spawn (7,4) und (7,5)
+        std::vector<std::vector<int>> layout = {
+            {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+            {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1},
+            {1,0,1,0,1,0,0,0,0,0,1,0,1,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,1,0,1,0,0,0,0,0,1,0,1,0,1},
+            {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1},
+            {1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+            {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+        };
+
         for (int y = 0; y < HEIGHT; ++y) {
             for (int x = 0; x < WIDTH; ++x) {
-                if (y == 0 || y == HEIGHT - 1 || x == 0 || x == WIDTH - 1 || (y == 3 && x == 3)) {
+                if (layout[y][x] == 1) {
                     field[y][x] = WALL;
                 } else {
                     field[y][x] = COIN;
@@ -36,8 +50,9 @@ struct Game {
                 }
             }
         }
+
         pacman = {1, 1};
-        ghosts = {{WIDTH - 2, HEIGHT - 2}, {1, HEIGHT - 2}, {WIDTH - 2, 1}, {WIDTH / 2, HEIGHT / 2}};
+        ghosts = {{7,4}, {7,5}, {6,4}, {8,5}}; // Zentrale Spawn-Positionen für Geister
         field[pacman.y][pacman.x] = EMPTY;
         coinsLeft--;
     }
@@ -70,17 +85,19 @@ struct Game {
     }
 
     void moveGhosts() {
-        for (auto &g : ghosts) {
-            int dir = rand() % 4;
-            int dx = 0, dy = 0;
-            if (dir == 0) dx = 1;
-            if (dir == 1) dx = -1;
-            if (dir == 2) dy = 1;
-            if (dir == 3) dy = -1;
-            int nx = g.x + dx, ny = g.y + dy;
-            if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) continue;
-            if (field[ny][nx] == WALL) continue;
-            g.x = nx; g.y = ny;
+        if (rand() % 10 < 7) {  // 70% chance to move
+            for (auto &g : ghosts) {
+                int dir = rand() % 4;
+                int dx = 0, dy = 0;
+                if (dir == 0) dx = 1;
+                if (dir == 1) dx = -1;
+                if (dir == 2) dy = 1;
+                if (dir == 3) dy = -1;
+                int nx = g.x + dx, ny = g.y + dy;
+                if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) continue;
+                if (field[ny][nx] == WALL) continue;
+                g.x = nx; g.y = ny;
+            }
         }
     }
 
@@ -91,27 +108,26 @@ struct Game {
     }
 
     void spawnFruit() {
-    if (fruitPresent) return;
-    if (rand() % 20 != 0) return;
+        if (fruitPresent) return;
+        if (rand() % 20 != 0) return;
 
-    std::vector<std::pair<int, int>> emptyCells;
+        std::vector<std::pair<int, int>> emptyCells;
 
-    for (int y = 0; y < HEIGHT; ++y) {
-        for (int x = 0; x < WIDTH; ++x) {
-            if (field[y][x] == EMPTY && !(x == pacman.x && y == pacman.y)) {
-                emptyCells.push_back({x, y});
+        for (int y = 0; y < HEIGHT; ++y) {
+            for (int x = 0; x < WIDTH; ++x) {
+                if (field[y][x] == EMPTY && !(x == pacman.x && y == pacman.y)) {
+                    emptyCells.push_back({x, y});
+                }
             }
         }
-    }
 
-    if (!emptyCells.empty()) {
-        auto [x, y] = emptyCells[rand() % emptyCells.size()];
-        fruitX = x;
-        fruitY = y;
-        fruitPresent = true;
+        if (!emptyCells.empty()) {
+            auto [x, y] = emptyCells[rand() % emptyCells.size()];
+            fruitX = x;
+            fruitY = y;
+            fruitPresent = true;
+        }
     }
-}
-
 
     void draw() {
         ClearBackground(BLACK);
@@ -120,12 +136,13 @@ struct Game {
                 int px = x * TILE_SIZE;
                 int py = y * TILE_SIZE;
 
+                // Always draw base tile
+                DrawRectangle(px, py, TILE_SIZE, TILE_SIZE, BLACK);
+
                 if (field[y][x] == WALL)
                     DrawRectangle(px, py, TILE_SIZE, TILE_SIZE, DARKGRAY);
                 else if (field[y][x] == COIN)
                     DrawCircle(px + TILE_SIZE / 2, py + TILE_SIZE / 2, 5, GOLD);
-                else
-                    DrawRectangle(px, py, TILE_SIZE, TILE_SIZE, BLACK);
 
                 if (fruitPresent && x == fruitX && y == fruitY)
                     DrawCircle(px + TILE_SIZE / 2, py + TILE_SIZE / 2, 8, RED);
@@ -142,7 +159,7 @@ struct Game {
     }
 
     void run() {
-        InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pac-Man with Raylib");
+        InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pac-Man mit Raylib");
         SetTargetFPS(10);
 
         while (!WindowShouldClose() && !gameOver && coinsLeft > 0) {
@@ -158,14 +175,14 @@ struct Game {
         BeginDrawing();
         ClearBackground(BLACK);
         if (gameOver)
-            DrawText("Game Over! You were caught.", 100, SCREEN_HEIGHT / 2, 30, RED);
+            DrawText("Game Over! Du wurdest gefangen.", 100, SCREEN_HEIGHT / 2, 30, RED);
         else
-            DrawText("Congratulations! All coins collected.", 80, SCREEN_HEIGHT / 2, 30, GREEN);
+            DrawText("Glückwunsch! Alle Münzen gesammelt.", 80, SCREEN_HEIGHT / 2, 30, GREEN);
         EndDrawing();
 
-        // einfach nur 3 Sekunden warten ohne weitere Zeichenbefehle
+        // 3 Sekunden warten ohne weitere Zeichenbefehle
         double startTime = GetTime();
-        while (!WindowShouldClose() && GetTime() - startTime < 3.0) {
+        while (!WindowShouldClose() && GetTime() - startTime < 5.0) {
             BeginDrawing();
             ClearBackground(BLACK);
             EndDrawing();
