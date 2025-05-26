@@ -78,6 +78,13 @@ struct MazeCell {
     MazeCell() : visited(false), wall(true) {}
 };
 
+enum GameState {
+    STATE_START_MENU,
+    STATE_PLAYING,
+    STATE_PAUSED,
+    STATE_GAME_OVER
+};
+
 class Game {
 public:
     std::vector<std::vector<Cell>> field;
@@ -92,20 +99,23 @@ public:
     Leaderboard leaderboard;
     std::string playerName;
 
-    Game() 
-    : field(HEIGHT, std::vector<Cell>(WIDTH, WALL)),
-      score(0),
-      gameOver(false),
-      coinsLeft(0),
-      fruitPresent(false),
-      leaderboard("Leaderboard.txt")
+    GameState state;
+
+    Game()
+        : field(HEIGHT, std::vector<Cell>(WIDTH, WALL)),
+          score(0),
+          gameOver(false),
+          coinsLeft(0),
+          fruitPresent(false),
+          leaderboard("Leaderboard.txt"),
+          state(STATE_START_MENU)
     {
         generateRandomMap();
         pacman = {1, 1};
         ghosts = {
-            {WIDTH - 2, HEIGHT - 2}, 
-            {1, HEIGHT - 2}, 
-            {WIDTH - 2, 1}, 
+            {WIDTH - 2, HEIGHT - 2},
+            {1, HEIGHT - 2},
+            {WIDTH - 2, 1},
             {WIDTH / 2, HEIGHT / 2}
         };
         // Startposition von Pacman ist leer
@@ -113,6 +123,23 @@ public:
             field[pacman.y][pacman.x] = EMPTY;
             coinsLeft--;
         }
+    }
+
+    void drawStartMenu() {
+        BeginDrawing();
+        ClearBackground(BLACK);
+        DrawText("PAC-MAN", SCREEN_WIDTH/2 - MeasureText("PAC-MAN", 72)/2, 120, 72, YELLOW);
+        DrawText("Druecke [ENTER] um zu starten", SCREEN_WIDTH/2 - 210, 250, 32, WHITE);
+        DrawText("Beenden mit [ESC]", SCREEN_WIDTH/2 - 130, 300, 24, GRAY);
+        EndDrawing();
+    }
+
+    void drawPauseMenu() {
+        BeginDrawing();
+        ClearBackground(DARKGRAY);
+        DrawText("PAUSE", SCREEN_WIDTH/2 - MeasureText("PAUSE", 64)/2, 180, 64, WHITE);
+        DrawText("Weiter mit [P] oder [ESC]", SCREEN_WIDTH/2 - 170, 260, 32, YELLOW);
+        EndDrawing();
     }
 
     void shuffleDirections(int dx[], int dy[], int n) {
@@ -146,12 +173,12 @@ public:
     }
 
     void generateRandomMap() {
-    const int mazeHeight = HEIGHT % 2 == 0 ? HEIGHT + 1 : HEIGHT;
-    const int mazeWidth = WIDTH % 2 == 0 ? WIDTH + 1 : WIDTH;
+        const int mazeHeight = HEIGHT % 2 == 0 ? HEIGHT + 1 : HEIGHT;
+        const int mazeWidth = WIDTH % 2 == 0 ? WIDTH + 1 : WIDTH;
 
-    std::vector<std::vector<MazeCell>> maze(mazeHeight, std::vector<MazeCell>(mazeWidth));
+        std::vector<std::vector<MazeCell>> maze(mazeHeight, std::vector<MazeCell>(mazeWidth));
 
-    dfs(1, 1, maze);
+        dfs(1, 1, maze);
 
         // Spielfeld mit Coins initialisieren
         coinsLeft = 0;
@@ -189,7 +216,6 @@ public:
             }
         }
     }
-
 
     void getPlayerName() {
         char name[32] = {0};
@@ -348,8 +374,8 @@ public:
 
         // Zeichne Frucht
         if (fruitPresent) {
-            DrawCircle(fruitX * TILE_SIZE + TILE_SIZE/2, 
-                      fruitY * TILE_SIZE + TILE_SIZE/2, 
+            DrawCircle(fruitX * TILE_SIZE + TILE_SIZE/2,
+                      fruitY * TILE_SIZE + TILE_SIZE/2,
                       12, RED);
         }
 
@@ -379,37 +405,69 @@ public:
 
         getPlayerName();
 
-        while (!WindowShouldClose() && !gameOver && coinsLeft > 0) {
-            movePacman();
-            moveGhosts();
-            checkCollision();
-            spawnFruit();
-            draw();
+        while (!WindowShouldClose()) {
+            switch (state) {
+                case STATE_START_MENU:
+                    drawStartMenu();
+                    if (IsKeyPressed(KEY_ENTER)) {
+                        state = STATE_PLAYING;
+                    }
+                    if (IsKeyPressed(KEY_ESCAPE)) {
+                        CloseWindow();
+                        return;
+                    }
+                    break;
+
+                case STATE_PLAYING:
+                    if (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE)) {
+                        state = STATE_PAUSED;
+                        break;
+                    }
+                    if (!gameOver && coinsLeft > 0) {
+                        movePacman();
+                        moveGhosts();
+                        checkCollision();
+                        spawnFruit();
+                        draw();
+                    } else {
+                        state = STATE_GAME_OVER;
+                    }
+                    break;
+
+                case STATE_PAUSED:
+                    drawPauseMenu();
+                    if (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE)) {
+                        state = STATE_PLAYING;
+                    }
+                    break;
+
+                case STATE_GAME_OVER:
+                    BeginDrawing();
+                    ClearBackground(BLACK);
+                    const char* text = gameOver ? "Game Over!" : "You Won!";
+                    int textWidth = MeasureText(text, 48);
+                    DrawText(text, SCREEN_WIDTH/2 - textWidth/2, SCREEN_HEIGHT/2 - 60, 48, gameOver ? RED : GREEN);
+                    
+                    DrawText(TextFormat("Score: %d", score), SCREEN_WIDTH/2 - 100, SCREEN_HEIGHT/2, 32, WHITE);
+
+                    if (leaderboard.tryUpdateHighscore(score, playerName)) {
+                        DrawText("New Highscore!", SCREEN_WIDTH/2 - 130, SCREEN_HEIGHT/2 + 50, 32, YELLOW);
+                    } else {
+                        DrawText(TextFormat("Highscore: %d (%s)", leaderboard.getHighscore(), leaderboard.getHighscoreName().c_str()), SCREEN_WIDTH/2 - 130, SCREEN_HEIGHT/2 + 50, 24, WHITE);
+                    }
+
+                    DrawText("Press [ENTER] for Main Menu", SCREEN_WIDTH/2 - 180, SCREEN_HEIGHT/2 + 100, 24, GRAY);
+
+                    EndDrawing();
+
+                    if (IsKeyPressed(KEY_ENTER)) {
+                        *this = Game();
+                        state = STATE_START_MENU;
+                        getPlayerName();
+                    }
+                    break;
+            }
         }
-
-        // Spielende-Screen
-        BeginDrawing();
-        ClearBackground(BLACK);
-        const char* text = gameOver ? "Game Over!" : "Gewonnen!";
-        int textWidth = MeasureText(text, 48);
-        DrawText(text, SCREEN_WIDTH/2 - textWidth/2, SCREEN_HEIGHT/2 - 60, 48, gameOver ? RED : GREEN);
-
-        DrawText(TextFormat("Score: %d", score), SCREEN_WIDTH/2 - 100, SCREEN_HEIGHT/2, 32, WHITE);
-
-        if (leaderboard.tryUpdateHighscore(score, playerName)) {
-            DrawText("Neuer Highscore!", SCREEN_WIDTH/2 - 130, SCREEN_HEIGHT/2 + 50, 32, YELLOW);
-        } else {
-            DrawText(TextFormat("Highscore: %d (%s)", leaderboard.getHighscore(), leaderboard.getHighscoreName().c_str()), SCREEN_WIDTH/2 - 130, SCREEN_HEIGHT/2 + 50, 24, WHITE);
-        }
-
-        EndDrawing();
-
-        // Warte 3 Sekunden
-        double startTime = GetTime();
-        while (GetTime() - startTime < 3.0 && !WindowShouldClose()) {
-            PollInputEvents();
-        }
-
         CloseWindow();
     }
 };
