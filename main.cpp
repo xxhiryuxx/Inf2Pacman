@@ -129,8 +129,8 @@ public:
         BeginDrawing();
         ClearBackground(BLACK);
         DrawText("PAC-MAN", SCREEN_WIDTH/2 - MeasureText("PAC-MAN", 72)/2, 120, 72, YELLOW);
-        DrawText("Druecke [ENTER] um zu starten", SCREEN_WIDTH/2 - 210, 250, 32, WHITE);
-        DrawText("Beenden mit [ESC]", SCREEN_WIDTH/2 - 130, 300, 24, GRAY);
+        DrawText("Press [ENTER] to start", SCREEN_WIDTH/2 - 210, 250, 32, WHITE);
+        DrawText("Exit with [ESC]", SCREEN_WIDTH/2 - 130, 300, 24, GRAY);
         EndDrawing();
     }
 
@@ -138,7 +138,7 @@ public:
         BeginDrawing();
         ClearBackground(DARKGRAY);
         DrawText("PAUSE", SCREEN_WIDTH/2 - MeasureText("PAUSE", 64)/2, 180, 64, WHITE);
-        DrawText("Weiter mit [P] oder [ESC]", SCREEN_WIDTH/2 - 170, 260, 32, YELLOW);
+        DrawText("Continue with [P] or [ESC]", SCREEN_WIDTH/2 - 170, 260, 32, YELLOW);
         EndDrawing();
     }
 
@@ -226,7 +226,7 @@ public:
             BeginDrawing();
             ClearBackground(DARKGRAY);
 
-            DrawText("Bitte Namen eingeben und ENTER druecken:", 80, 120, 28, RAYWHITE);
+            DrawText("Please enter your name and press ENTER:", 80, 120, 28, RAYWHITE);
             DrawRectangle(80, 180, 360, 50, LIGHTGRAY);
             DrawText(name, 90, 195, 32, BLACK);
 
@@ -419,7 +419,8 @@ public:
                     break;
 
                 case STATE_PLAYING:
-                    if (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE)) {
+                    // Only [P] pauses, [ESC] does NOT
+                    if (IsKeyPressed(KEY_P)) {
                         state = STATE_PAUSED;
                         break;
                     }
@@ -436,8 +437,14 @@ public:
 
                 case STATE_PAUSED:
                     drawPauseMenu();
-                    if (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE)) {
+                    // Only [P] resumes, [ESC] returns to main menu
+                    if (IsKeyPressed(KEY_P)) {
                         state = STATE_PLAYING;
+                    } else if (IsKeyPressed(KEY_ESCAPE)) {
+                        // Optional: Return to start menu on ESC
+                        *this = Game();
+                        state = STATE_START_MENU;
+                        getPlayerName();
                     }
                     break;
 
@@ -447,7 +454,7 @@ public:
                     const char* text = gameOver ? "Game Over!" : "You Won!";
                     int textWidth = MeasureText(text, 48);
                     DrawText(text, SCREEN_WIDTH/2 - textWidth/2, SCREEN_HEIGHT/2 - 60, 48, gameOver ? RED : GREEN);
-                    
+
                     DrawText(TextFormat("Score: %d", score), SCREEN_WIDTH/2 - 100, SCREEN_HEIGHT/2, 32, WHITE);
 
                     if (leaderboard.tryUpdateHighscore(score, playerName)) {
