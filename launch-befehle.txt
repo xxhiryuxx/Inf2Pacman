@@ -1,0 +1,16 @@
+MacOS: (Homebrew)
+
+Compiling-Command:
+g++ -std=c++17 main.cpp -o pacman \
+-I/opt/homebrew/opt/raylib/include \
+-L/opt/homebrew/opt/raylib/lib \
+-lraylib \
+-framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
+
+Start über Terminal: ./pacman
+
+
+Windows:
+
+
+

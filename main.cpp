@@ -166,6 +166,39 @@ public:
         int exitWidth = MeasureText(exitText, 24);
         DrawText(exitText, SCREEN_WIDTH/2 - exitWidth/2, 300, 24, GRAY);
 
+        const char* warnText = "Back to Main Menu with [Q] (Warning: Progress will be lost!)";
+        int warnWidth = MeasureText(warnText, 20);
+        DrawText(warnText, SCREEN_WIDTH/2 - warnWidth/2, 340, 20, RED);
+
+        EndDrawing();
+    }
+
+    void drawLeaderboard() {
+        BeginDrawing();
+        ClearBackground(BLACK);
+        const char* lbTitle = "Leaderboard";
+        int titleWidth = MeasureText(lbTitle, 48);
+        DrawText(lbTitle, SCREEN_WIDTH/2 - titleWidth/2, 60, 48, YELLOW);
+
+        std::ifstream file("Leaderboard.txt");
+        if (file.is_open()) {
+            std::string name;
+            int score;
+            int line = 0;
+            while (file >> name >> score && line < 10) {
+                std::string entry = std::to_string(line + 1) + ". " + name + " - " + std::to_string(score);
+                DrawText(entry.c_str(), SCREEN_WIDTH/2 - 150, 130 + line * 30, 24, WHITE);
+                line++;
+            }
+            file.close();
+        } else {
+            DrawText("Unable to load leaderboard.", SCREEN_WIDTH/2 - 150, 130, 24, RED);
+        }
+
+        const char* backText = "Press [L] to return";
+        int backWidth = MeasureText(backText, 20);
+        DrawText(backText, SCREEN_WIDTH/2 - backWidth/2, SCREEN_HEIGHT - 50, 20, GRAY);
+
         EndDrawing();
     }
 
@@ -487,7 +520,21 @@ public:
                     drawPauseMenu();
                     if (IsKeyPressed(KEY_P)) {
                         state = STATE_PLAYING;
-                        waitForKeyRelease(KEY_P); // <--- Hier!
+                        waitForKeyRelease(KEY_P);
+
+                    } else if (IsKeyPressed(KEY_Q)) {
+                        // Warnung anzeigen
+                        BeginDrawing();
+                        ClearBackground(DARKGRAY);
+                        const char* warn = "Progress will be lost! Returning to main menu...";
+                        int w = MeasureText(warn, 32);
+                        DrawText(warn, SCREEN_WIDTH/2 - w/2, SCREEN_HEIGHT/2, 32, RED);
+                        EndDrawing();
+                        WaitTime(1.2); // kurze Pause, z. B. 1,2 Sekunden
+                        *this = Game();
+                        state = STATE_START_MENU;
+                        getPlayerName();
+
                     } else if (IsKeyPressed(KEY_ESCAPE)) {
                         *this = Game();
                         state = STATE_START_MENU;
@@ -495,41 +542,13 @@ public:
                     }
                     break;
 
-                case STATE_LEADERBOARD: {
-                    BeginDrawing();
-                    ClearBackground(BLACK);
-
-                    const char* lbTitle = "Leaderboard";
-                    int titleWidth = MeasureText(lbTitle, 48);
-                    DrawText(lbTitle, SCREEN_WIDTH/2 - titleWidth/2, 60, 48, YELLOW);
-
-                    std::ifstream file("Leaderboard.txt");
-                    if (file.is_open()) {
-                        std::string name;
-                        int score;
-                        int line = 0;
-                        while (file >> name >> score && line < 10) {
-                            std::string entry = std::to_string(line + 1) + ". " + name + " - " + std::to_string(score);
-                            DrawText(entry.c_str(), SCREEN_WIDTH/2 - 150, 130 + line * 30, 24, WHITE);
-                            line++;
-                        }
-                        file.close();
-                    } else {
-                        DrawText("Unable to load leaderboard.", SCREEN_WIDTH/2 - 150, 130, 24, RED);
-                    }
-
-                    const char* backText = "Press [ESC] to return";
-                    int backWidth = MeasureText(backText, 20);
-                    DrawText(backText, SCREEN_WIDTH/2 - backWidth/2, SCREEN_HEIGHT - 50, 20, GRAY);
-
-                    EndDrawing();
-
+                case STATE_LEADERBOARD:
+                    drawLeaderboard();
                     if (IsKeyPressed(KEY_L)) {
                         state = STATE_START_MENU;
                         waitForKeyRelease(KEY_L);
                     }
                     break;
-                }
 
                 case STATE_GAME_OVER: {
                     BeginDrawing();
