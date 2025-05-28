@@ -128,17 +128,38 @@ public:
     void drawStartMenu() {
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawText("PAC-MAN", SCREEN_WIDTH/2 - MeasureText("PAC-MAN", 72)/2, 120, 72, YELLOW);
-        DrawText("Press [ENTER] to start", SCREEN_WIDTH/2 - 210, 250, 32, WHITE);
-        DrawText("Exit with [ESC]", SCREEN_WIDTH/2 - 130, 300, 24, GRAY);
+        // Titel
+        const char* titleText = "PAC-MAN";
+        int titleWidth = MeasureText(titleText, 72);
+        DrawText(titleText, SCREEN_WIDTH/2 - titleWidth/2, 120, 72, YELLOW);
+
+        // Untertitel
+        const char* subText = "Press [ENTER] to start";
+        int subWidth = MeasureText(subText, 32);
+        DrawText(subText, SCREEN_WIDTH/2 - subWidth/2, 250, 32, WHITE);
+
+        const char* escText = "Exit with [ESC]";
+        int escWidth = MeasureText(escText, 24);
+        DrawText(escText, SCREEN_WIDTH/2 - escWidth/2, 300, 24, GRAY);
         EndDrawing();
     }
 
     void drawPauseMenu() {
         BeginDrawing();
         ClearBackground(DARKGRAY);
-        DrawText("PAUSE", SCREEN_WIDTH/2 - MeasureText("PAUSE", 64)/2, 180, 64, WHITE);
-        DrawText("Continue with [P] or [ESC]", SCREEN_WIDTH/2 - 170, 260, 32, YELLOW);
+
+        const char* pauseText = "PAUSE";
+        int pauseWidth = MeasureText(pauseText, 64);
+        DrawText(pauseText, SCREEN_WIDTH/2 - pauseWidth/2, 180, 64, WHITE);
+
+        const char* continueText = "Continue with [P]";
+        int contWidth = MeasureText(continueText, 32);
+        DrawText(continueText, SCREEN_WIDTH/2 - contWidth/2, 250, 32, YELLOW);
+
+        const char* exitText = "Exit with [ESC]";
+        int exitWidth = MeasureText(exitText, 24);
+        DrawText(exitText, SCREEN_WIDTH/2 - exitWidth/2, 300, 24, GRAY);
+
         EndDrawing();
     }
 
@@ -226,9 +247,12 @@ public:
             BeginDrawing();
             ClearBackground(DARKGRAY);
 
-            DrawText("Please enter your name and press ENTER:", 80, 120, 28, RAYWHITE);
-            DrawRectangle(80, 180, 360, 50, LIGHTGRAY);
-            DrawText(name, 90, 195, 32, BLACK);
+            const char* prompt = "Please enter your name and press ENTER:";
+            int promptWidth = MeasureText(prompt, 28);
+            DrawText(prompt, SCREEN_WIDTH/2 - promptWidth/2, 120, 28, RAYWHITE);
+
+            DrawRectangle(SCREEN_WIDTH/2 - 180, 180, 360, 50, LIGHTGRAY);
+            DrawText(name, SCREEN_WIDTH/2 - MeasureText(name, 32)/2, 195, 32, BLACK);
 
             EndDrawing();
 
@@ -391,10 +415,16 @@ public:
                   pacman.y * TILE_SIZE + TILE_SIZE/2,
                   TILE_SIZE/2 - 4, YELLOW);
 
-        // Score-Anzeige
-        DrawText(TextFormat("Score: %d", score), 10, 10, 24, WHITE);
-        DrawText(TextFormat("Coins left: %d", coinsLeft), 10, 40, 20, WHITE);
-        DrawText(TextFormat("Highscore: %d (%s)", leaderboard.getHighscore(), leaderboard.getHighscoreName().c_str()), 10, 70, 20, WHITE);
+        // Score-Anzeige (linksbündig oben links)
+        std::string scoreText = "Score: " + std::to_string(score);
+        DrawText(scoreText.c_str(), 10, 10, 24, WHITE);
+
+        std::string coinsText = "Coins left: " + std::to_string(coinsLeft);
+        DrawText(coinsText.c_str(), 10, 40, 20, WHITE);
+
+        std::string highscoreText = "Highscore: " + std::to_string(leaderboard.getHighscore()) + " (" + leaderboard.getHighscoreName() + ")";
+        DrawText(highscoreText.c_str(), 10, 70, 20, WHITE);
+
 
         EndDrawing();
     }
@@ -419,7 +449,6 @@ public:
                     break;
 
                 case STATE_PLAYING:
-                    // Only [P] pauses, [ESC] does NOT
                     if (IsKeyPressed(KEY_P)) {
                         state = STATE_PAUSED;
                         break;
@@ -437,33 +466,40 @@ public:
 
                 case STATE_PAUSED:
                     drawPauseMenu();
-                    // Only [P] resumes, [ESC] returns to main menu
                     if (IsKeyPressed(KEY_P)) {
                         state = STATE_PLAYING;
                     } else if (IsKeyPressed(KEY_ESCAPE)) {
-                        // Optional: Return to start menu on ESC
                         *this = Game();
                         state = STATE_START_MENU;
                         getPlayerName();
                     }
                     break;
 
-                case STATE_GAME_OVER:
+                case STATE_GAME_OVER: {
                     BeginDrawing();
                     ClearBackground(BLACK);
+
                     const char* text = gameOver ? "Game Over!" : "You Won!";
                     int textWidth = MeasureText(text, 48);
                     DrawText(text, SCREEN_WIDTH/2 - textWidth/2, SCREEN_HEIGHT/2 - 60, 48, gameOver ? RED : GREEN);
 
-                    DrawText(TextFormat("Score: %d", score), SCREEN_WIDTH/2 - 100, SCREEN_HEIGHT/2, 32, WHITE);
+                    std::string scoreText = "Score: " + std::to_string(score);
+                    int scoreWidth = MeasureText(scoreText.c_str(), 32);
+                    DrawText(scoreText.c_str(), SCREEN_WIDTH/2 - scoreWidth/2, SCREEN_HEIGHT/2, 32, WHITE);
 
                     if (leaderboard.tryUpdateHighscore(score, playerName)) {
-                        DrawText("New Highscore!", SCREEN_WIDTH/2 - 130, SCREEN_HEIGHT/2 + 50, 32, YELLOW);
+                        std::string hsText = "New Highscore!";
+                        int hsWidth = MeasureText(hsText.c_str(), 32);
+                        DrawText(hsText.c_str(), SCREEN_WIDTH/2 - hsWidth/2, SCREEN_HEIGHT/2 + 50, 32, YELLOW);
                     } else {
-                        DrawText(TextFormat("Highscore: %d (%s)", leaderboard.getHighscore(), leaderboard.getHighscoreName().c_str()), SCREEN_WIDTH/2 - 130, SCREEN_HEIGHT/2 + 50, 24, WHITE);
+                        std::string hsText = "Highscore: " + std::to_string(leaderboard.getHighscore()) + " (" + leaderboard.getHighscoreName() + ")";
+                        int hsWidth = MeasureText(hsText.c_str(), 24);
+                        DrawText(hsText.c_str(), SCREEN_WIDTH/2 - hsWidth/2, SCREEN_HEIGHT/2 + 50, 24, WHITE);
                     }
 
-                    DrawText("Press [ENTER] for Main Menu", SCREEN_WIDTH/2 - 180, SCREEN_HEIGHT/2 + 100, 24, GRAY);
+                    const char* menuText = "Press [ENTER] for Main Menu";
+                    int menuWidth = MeasureText(menuText, 24);
+                    DrawText(menuText, SCREEN_WIDTH/2 - menuWidth/2, SCREEN_HEIGHT/2 + 100, 24, GRAY);
 
                     EndDrawing();
 
@@ -473,6 +509,7 @@ public:
                         getPlayerName();
                     }
                     break;
+                }
             }
         }
         CloseWindow();
