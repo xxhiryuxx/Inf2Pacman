@@ -36,7 +36,6 @@ public:
                 entries.push_back({score, name});
             }
             fileIn.close();
-            // Sortieren beim Laden, falls Datei unsortiert ist
             std::sort(entries.begin(), entries.end(),
                 [](const auto& a, const auto& b) { return a.first > b.first; });
             if (entries.size() > 10) entries.resize(10);
@@ -55,7 +54,6 @@ public:
 
     bool tryUpdateHighscore(int score, const std::string& playerName) {
         bool updated = false;
-        // Prüfe, ob Name schon existiert
         auto it = std::find_if(entries.begin(), entries.end(),
             [&](const auto& entry) { return entry.second == playerName; });
 
@@ -70,10 +68,8 @@ public:
         }
 
         if (updated) {
-            // Sortiere absteigend nach Score
             std::sort(entries.begin(), entries.end(),
                 [](const auto& a, const auto& b) { return a.first > b.first; });
-            // Nur Top 10 behalten
             if (entries.size() > 10) entries.resize(10);
             save();
         }
@@ -99,6 +95,7 @@ struct MazeCell {
 
 enum GameState {
     STATE_START_MENU,
+    STATE_ENTER_NAME,    // <--- NEU
     STATE_LEADERBOARD,
     STATE_PLAYING,
     STATE_PAUSED,
@@ -138,7 +135,6 @@ public:
             {WIDTH - 2, 1},
             {WIDTH / 2, HEIGHT / 2}
         };
-        // Startposition von Pacman ist leer
         if (field[pacman.y][pacman.x] == COIN) {
             field[pacman.y][pacman.x] = EMPTY;
             coinsLeft--;
@@ -148,12 +144,10 @@ public:
     void drawStartMenu() {
         BeginDrawing();
         ClearBackground(BLACK);
-        // Titel
         const char* titleText = "PAC-MAN";
         int titleWidth = MeasureText(titleText, 72);
         DrawText(titleText, SCREEN_WIDTH/2 - titleWidth/2, 120, 72, YELLOW);
 
-        // Untertitel
         const char* subText = "Press [ENTER] to start";
         int subWidth = MeasureText(subText, 32);
         DrawText(subText, SCREEN_WIDTH/2 - subWidth/2, 250, 32, WHITE);
@@ -181,13 +175,11 @@ public:
         int contWidth = MeasureText(continueText, 32);
         DrawText(continueText, SCREEN_WIDTH/2 - contWidth/2, 250, 32, YELLOW);
 
-        // "Exit with [ESC]" in Schriftgröße 25
         const char* exitText = "Exit with [ESC]";
         int exitWidth = MeasureText(exitText, 25);
         int exitY = 300;
         DrawText(exitText, SCREEN_WIDTH/2 - exitWidth/2, exitY, 25, GRAY);
 
-        // Warnung direkt darunter, 40px Abstand, gleiche Schriftgröße 25
         const char* warnText = "Back to Main Menu with [Q] (Progress will be lost!)";
         int warnWidth = MeasureText(warnText, 25);
         int warnY = exitY + 40;
@@ -249,7 +241,7 @@ public:
             if (nx > 0 && nx < (int)maze[0].size() - 1 &&
                 ny > 0 && ny < (int)maze.size() - 1 &&
                 !maze[ny][nx].visited) {
-                maze[y + dy[i] / 2][x + dx[i] / 2].wall = false; // Wand zwischen entfernen
+                maze[y + dy[i] / 2][x + dx[i] / 2].wall = false;
                 dfs(nx, ny, maze);
             }
         }
@@ -263,7 +255,6 @@ public:
 
         dfs(1, 1, maze);
 
-        // Spielfeld mit Coins initialisieren
         coinsLeft = 0;
         field.resize(HEIGHT, std::vector<Cell>(WIDTH, WALL));
         for (int y = 0; y < HEIGHT; ++y) {
@@ -277,21 +268,17 @@ public:
             }
         }
 
-        // --- NEU: Zusätzliche Wände entfernen, um mehr Verbindungen zu schaffen ---
-        int extraConnections = (WIDTH * HEIGHT) / 6; // Passe die Zahl nach Geschmack an
+        int extraConnections = (WIDTH * HEIGHT) / 6;
 
         for (int i = 0; i < extraConnections; ++i) {
             int x = 1 + rand() % (WIDTH - 2);
             int y = 1 + rand() % (HEIGHT - 2);
 
-            // Nur Wände zwischen zwei leeren Feldern entfernen
             if (field[y][x] == WALL) {
-                // Horizontal prüfen
                 if (field[y][x - 1] != WALL && field[y][x + 1] != WALL) {
                     field[y][x] = COIN;
                     coinsLeft++;
                 }
-                // Vertikal prüfen
                 else if (field[y - 1][x] != WALL && field[y + 1][x] != WALL) {
                     field[y][x] = COIN;
                     coinsLeft++;
@@ -300,7 +287,7 @@ public:
         }
     }
 
-    void getPlayerName() {
+    bool getPlayerName() {
         char name[32] = {0};
         int letterCount = 0;
         bool enterPressed = false;
@@ -337,6 +324,7 @@ public:
             }
         }
         playerName = (letterCount > 0) ? std::string(name) : "Player";
+        return enterPressed;
     }
 
     void movePacman() {
@@ -353,22 +341,18 @@ public:
         int nx = pacman.x + dx;
         int ny = pacman.y + dy;
 
-        // Prüfe Spielfeldgrenzen und Wände
         if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) return;
         if (field[ny][nx] == WALL) return;
 
-        // Bewege Pacman
         pacman.x = nx;
         pacman.y = ny;
 
-        // Münze einsammeln
         if (field[ny][nx] == COIN) {
             field[ny][nx] = EMPTY;
             score += 10;
             coinsLeft--;
         }
 
-        // Frucht einsammeln
         if (fruitPresent && fruitX == nx && fruitY == ny) {
             score += 100;
             fruitPresent = false;
@@ -437,7 +421,6 @@ public:
         BeginDrawing();
         ClearBackground(BLACK);
 
-        // Zeichne Grid
         for (int y = 0; y < HEIGHT; ++y) {
             for (int x = 0; x < WIDTH; ++x) {
                 Rectangle rect = {
@@ -458,26 +441,22 @@ public:
             }
         }
 
-        // Zeichne Frucht
         if (fruitPresent) {
             DrawCircle(fruitX * TILE_SIZE + TILE_SIZE/2,
                       fruitY * TILE_SIZE + TILE_SIZE/2,
                       12, RED);
         }
 
-        // Zeichne Geister
         for (auto &g : ghosts) {
             DrawCircle(g.x * TILE_SIZE + TILE_SIZE/2,
                       g.y * TILE_SIZE + TILE_SIZE/2,
                       TILE_SIZE/2 - 4, PURPLE);
         }
 
-        // Zeichne Pacman
         DrawCircle(pacman.x * TILE_SIZE + TILE_SIZE/2,
                   pacman.y * TILE_SIZE + TILE_SIZE/2,
                   TILE_SIZE/2 - 4, YELLOW);
 
-        // Score-Anzeige (linksbündig oben links)
         std::string scoreText = "Score: " + std::to_string(score);
         DrawText(scoreText.c_str(), 10, 10, 24, WHITE);
 
@@ -501,14 +480,12 @@ public:
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pac-Man Raylib");
         SetTargetFPS(60);
 
-        getPlayerName();
-
         while (!WindowShouldClose()) {
             switch (state) {
                 case STATE_START_MENU:
                     drawStartMenu();
                     if (IsKeyPressed(KEY_ENTER)) {
-                        state = STATE_PLAYING;
+                        state = STATE_ENTER_NAME;
                     }
                     if (IsKeyPressed(KEY_ESCAPE)) {
                         waitForKeyRelease(KEY_ESCAPE);
@@ -517,6 +494,12 @@ public:
                     }
                     if (IsKeyPressed(KEY_L)) {
                         state = STATE_LEADERBOARD;
+                    }
+                    break;
+
+                case STATE_ENTER_NAME:
+                    if (getPlayerName()) {
+                        state = STATE_PLAYING;
                     }
                     break;
 
@@ -543,7 +526,6 @@ public:
                         waitForKeyRelease(KEY_P);
 
                     } else if (IsKeyPressed(KEY_Q)) {
-                        // Warnung anzeigen
                         BeginDrawing();
                         ClearBackground(DARKGRAY);
                         const char* warn = "Progress will be lost! Returning to main menu...";
@@ -553,12 +535,10 @@ public:
                         WaitTime(1.2);
                         *this = Game();
                         state = STATE_START_MENU;
-                        getPlayerName();
 
                     } else if (IsKeyPressed(KEY_ESCAPE)) {
                         *this = Game();
                         state = STATE_START_MENU;
-                        getPlayerName();
                     }
                     break;
 
@@ -601,7 +581,6 @@ public:
                     if (IsKeyPressed(KEY_ENTER)) {
                         *this = Game();
                         state = STATE_START_MENU;
-                        getPlayerName();
                     }
                     break;
                 }
