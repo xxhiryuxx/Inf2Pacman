@@ -17,16 +17,48 @@ const int SCREEN_HEIGHT = HEIGHT * TILE_SIZE;
 
 enum Cell { WALL, EMPTY, COIN };
 
+// Base struct for all moving entities (Pacman, Ghosts)
 struct Entity {
     int x, y;
+    Entity(int startX, int startY) : x(startX), y(startY) {}
 };
 
+// Player struct, inherits from Entity and adds score
+struct Player : public Entity {
+    int score;
+    Player(int startX, int startY) : Entity(startX, startY), score(0) {}
+};
+
+// Ghost struct, inherits from Entity
+struct Ghost : public Entity {
+    Ghost(int startX, int startY) : Entity(startX, startY) {}
+};
+
+// Handles the game board, coins, and fruit state
+class GameBoard {
+public:
+    std::vector<std::vector<Cell>> field;
+    int coinsLeft;
+    bool fruitPresent;
+    int fruitX, fruitY;
+
+    // Initializes the board with all walls, no coins, no fruit
+    GameBoard() : field(HEIGHT, std::vector<Cell>(WIDTH, WALL)), coinsLeft(0), fruitPresent(false) {}
+
+    // Generates a random maze and places coins
+    void generateRandomMap();
+    // (Unused) Would place a fruit on the board
+    void placeFruit();
+};
+
+// Handles leaderboard file I/O and highscore logic
 class Leaderboard {
 private:
     std::string filename;
     std::vector<std::pair<int, std::string>> entries; // pair<Score, Name>
 
 public:
+    // Loads leaderboard from file and sorts entries
     Leaderboard(const std::string& file) : filename(file) {
         std::ifstream fileIn(filename);
         if (fileIn.is_open()) {
@@ -42,16 +74,19 @@ public:
         }
     }
 
+    // Returns the highest score
     int getHighscore() const {
         if (entries.empty()) return 0;
         return entries.front().first;
     }
 
+    // Returns the name of the highscore holder
     std::string getHighscoreName() const {
         if (entries.empty()) return "None";
         return entries.front().second;
     }
 
+    // Tries to update the highscore for a player, returns true if updated
     bool tryUpdateHighscore(int score, const std::string& playerName) {
         bool updated = false;
         auto it = std::find_if(entries.begin(), entries.end(),
@@ -76,6 +111,7 @@ public:
         return updated;
     }
 
+    // Saves the leaderboard to file
     void save() {
         std::ofstream fileOut(filename);
         if (fileOut.is_open()) {
@@ -87,12 +123,14 @@ public:
     }
 };
 
+// Used for maze generation (DFS)
 struct MazeCell {
     bool visited;
     bool wall;
     MazeCell() : visited(false), wall(true) {}
 };
 
+// All possible game states
 enum GameState {
     STATE_START_MENU,
     STATE_ENTER_NAME,    // <--- NEU
@@ -102,121 +140,34 @@ enum GameState {
     STATE_GAME_OVER
 };
 
+// Main game class: handles all game logic, state, and rendering
 class Game {
 public:
-    std::vector<std::vector<Cell>> field;
-    Entity pacman;
-    std::vector<Entity> ghosts;
-    int score;
-    bool gameOver;
-    int coinsLeft;
-    bool fruitPresent;
-    int fruitX, fruitY;
-
+    GameBoard board;
+    Player pacman;
+    std::vector<Ghost> ghosts;
     Leaderboard leaderboard;
     std::string playerName;
-
+    bool gameOver;
     GameState state;
 
+    // Initializes the game, board, player, ghosts, leaderboard, and state
     Game()
-        : field(HEIGHT, std::vector<Cell>(WIDTH, WALL)),
-        score(0),
-        gameOver(false),
-        coinsLeft(0),
-        fruitPresent(false),
+        : board(),
+        pacman(1, 1),
+        ghosts({Ghost(WIDTH - 2, HEIGHT - 2), Ghost(1, HEIGHT - 2), Ghost(WIDTH - 2, 1), Ghost(WIDTH / 2, HEIGHT / 2)}),
         leaderboard("Leaderboard.txt"),
+        gameOver(false),
         state(STATE_START_MENU)
     {
         generateRandomMap();
-        pacman = {1, 1};
-        ghosts = {
-            {WIDTH - 2, HEIGHT - 2},
-            {1, HEIGHT - 2},
-            {WIDTH - 2, 1},
-            {WIDTH / 2, HEIGHT / 2}
-        };
-        if (field[pacman.y][pacman.x] == COIN) {
-            field[pacman.y][pacman.x] = EMPTY;
-            coinsLeft--;
+        if (board.field[pacman.y][pacman.x] == COIN) {
+            board.field[pacman.y][pacman.x] = EMPTY;
+            board.coinsLeft--;
         }
     }
 
-    void drawStartMenu() {
-        BeginDrawing();
-        ClearBackground(BLACK);
-        const char* titleText = "PAC-MAN";
-        int titleWidth = MeasureText(titleText, 72);
-        DrawText(titleText, SCREEN_WIDTH/2 - titleWidth/2, 120, 72, YELLOW);
-
-        const char* subText = "Press [ENTER] to start";
-        int subWidth = MeasureText(subText, 32);
-        DrawText(subText, SCREEN_WIDTH/2 - subWidth/2, 250, 32, WHITE);
-
-        const char* escText = "Exit with [ESC]";
-        int escWidth = MeasureText(escText, 24);
-        DrawText(escText, SCREEN_WIDTH/2 - escWidth/2, 300, 24, GRAY);
-
-        const char* lbText = "View Leaderboard with [L]";
-        int lbWidth = MeasureText(lbText, 24);
-        DrawText(lbText, SCREEN_WIDTH/2 - lbWidth/2, 330, 24, GRAY);
-
-        EndDrawing();
-    }
-
-    void drawPauseMenu() {
-        BeginDrawing();
-        ClearBackground(DARKGRAY);
-
-        const char* pauseText = "PAUSE";
-        int pauseWidth = MeasureText(pauseText, 64);
-        DrawText(pauseText, SCREEN_WIDTH/2 - pauseWidth/2, 180, 64, YELLOW);
-
-        const char* continueText = "Continue with [P]";
-        int contWidth = MeasureText(continueText, 32);
-        DrawText(continueText, SCREEN_WIDTH/2 - contWidth/2, 250, 32, WHITE);
-
-        const char* exitText = "Exit with [ESC]";
-        int exitWidth = MeasureText(exitText, 25);
-        int exitY = 300;
-        DrawText(exitText, SCREEN_WIDTH/2 - exitWidth/2, exitY, 25, GRAY);
-
-        const char* warnText = "Back to Main Menu with [Q] (Progress will be lost!)";
-        int warnWidth = MeasureText(warnText, 25);
-        int warnY = exitY + 40;
-        DrawText(warnText, SCREEN_WIDTH/2 - warnWidth/2, warnY, 25, RED);
-
-        EndDrawing();
-    }
-
-    void drawLeaderboard() {
-        BeginDrawing();
-        ClearBackground(BLACK);
-        const char* lbTitle = "Leaderboard";
-        int titleWidth = MeasureText(lbTitle, 48);
-        DrawText(lbTitle, SCREEN_WIDTH/2 - titleWidth/2, 60, 48, YELLOW);
-
-        std::ifstream file("Leaderboard.txt");
-        if (file.is_open()) {
-            std::string name;
-            int score;
-            int line = 0;
-            while (file >> name >> score && line < 10) {
-                std::string entry = std::to_string(line + 1) + ". " + name + " - " + std::to_string(score);
-                DrawText(entry.c_str(), SCREEN_WIDTH/2 - 150, 130 + line * 30, 24, WHITE);
-                line++;
-            }
-            file.close();
-        } else {
-            DrawText("Unable to load leaderboard.", SCREEN_WIDTH/2 - 150, 130, 24, RED);
-        }
-
-        const char* backText = "Press [L] to return";
-        int backWidth = MeasureText(backText, 20);
-        DrawText(backText, SCREEN_WIDTH/2 - backWidth/2, SCREEN_HEIGHT - 50, 20, GRAY);
-
-        EndDrawing();
-    }
-
+    // Randomly shuffles direction arrays for maze generation
     void shuffleDirections(int dx[], int dy[], int n) {
         for (int i = n - 1; i > 0; --i) {
             int j = rand() % (i + 1);
@@ -225,6 +176,7 @@ public:
         }
     }
 
+    // Depth-first search for maze generation
     void dfs(int x, int y, std::vector<std::vector<MazeCell>>& maze) {
         maze[y][x].visited = true;
         maze[y][x].wall = false;
@@ -247,6 +199,7 @@ public:
         }
     }
 
+    // Generates a random maze and places coins
     void generateRandomMap() {
         const int mazeHeight = HEIGHT % 2 == 0 ? HEIGHT + 1 : HEIGHT;
         const int mazeWidth = WIDTH % 2 == 0 ? WIDTH + 1 : WIDTH;
@@ -255,15 +208,15 @@ public:
 
         dfs(1, 1, maze);
 
-        coinsLeft = 0;
-        field.resize(HEIGHT, std::vector<Cell>(WIDTH, WALL));
+        board.coinsLeft = 0;
+        board.field.resize(HEIGHT, std::vector<Cell>(WIDTH, WALL));
         for (int y = 0; y < HEIGHT; ++y) {
             for (int x = 0; x < WIDTH; ++x) {
                 if (y < mazeHeight && x < mazeWidth && !maze[y][x].wall) {
-                    field[y][x] = COIN;
-                    coinsLeft++;
+                    board.field[y][x] = COIN;
+                    board.coinsLeft++;
                 } else {
-                    field[y][x] = WALL;
+                    board.field[y][x] = WALL;
                 }
             }
         }
@@ -274,19 +227,20 @@ public:
             int x = 1 + rand() % (WIDTH - 2);
             int y = 1 + rand() % (HEIGHT - 2);
 
-            if (field[y][x] == WALL) {
-                if (field[y][x - 1] != WALL && field[y][x + 1] != WALL) {
-                    field[y][x] = COIN;
-                    coinsLeft++;
+            if (board.field[y][x] == WALL) {
+                if (board.field[y][x - 1] != WALL && board.field[y][x + 1] != WALL) {
+                    board.field[y][x] = COIN;
+                    board.coinsLeft++;
                 }
-                else if (field[y - 1][x] != WALL && field[y + 1][x] != WALL) {
-                    field[y][x] = COIN;
-                    coinsLeft++;
+                else if (board.field[y - 1][x] != WALL && board.field[y + 1][x] != WALL) {
+                    board.field[y][x] = COIN;
+                    board.coinsLeft++;
                 }
             }
         }
     }
 
+    // Handles player name input screen
     bool getPlayerName() {
         char name[32] = {0};
         int letterCount = 0;
@@ -327,6 +281,7 @@ public:
         return enterPressed;
     }
 
+    // Handles Pacman movement and coin/fruit collection
     void movePacman() {
         static double lastMoveTime = 0.0;
         if (GetTime() - lastMoveTime < 0.12) return;
@@ -342,23 +297,24 @@ public:
         int ny = pacman.y + dy;
 
         if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) return;
-        if (field[ny][nx] == WALL) return;
+        if (board.field[ny][nx] == WALL) return;
 
         pacman.x = nx;
         pacman.y = ny;
 
-        if (field[ny][nx] == COIN) {
-            field[ny][nx] = EMPTY;
-            score += 10;
-            coinsLeft--;
+        if (board.field[ny][nx] == COIN) {
+            board.field[ny][nx] = EMPTY;
+            pacman.score += 10;
+            board.coinsLeft--;
         }
 
-        if (fruitPresent && fruitX == nx && fruitY == ny) {
-            score += 100;
-            fruitPresent = false;
+        if (board.fruitPresent && board.fruitX == nx && board.fruitY == ny) {
+            pacman.score += 100;
+            board.fruitPresent = false;
         }
     }
 
+    // Moves all ghosts randomly
     void moveGhosts() {
         static double lastGhostMove = 0.0;
         if (GetTime() - lastGhostMove < 0.32) return;
@@ -378,7 +334,7 @@ public:
                 int nx = g.x + dx;
                 int ny = g.y + dy;
 
-                if (nx >= 0 && nx < WIDTH && ny >= 0 && ny < HEIGHT && field[ny][nx] != WALL) {
+                if (nx >= 0 && nx < WIDTH && ny >= 0 && ny < HEIGHT && board.field[ny][nx] != WALL) {
                     g.x = nx;
                     g.y = ny;
                     moved = true;
@@ -388,6 +344,7 @@ public:
         }
     }
 
+    // Checks for collision between Pacman and ghosts
     void checkCollision() {
         for (auto &g : ghosts) {
             if (g.x == pacman.x && g.y == pacman.y) {
@@ -397,13 +354,14 @@ public:
         }
     }
 
+    // Randomly spawns a fruit on the board
     void spawnFruit() {
-        if (fruitPresent || (rand() % 20) != 0) return;
+        if (board.fruitPresent || (rand() % 20) != 0) return;
 
         std::vector<std::pair<int, int>> emptyCells;
         for (int y = 0; y < HEIGHT; ++y) {
             for (int x = 0; x < WIDTH; ++x) {
-                if (field[y][x] == EMPTY && !(x == pacman.x && y == pacman.y)) {
+                if (board.field[y][x] == EMPTY && !(x == pacman.x && y == pacman.y)) {
                     emptyCells.push_back({x, y});
                 }
             }
@@ -411,12 +369,92 @@ public:
 
         if (!emptyCells.empty()) {
             int idx = rand() % emptyCells.size();
-            fruitX = emptyCells[idx].first;
-            fruitY = emptyCells[idx].second;
-            fruitPresent = true;
+            board.fruitX = emptyCells[idx].first;
+            board.fruitY = emptyCells[idx].second;
+            board.fruitPresent = true;
         }
     }
 
+    // Draws the start menu
+    void drawStartMenu() {
+        BeginDrawing();
+        ClearBackground(BLACK);
+        const char* titleText = "PAC-MAN";
+        int titleWidth = MeasureText(titleText, 72);
+        DrawText(titleText, SCREEN_WIDTH/2 - titleWidth/2, 120, 72, YELLOW);
+
+        const char* subText = "Press [ENTER] to start";
+        int subWidth = MeasureText(subText, 32);
+        DrawText(subText, SCREEN_WIDTH/2 - subWidth/2, 250, 32, WHITE);
+
+        const char* escText = "Exit with [ESC]";
+        int escWidth = MeasureText(escText, 24);
+        DrawText(escText, SCREEN_WIDTH/2 - escWidth/2, 300, 24, GRAY);
+
+        const char* lbText = "View Leaderboard with [L]";
+        int lbWidth = MeasureText(lbText, 24);
+        DrawText(lbText, SCREEN_WIDTH/2 - lbWidth/2, 330, 24, GRAY);
+
+        EndDrawing();
+    }
+
+    // Draws the pause menu
+    void drawPauseMenu() {
+        BeginDrawing();
+        ClearBackground(DARKGRAY);
+
+        const char* pauseText = "PAUSE";
+        int pauseWidth = MeasureText(pauseText, 64);
+        DrawText(pauseText, SCREEN_WIDTH/2 - pauseWidth/2, 180, 64, YELLOW);
+
+        const char* continueText = "Continue with [P]";
+        int contWidth = MeasureText(continueText, 32);
+        DrawText(continueText, SCREEN_WIDTH/2 - contWidth/2, 250, 32, WHITE);
+
+        const char* exitText = "Exit with [ESC]";
+        int exitWidth = MeasureText(exitText, 25);
+        int exitY = 300;
+        DrawText(exitText, SCREEN_WIDTH/2 - exitWidth/2, exitY, 25, GRAY);
+
+        const char* warnText = "Back to Main Menu with [Q] (Progress will be lost!)";
+        int warnWidth = MeasureText(warnText, 25);
+        int warnY = exitY + 40;
+        DrawText(warnText, SCREEN_WIDTH/2 - warnWidth/2, warnY, 25, RED);
+
+        EndDrawing();
+    }
+
+    // Draws the leaderboard screen
+    void drawLeaderboard() {
+        BeginDrawing();
+        ClearBackground(BLACK);
+        const char* lbTitle = "Leaderboard";
+        int titleWidth = MeasureText(lbTitle, 48);
+        DrawText(lbTitle, SCREEN_WIDTH/2 - titleWidth/2, 60, 48, YELLOW);
+
+        std::ifstream file("Leaderboard.txt");
+        if (file.is_open()) {
+            std::string name;
+            int score;
+            int line = 0;
+            while (file >> name >> score && line < 10) {
+                std::string entry = std::to_string(line + 1) + ". " + name + " - " + std::to_string(score);
+                DrawText(entry.c_str(), SCREEN_WIDTH/2 - 150, 130 + line * 30, 24, WHITE);
+                line++;
+            }
+            file.close();
+        } else {
+            DrawText("Unable to load leaderboard.", SCREEN_WIDTH/2 - 150, 130, 24, RED);
+        }
+
+        const char* backText = "Press [L] to return";
+        int backWidth = MeasureText(backText, 20);
+        DrawText(backText, SCREEN_WIDTH/2 - backWidth/2, SCREEN_HEIGHT - 50, 20, GRAY);
+
+        EndDrawing();
+    }
+
+    // Draws the game board, entities, and HUD
     void draw() {
         BeginDrawing();
         ClearBackground(BLACK);
@@ -430,20 +468,20 @@ public:
                     static_cast<float>(TILE_SIZE)
                 };
 
-                if (field[y][x] == WALL) {
+                if (board.field[y][x] == WALL) {
                     DrawRectangleRec(rect, BLUE);
                 } else {
                     DrawRectangleRec(rect, BLACK);
-                    if (field[y][x] == COIN) {
+                    if (board.field[y][x] == COIN) {
                         DrawCircle(rect.x + TILE_SIZE/2, rect.y + TILE_SIZE/2, 6, YELLOW);
                     }
                 }
             }
         }
 
-        if (fruitPresent) {
-            DrawCircle(fruitX * TILE_SIZE + TILE_SIZE/2,
-                        fruitY * TILE_SIZE + TILE_SIZE/2,
+        if (board.fruitPresent) {
+            DrawCircle(board.fruitX * TILE_SIZE + TILE_SIZE/2,
+                        board.fruitY * TILE_SIZE + TILE_SIZE/2,
                         12, RED);
         }
 
@@ -457,10 +495,10 @@ public:
                     pacman.y * TILE_SIZE + TILE_SIZE/2,
                     TILE_SIZE/2 - 4, YELLOW);
 
-        std::string scoreText = "Score: " + std::to_string(score);
+        std::string scoreText = "Score: " + std::to_string(pacman.score);
         DrawText(scoreText.c_str(), 10, 10, 24, WHITE);
 
-        std::string coinsText = "Coins left: " + std::to_string(coinsLeft);
+        std::string coinsText = "Coins left: " + std::to_string(board.coinsLeft);
         DrawText(coinsText.c_str(), 10, 40, 20, WHITE);
 
         std::string highscoreText = "Highscore: " + std::to_string(leaderboard.getHighscore()) + " (" + leaderboard.getHighscoreName() + ")";
@@ -469,6 +507,7 @@ public:
         EndDrawing();
     }
 
+    // Waits until a key is released (for menu navigation)
     void waitForKeyRelease(int key) {
         while (IsKeyDown(key) && !WindowShouldClose()) {
             BeginDrawing();
@@ -476,6 +515,7 @@ public:
         }
     }
 
+    // Main game loop and state machine
     void run() {
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pac-Man Raylib");
         SetTargetFPS(60);
@@ -508,7 +548,7 @@ public:
                         state = STATE_PAUSED;
                         break;
                     }
-                    if (!gameOver && coinsLeft > 0) {
+                    if (!gameOver && board.coinsLeft > 0) {
                         movePacman();
                         moveGhosts();
                         checkCollision();
@@ -558,11 +598,11 @@ public:
                     int textWidth = MeasureText(text, 48);
                     DrawText(text, SCREEN_WIDTH/2 - textWidth/2, SCREEN_HEIGHT/2 - 60, 48, gameOver ? RED : GREEN);
 
-                    std::string scoreText = "Score: " + std::to_string(score);
+                    std::string scoreText = "Score: " + std::to_string(pacman.score);
                     int scoreWidth = MeasureText(scoreText.c_str(), 32);
                     DrawText(scoreText.c_str(), SCREEN_WIDTH/2 - scoreWidth/2, SCREEN_HEIGHT/2, 32, WHITE);
 
-                    if (leaderboard.tryUpdateHighscore(score, playerName)) {
+                    if (leaderboard.tryUpdateHighscore(pacman.score, playerName)) {
                         std::string hsText = "New Highscore!";
                         int hsWidth = MeasureText(hsText.c_str(), 32);
                         DrawText(hsText.c_str(), SCREEN_WIDTH/2 - hsWidth/2, SCREEN_HEIGHT/2 + 50, 32, YELLOW);
@@ -590,6 +630,7 @@ public:
     }
 };
 
+// Entry point: seeds RNG, creates and runs the game
 int main() {
     srand((unsigned int)time(nullptr));
     Game game;
