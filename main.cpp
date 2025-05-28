@@ -120,12 +120,12 @@ public:
 
     Game()
         : field(HEIGHT, std::vector<Cell>(WIDTH, WALL)),
-          score(0),
-          gameOver(false),
-          coinsLeft(0),
-          fruitPresent(false),
-          leaderboard("Leaderboard.txt"),
-          state(STATE_START_MENU)
+        score(0),
+        gameOver(false),
+        coinsLeft(0),
+        fruitPresent(false),
+        leaderboard("Leaderboard.txt"),
+        state(STATE_START_MENU)
     {
         generateRandomMap();
         pacman = {1, 1};
@@ -443,19 +443,19 @@ public:
 
         if (fruitPresent) {
             DrawCircle(fruitX * TILE_SIZE + TILE_SIZE/2,
-                      fruitY * TILE_SIZE + TILE_SIZE/2,
-                      12, RED);
+                        fruitY * TILE_SIZE + TILE_SIZE/2,
+                        12, RED);
         }
 
         for (auto &g : ghosts) {
             DrawCircle(g.x * TILE_SIZE + TILE_SIZE/2,
-                      g.y * TILE_SIZE + TILE_SIZE/2,
-                      TILE_SIZE/2 - 4, PURPLE);
+                        g.y * TILE_SIZE + TILE_SIZE/2,
+                        TILE_SIZE/2 - 4, PURPLE);
         }
 
         DrawCircle(pacman.x * TILE_SIZE + TILE_SIZE/2,
-                  pacman.y * TILE_SIZE + TILE_SIZE/2,
-                  TILE_SIZE/2 - 4, YELLOW);
+                    pacman.y * TILE_SIZE + TILE_SIZE/2,
+                    TILE_SIZE/2 - 4, YELLOW);
 
         std::string scoreText = "Score: " + std::to_string(score);
         DrawText(scoreText.c_str(), 10, 10, 24, WHITE);
