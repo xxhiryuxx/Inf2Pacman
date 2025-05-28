@@ -80,6 +80,7 @@ struct MazeCell {
 
 enum GameState {
     STATE_START_MENU,
+    STATE_LEADERBOARD,
     STATE_PLAYING,
     STATE_PAUSED,
     STATE_GAME_OVER
@@ -141,6 +142,11 @@ public:
         const char* escText = "Exit with [ESC]";
         int escWidth = MeasureText(escText, 24);
         DrawText(escText, SCREEN_WIDTH/2 - escWidth/2, 300, 24, GRAY);
+
+        const char* lbText = "View Leaderboard with [L]";
+        int lbWidth = MeasureText(lbText, 24);
+        DrawText(lbText, SCREEN_WIDTH/2 - lbWidth/2, 330, 24, GRAY);
+
         EndDrawing();
     }
 
@@ -429,6 +435,15 @@ public:
         EndDrawing();
     }
 
+    void waitForKeyRelease(int key) {
+        while (IsKeyDown(key) && !WindowShouldClose()) {
+            // Einfach kurz warten und Events abholen
+            BeginDrawing();
+            EndDrawing();
+        }
+    }
+
+
     void run() {
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pac-Man Raylib");
         SetTargetFPS(60);
@@ -443,8 +458,12 @@ public:
                         state = STATE_PLAYING;
                     }
                     if (IsKeyPressed(KEY_ESCAPE)) {
+                        waitForKeyRelease(KEY_ESCAPE);
                         CloseWindow();
                         return;
+                    }
+                    if (IsKeyPressed(KEY_L)) {
+                        state = STATE_LEADERBOARD;
                     }
                     break;
 
@@ -468,12 +487,49 @@ public:
                     drawPauseMenu();
                     if (IsKeyPressed(KEY_P)) {
                         state = STATE_PLAYING;
+                        waitForKeyRelease(KEY_P); // <--- Hier!
                     } else if (IsKeyPressed(KEY_ESCAPE)) {
                         *this = Game();
                         state = STATE_START_MENU;
                         getPlayerName();
                     }
                     break;
+
+                case STATE_LEADERBOARD: {
+                    BeginDrawing();
+                    ClearBackground(BLACK);
+
+                    const char* lbTitle = "Leaderboard";
+                    int titleWidth = MeasureText(lbTitle, 48);
+                    DrawText(lbTitle, SCREEN_WIDTH/2 - titleWidth/2, 60, 48, YELLOW);
+
+                    std::ifstream file("Leaderboard.txt");
+                    if (file.is_open()) {
+                        std::string name;
+                        int score;
+                        int line = 0;
+                        while (file >> name >> score && line < 10) {
+                            std::string entry = std::to_string(line + 1) + ". " + name + " - " + std::to_string(score);
+                            DrawText(entry.c_str(), SCREEN_WIDTH/2 - 150, 130 + line * 30, 24, WHITE);
+                            line++;
+                        }
+                        file.close();
+                    } else {
+                        DrawText("Unable to load leaderboard.", SCREEN_WIDTH/2 - 150, 130, 24, RED);
+                    }
+
+                    const char* backText = "Press [ESC] to return";
+                    int backWidth = MeasureText(backText, 20);
+                    DrawText(backText, SCREEN_WIDTH/2 - backWidth/2, SCREEN_HEIGHT - 50, 20, GRAY);
+
+                    EndDrawing();
+
+                    if (IsKeyPressed(KEY_L)) {
+                        state = STATE_START_MENU;
+                        waitForKeyRelease(KEY_L);
+                    }
+                    break;
+                }
 
                 case STATE_GAME_OVER: {
                     BeginDrawing();
