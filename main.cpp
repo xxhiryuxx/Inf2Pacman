@@ -7,7 +7,6 @@
 #include <string>
 #include <limits>
 #include <algorithm>
-#include <cstring>
 #include <random>
 
 const int WIDTH = 25;
@@ -16,11 +15,33 @@ const int TILE_SIZE = 50;
 const int SCREEN_WIDTH = WIDTH * TILE_SIZE;
 const int SCREEN_HEIGHT = HEIGHT * TILE_SIZE;
 
-// Neue Zelltypen für den Bunker
 enum Cell { WALL, EMPTY, COIN, BUNKER_WALL, BUNKER_OPENING, BUNKER_FLOOR };
+
+struct Entity {
+    int x, y;
+    Entity(int startX = 0, int startY = 0) : x(startX), y(startY) {}
+};
+
+struct Player : public Entity {
+    int score;
+    Player(int startX = 0, int startY = 0) : Entity(startX, startY), score(0) {}
+};
 
 struct GhostEntity {
     int x, y;
+    bool leftBunker = false;
+};
+
+class GameBoard {
+public:
+    std::vector<std::vector<Cell>> field;
+    int coinsLeft;
+    bool fruitPresent;
+    int fruitX, fruitY;
+
+    GameBoard() : field(HEIGHT, std::vector<Cell>(WIDTH, WALL)), coinsLeft(0), fruitPresent(false) {}
+};
+
     bool leftBunker = false; // Merkt, ob der Geist schon draußen ist
 };
 
@@ -59,7 +80,7 @@ public:
 class Leaderboard {
 private:
     std::string filename;
-    std::vector<std::pair<int, std::string>> entries; // pair<Score, Name>
+    std::vector<std::pair<int, std::string>> entries;
 
 public:
     // Loads leaderboard from file and sorts entries
@@ -72,8 +93,7 @@ public:
                 entries.push_back({score, name});
             }
             fileIn.close();
-            std::sort(entries.begin(), entries.end(),
-                [](const auto& a, const auto& b) { return a.first > b.first; });
+            std::sort(entries.begin(), entries.end(), [](const auto& a, const auto& b) { return a.first > b.first; });
             if (entries.size() > 10) entries.resize(10);
         }
     }
@@ -107,8 +127,7 @@ public:
         }
 
         if (updated) {
-            std::sort(entries.begin(), entries.end(),
-                [](const auto& a, const auto& b) { return a.first > b.first; });
+            std::sort(entries.begin(), entries.end(), [](const auto& a, const auto& b) { return a.first > b.first; });
             if (entries.size() > 10) entries.resize(10);
             save();
         }
@@ -148,21 +167,14 @@ enum GameState {
 // Main game class: handles all game logic, state, and rendering
 class Game {
 public:
-    std::vector<std::vector<Cell>> field;
-    Entity pacman;
+    GameBoard board;
+    Player pacman;
     std::vector<GhostEntity> ghosts;
-    int score;
-    bool gameOver;
-    int coinsLeft;
-    bool fruitPresent;
-    int fruitX, fruitY;
-
     Leaderboard leaderboard;
     std::string playerName;
     bool gameOver;
     GameState state;
 
-    // Bunker-Parameter (3 Zeilen, 5 Spalten)
     static constexpr int bunkerWidth = 5;
     static constexpr int bunkerHeight = 3;
     static constexpr int bunkerX = WIDTH / 2 - bunkerWidth / 2;
@@ -179,17 +191,15 @@ public:
         state(STATE_START_MENU)
     {
         generateRandomMap();
-        pacman = {1, 1};
-        // Geister auf allen freien Feldern im Bunker spawnen
         ghosts = {
             {bunkerX + 1, bunkerY + 1, false},
             {bunkerX + 2, bunkerY + 1, false},
             {bunkerX + 3, bunkerY + 1, false},
             {bunkerX + 2, bunkerY + 2, false}
         };
-        if (field[pacman.y][pacman.x] == COIN) {
-            field[pacman.y][pacman.x] = EMPTY;
-            coinsLeft--;
+        if (board.field[pacman.y][pacman.x] == COIN) {
+            board.field[pacman.y][pacman.x] = EMPTY;
+            board.coinsLeft--;
         }
     }
 
@@ -349,16 +359,16 @@ public:
                 int fy = bunkerY + y;
                 if (y == 0) { // obere Zeile
                     if (x == 2)
-                        field[fy][fx] = BUNKER_OPENING; // Öffnung
+                        board.field[fy][fx] = BUNKER_OPENING; // Öffnung
                     else
-                        field[fy][fx] = BUNKER_WALL;
+                        board.field[fy][fx] = BUNKER_WALL;
                 } else if (y == 1) { // mittlere Zeile
                     if (x == 0 || x == 4)
-                        field[fy][fx] = BUNKER_WALL;
+                        board.field[fy][fx] = BUNKER_WALL;
                     else
-                        field[fy][fx] = BUNKER_FLOOR;
+                        board.field[fy][fx] = BUNKER_FLOOR;
                 } else if (y == 2) { // untere Zeile
-                    field[fy][fx] = BUNKER_WALL;
+                    board.field[fy][fx] = BUNKER_WALL;
                 }
             }
         }
@@ -368,15 +378,15 @@ public:
             for (int x = 0; x < bunkerWidth; ++x) {
                 int fx = bunkerX + x;
                 int fy = bunkerY + y;
-                if (field[fy][fx] == BUNKER_FLOOR || field[fy][fx] == BUNKER_OPENING) {
-                    if (field[fy][fx] == COIN) coinsLeft--;
-                    field[fy][fx] = field[fy][fx]; // explizit setzen
+                if (board.field[fy][fx] == BUNKER_FLOOR || board.field[fy][fx] == BUNKER_OPENING) {
+                    if (board.field[fy][fx] == COIN) board.coinsLeft--;
+                    board.field[fy][fx] = board.field[fy][fx]; // explizit setzen
                 }
             }
         }
 
         // --- Diese Zeile garantiert den freien Ausgang! ---
-        field[bunkerY - 1][bunkerX + 2] = EMPTY;
+        board.field[bunkerY - 1][bunkerX + 2] = EMPTY;
     }
 
     bool getPlayerName() {
@@ -436,8 +446,8 @@ public:
 
         if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) return;
         // PacMan darf BUNKER_WALL, BUNKER_FLOOR, BUNKER_OPENING nicht betreten!
-        if (field[ny][nx] == WALL || field[ny][nx] == BUNKER_WALL ||
-            field[ny][nx] == BUNKER_FLOOR || field[ny][nx] == BUNKER_OPENING) return;
+        if (board.field[ny][nx] == WALL || board.field[ny][nx] == BUNKER_WALL ||
+            board.field[ny][nx] == BUNKER_FLOOR || board.field[ny][nx] == BUNKER_OPENING) return;
 
         pacman.x = nx;
         pacman.y = ny;
@@ -478,13 +488,13 @@ public:
                 int dy = (bunkerY + 1) - g.y;
                 if (dx != 0) {
                     int step = (dx > 0) ? 1 : -1;
-                    if (field[g.y][g.x + step] == BUNKER_FLOOR)
+                    if (board.field[g.y][g.x + step] == BUNKER_FLOOR)
                         g.x += step;
-                    else if (dy != 0 && field[g.y + ((dy > 0) ? 1 : -1)][g.x] == BUNKER_FLOOR)
+                    else if (dy != 0 && board.field[g.y + ((dy > 0) ? 1 : -1)][g.x] == BUNKER_FLOOR)
                         g.y += (dy > 0) ? 1 : -1;
                 } else if (dy != 0) {
                     int step = (dy > 0) ? 1 : -1;
-                    if (field[g.y + step][g.x] == BUNKER_FLOOR || field[g.y + step][g.x] == BUNKER_OPENING)
+                    if (board.field[g.y + step][g.x] == BUNKER_FLOOR || board.field[g.y + step][g.x] == BUNKER_OPENING)
                         g.y += step;
                 }
             } else {
@@ -498,7 +508,7 @@ public:
                     for (auto [dx, dy] : moves) {
                         int nx = g.x + dx, ny = g.y + dy;
                         if (nx >= 0 && nx < WIDTH && ny >= 0 && ny < HEIGHT) {
-                            Cell c = field[ny][nx];
+                            Cell c = board.field[ny][nx];
                             if (c == EMPTY || c == COIN) {
                                 int d = abs(nx - pacman.x) + abs(ny - pacman.y);
                                 if (d < minDist) {
@@ -516,7 +526,7 @@ public:
                     for (auto [dx, dy] : moves) {
                         int nx = g.x + dx, ny = g.y + dy;
                         if (nx >= 0 && nx < WIDTH && ny >= 0 && ny < HEIGHT) {
-                            Cell c = field[ny][nx];
+                            Cell c = board.field[ny][nx];
                             if (c == EMPTY || c == COIN) {
                                 bestDx = dx;
                                 bestDy = dy;
@@ -530,7 +540,6 @@ public:
             }
         }
     }
-
 
     void checkCollision() {
         for (auto &g : ghosts) {
@@ -655,13 +664,13 @@ public:
                     static_cast<float>(TILE_SIZE)
                 };
 
-                if (field[y][x] == WALL) {
+                if (board.field[y][x] == WALL) {
                     DrawRectangleRec(rect, BLUE);
-                } else if (field[y][x] == BUNKER_WALL) {
+                } else if (board.field[y][x] == BUNKER_WALL) {
                     DrawRectangleRec(rect, BLUE);
-                } else if (field[y][x] == BUNKER_OPENING) {
+                } else if (board.field[y][x] == BUNKER_OPENING) {
                     DrawRectangleRec(rect, LIGHTGRAY); // Öffnung: helleres Blau
-                } else if (field[y][x] == BUNKER_FLOOR) {
+                } else if (board.field[y][x] == BUNKER_FLOOR) {
                     DrawRectangleRec(rect, DARKGRAY);
                 } else {
                     DrawRectangleRec(rect, BLACK);
