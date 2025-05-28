@@ -7,7 +7,7 @@
 #include <string>
 #include <limits>
 #include <algorithm>
-#include <random>
+
 
 const int WIDTH = 25;
 const int HEIGHT = 15;
@@ -15,36 +15,9 @@ const int TILE_SIZE = 50;
 const int SCREEN_WIDTH = WIDTH * TILE_SIZE;
 const int SCREEN_HEIGHT = HEIGHT * TILE_SIZE;
 
-enum Cell { WALL, EMPTY, COIN, BUNKER_WALL, BUNKER_OPENING, BUNKER_FLOOR };
+enum Cell { WALL, EMPTY, COIN };
 
-struct Entity {
-    int x, y;
-    Entity(int startX = 0, int startY = 0) : x(startX), y(startY) {}
-};
-
-struct Player : public Entity {
-    int score;
-    Player(int startX = 0, int startY = 0) : Entity(startX, startY), score(0) {}
-};
-
-struct GhostEntity {
-    int x, y;
-    bool leftBunker = false;
-};
-
-class GameBoard {
-public:
-    std::vector<std::vector<Cell>> field;
-    int coinsLeft;
-    bool fruitPresent;
-    int fruitX, fruitY;
-
-    GameBoard() : field(HEIGHT, std::vector<Cell>(WIDTH, WALL)), coinsLeft(0), fruitPresent(false) {}
-};
-
-    bool leftBunker = false; // Merkt, ob der Geist schon draußen ist
-};
-
+// Base struct for all moving entities (Pacman, Ghosts)
 struct Entity {
     int x, y;
     Entity(int startX, int startY) : x(startX), y(startY) {}
@@ -80,7 +53,7 @@ public:
 class Leaderboard {
 private:
     std::string filename;
-    std::vector<std::pair<int, std::string>> entries;
+    std::vector<std::pair<int, std::string>> entries; // pair<Score, Name>
 
 public:
     // Loads leaderboard from file and sorts entries
@@ -93,7 +66,8 @@ public:
                 entries.push_back({score, name});
             }
             fileIn.close();
-            std::sort(entries.begin(), entries.end(), [](const auto& a, const auto& b) { return a.first > b.first; });
+            std::sort(entries.begin(), entries.end(),
+                [](const auto& a, const auto& b) { return a.first > b.first; });
             if (entries.size() > 10) entries.resize(10);
         }
     }
@@ -127,7 +101,8 @@ public:
         }
 
         if (updated) {
-            std::sort(entries.begin(), entries.end(), [](const auto& a, const auto& b) { return a.first > b.first; });
+            std::sort(entries.begin(), entries.end(),
+                [](const auto& a, const auto& b) { return a.first > b.first; });
             if (entries.size() > 10) entries.resize(10);
             save();
         }
@@ -157,7 +132,6 @@ struct MazeCell {
 enum GameState {
     STATE_START_MENU,
     STATE_ENTER_NAME,
-    STATE_ENTER_NAME,
     STATE_LEADERBOARD,
     STATE_PLAYING,
     STATE_PAUSED,
@@ -169,19 +143,13 @@ class Game {
 public:
     GameBoard board;
     Player pacman;
-    std::vector<GhostEntity> ghosts;
+    std::vector<Ghost> ghosts;
     Leaderboard leaderboard;
     std::string playerName;
     bool gameOver;
     GameState state;
 
-    static constexpr int bunkerWidth = 5;
-    static constexpr int bunkerHeight = 3;
-    static constexpr int bunkerX = WIDTH / 2 - bunkerWidth / 2;
-    static constexpr int bunkerY = HEIGHT / 2 - bunkerHeight / 2;
-    static constexpr int bunkerOpenX = bunkerX + 2;
-    static constexpr int bunkerOpenY = bunkerY;
-
+    // Initializes the game, board, player, ghosts, leaderboard, and state
     Game()
         : board(),
         pacman(1, 1),
@@ -191,94 +159,13 @@ public:
         state(STATE_START_MENU)
     {
         generateRandomMap();
-        ghosts = {
-            {bunkerX + 1, bunkerY + 1, false},
-            {bunkerX + 2, bunkerY + 1, false},
-            {bunkerX + 3, bunkerY + 1, false},
-            {bunkerX + 2, bunkerY + 2, false}
-        };
         if (board.field[pacman.y][pacman.x] == COIN) {
             board.field[pacman.y][pacman.x] = EMPTY;
             board.coinsLeft--;
         }
     }
 
-    void drawStartMenu() {
-        BeginDrawing();
-        ClearBackground(BLACK);
-        const char* titleText = "PAC-MAN";
-        int titleWidth = MeasureText(titleText, 72);
-        DrawText(titleText, SCREEN_WIDTH/2 - titleWidth/2, 120, 72, YELLOW);
-
-        const char* subText = "Press [ENTER] to start";
-        int subWidth = MeasureText(subText, 32);
-        DrawText(subText, SCREEN_WIDTH/2 - subWidth/2, 250, 32, WHITE);
-
-        const char* escText = "Exit with [ESC]";
-        int escWidth = MeasureText(escText, 24);
-        DrawText(escText, SCREEN_WIDTH/2 - escWidth/2, 300, 24, GRAY);
-
-        const char* lbText = "View Leaderboard with [L]";
-        int lbWidth = MeasureText(lbText, 24);
-        DrawText(lbText, SCREEN_WIDTH/2 - lbWidth/2, 330, 24, GRAY);
-
-        EndDrawing();
-    }
-
-    void drawPauseMenu() {
-        BeginDrawing();
-        ClearBackground(DARKGRAY);
-
-        const char* pauseText = "PAUSE";
-        int pauseWidth = MeasureText(pauseText, 64);
-        DrawText(pauseText, SCREEN_WIDTH/2 - pauseWidth/2, 180, 64, YELLOW);
-
-        const char* continueText = "Continue with [P]";
-        int contWidth = MeasureText(continueText, 32);
-        DrawText(continueText, SCREEN_WIDTH/2 - contWidth/2, 250, 32, WHITE);
-
-        const char* exitText = "Exit with [ESC]";
-        int exitWidth = MeasureText(exitText, 25);
-        int exitY = 300;
-        DrawText(exitText, SCREEN_WIDTH/2 - exitWidth/2, exitY, 25, GRAY);
-
-        const char* warnText = "Back to Main Menu with [Q] (Progress will be lost!)";
-        int warnWidth = MeasureText(warnText, 25);
-        int warnY = exitY + 40;
-        DrawText(warnText, SCREEN_WIDTH/2 - warnWidth/2, warnY, 25, RED);
-
-        EndDrawing();
-    }
-
-    void drawLeaderboard() {
-        BeginDrawing();
-        ClearBackground(BLACK);
-        const char* lbTitle = "Leaderboard";
-        int titleWidth = MeasureText(lbTitle, 48);
-        DrawText(lbTitle, SCREEN_WIDTH/2 - titleWidth/2, 60, 48, YELLOW);
-
-        std::ifstream file("Leaderboard.txt");
-        if (file.is_open()) {
-            std::string name;
-            int score;
-            int line = 0;
-            while (file >> name >> score && line < 10) {
-                std::string entry = std::to_string(line + 1) + ". " + name + " - " + std::to_string(score);
-                DrawText(entry.c_str(), SCREEN_WIDTH/2 - 150, 130 + line * 30, 24, WHITE);
-                line++;
-            }
-            file.close();
-        } else {
-            DrawText("Unable to load leaderboard.", SCREEN_WIDTH/2 - 150, 130, 24, RED);
-        }
-
-        const char* backText = "Press [L] to return";
-        int backWidth = MeasureText(backText, 20);
-        DrawText(backText, SCREEN_WIDTH/2 - backWidth/2, SCREEN_HEIGHT - 50, 20, GRAY);
-
-        EndDrawing();
-    }
-
+    // Randomly shuffles direction arrays for maze generation
     void shuffleDirections(int dx[], int dy[], int n) {
         for (int i = n - 1; i > 0; --i) {
             int j = rand() % (i + 1);
@@ -316,6 +203,7 @@ public:
         const int mazeWidth = WIDTH % 2 == 0 ? WIDTH + 1 : WIDTH;
 
         std::vector<std::vector<MazeCell>> maze(mazeHeight, std::vector<MazeCell>(mazeWidth));
+
         dfs(1, 1, maze);
 
         board.coinsLeft = 0;
@@ -332,6 +220,7 @@ public:
         }
 
         int extraConnections = (WIDTH * HEIGHT) / 6;
+
         for (int i = 0; i < extraConnections; ++i) {
             int x = 1 + rand() % (WIDTH - 2);
             int y = 1 + rand() % (HEIGHT - 2);
@@ -347,48 +236,9 @@ public:
                 }
             }
         }
-
-        // BUNKER exakt nach Vorgabe einbauen
-        //  Y = bunkerY bis bunkerY+2, X = bunkerX bis bunkerX+4
-        // Zeile 0: ##O##
-        // Zeile 1: #FFFF#
-        // Zeile 2: #####
-        for (int y = 0; y < bunkerHeight; ++y) {
-            for (int x = 0; x < bunkerWidth; ++x) {
-                int fx = bunkerX + x;
-                int fy = bunkerY + y;
-                if (y == 0) { // obere Zeile
-                    if (x == 2)
-                        board.field[fy][fx] = BUNKER_OPENING; // Öffnung
-                    else
-                        board.field[fy][fx] = BUNKER_WALL;
-                } else if (y == 1) { // mittlere Zeile
-                    if (x == 0 || x == 4)
-                        board.field[fy][fx] = BUNKER_WALL;
-                    else
-                        board.field[fy][fx] = BUNKER_FLOOR;
-                } else if (y == 2) { // untere Zeile
-                    board.field[fy][fx] = BUNKER_WALL;
-                }
-            }
-        }
-
-        // Entferne ggf. Coins im Bunkerbereich
-        for (int y = 0; y < bunkerHeight; ++y) {
-            for (int x = 0; x < bunkerWidth; ++x) {
-                int fx = bunkerX + x;
-                int fy = bunkerY + y;
-                if (board.field[fy][fx] == BUNKER_FLOOR || board.field[fy][fx] == BUNKER_OPENING) {
-                    if (board.field[fy][fx] == COIN) board.coinsLeft--;
-                    board.field[fy][fx] = board.field[fy][fx]; // explizit setzen
-                }
-            }
-        }
-
-        // --- Diese Zeile garantiert den freien Ausgang! ---
-        board.field[bunkerY - 1][bunkerX + 2] = EMPTY;
     }
 
+    // Handles player name input screen
     bool getPlayerName() {
         char name[32] = {0};
         int letterCount = 0;
@@ -445,9 +295,7 @@ public:
         int ny = pacman.y + dy;
 
         if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) return;
-        // PacMan darf BUNKER_WALL, BUNKER_FLOOR, BUNKER_OPENING nicht betreten!
-        if (board.field[ny][nx] == WALL || board.field[ny][nx] == BUNKER_WALL ||
-            board.field[ny][nx] == BUNKER_FLOOR || board.field[ny][nx] == BUNKER_OPENING) return;
+        if (board.field[ny][nx] == WALL) return;
 
         pacman.x = nx;
         pacman.y = ny;
@@ -470,77 +318,31 @@ public:
         if (GetTime() - lastGhostMove < 0.32) return;
         lastGhostMove = GetTime();
 
-        // Zufallsgenerator für std::shuffle
-        static std::random_device rd;
-        static std::mt19937 rng(rd());
-
         for (auto &g : ghosts) {
-            // Im Bunker: gezielt zur Öffnung
-            if (!g.leftBunker) {
-                // Falls schon auf Öffnung, dann raus
-                if (g.x == bunkerX + 2 && g.y == bunkerY + 1) {
-                    g.y = bunkerY; // raus auf die Öffnung
-                    g.leftBunker = true;
-                    continue;
-                }
-                // Sonst: Bewege dich auf die Öffnung zu
-                int dx = (bunkerX + 2) - g.x;
-                int dy = (bunkerY + 1) - g.y;
-                if (dx != 0) {
-                    int step = (dx > 0) ? 1 : -1;
-                    if (board.field[g.y][g.x + step] == BUNKER_FLOOR)
-                        g.x += step;
-                    else if (dy != 0 && board.field[g.y + ((dy > 0) ? 1 : -1)][g.x] == BUNKER_FLOOR)
-                        g.y += (dy > 0) ? 1 : -1;
-                } else if (dy != 0) {
-                    int step = (dy > 0) ? 1 : -1;
-                    if (board.field[g.y + step][g.x] == BUNKER_FLOOR || board.field[g.y + step][g.x] == BUNKER_OPENING)
-                        g.y += step;
-                }
-            } else {
-                // Außerhalb: 30% gezielt Richtung PacMan, sonst zufällig
-                bool chase = (rand() % 100) < 30;
-                int bestDx = 0, bestDy = 0;
-                int minDist = 10000;
-                std::vector<std::pair<int, int>> moves = { {1,0}, {-1,0}, {0,1}, {0,-1} };
+            int tries = 0;
+            bool moved = false;
+            while (tries < 4 && !moved) {
+                int dir = rand() % 4;
+                int dx = 0, dy = 0;
+                if (dir == 0) dx = 1;
+                else if (dir == 1) dx = -1;
+                else if (dir == 2) dy = 1;
+                else if (dir == 3) dy = -1;
 
-                if (chase) {
-                    for (auto [dx, dy] : moves) {
-                        int nx = g.x + dx, ny = g.y + dy;
-                        if (nx >= 0 && nx < WIDTH && ny >= 0 && ny < HEIGHT) {
-                            Cell c = board.field[ny][nx];
-                            if (c == EMPTY || c == COIN) {
-                                int d = abs(nx - pacman.x) + abs(ny - pacman.y);
-                                if (d < minDist) {
-                                    minDist = d;
-                                    bestDx = dx;
-                                    bestDy = dy;
-                                }
-                            }
-                        }
-                    }
+                int nx = g.x + dx;
+                int ny = g.y + dy;
+
+                if (nx >= 0 && nx < WIDTH && ny >= 0 && ny < HEIGHT && board.field[ny][nx] != WALL) {
+                    g.x = nx;
+                    g.y = ny;
+                    moved = true;
                 }
-                if (!chase || (bestDx == 0 && bestDy == 0)) {
-                    // Zufällig bewegen
-                    std::shuffle(moves.begin(), moves.end(), rng);
-                    for (auto [dx, dy] : moves) {
-                        int nx = g.x + dx, ny = g.y + dy;
-                        if (nx >= 0 && nx < WIDTH && ny >= 0 && ny < HEIGHT) {
-                            Cell c = board.field[ny][nx];
-                            if (c == EMPTY || c == COIN) {
-                                bestDx = dx;
-                                bestDy = dy;
-                                break;
-                            }
-                        }
-                    }
-                }
-                g.x += bestDx;
-                g.y += bestDy;
+                tries++;
             }
         }
     }
 
+    // Checks for collision between Pacman and ghosts
     void checkCollision() {
         for (auto &g : ghosts) {
             if (g.x == pacman.x && g.y == pacman.y) {
@@ -666,12 +468,6 @@ public:
 
                 if (board.field[y][x] == WALL) {
                     DrawRectangleRec(rect, BLUE);
-                } else if (board.field[y][x] == BUNKER_WALL) {
-                    DrawRectangleRec(rect, BLUE);
-                } else if (board.field[y][x] == BUNKER_OPENING) {
-                    DrawRectangleRec(rect, LIGHTGRAY); // Öffnung: helleres Blau
-                } else if (board.field[y][x] == BUNKER_FLOOR) {
-                    DrawRectangleRec(rect, DARKGRAY);
                 } else {
                     DrawRectangleRec(rect, BLACK);
                     if (board.field[y][x] == COIN) {
