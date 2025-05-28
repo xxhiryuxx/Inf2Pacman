@@ -18,7 +18,7 @@ in MSYS2 MinGW UCRT64 Shell
 indiviuellen Dateipfad z.B.:
 cd /c/Users/lmeub/Documents/UNI/InfLabor2/Inf2Pacman
 
-wenn noch keine .exe vorhanden
+wenn noch keine aktuelle .exe vorhanden
 g++ main.cpp -o main.exe -lraylib -lopengl32 -lgdi32 -lwinmm
 
 ./main.exe
