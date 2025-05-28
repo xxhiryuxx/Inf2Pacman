@@ -169,11 +169,11 @@ public:
 
         const char* pauseText = "PAUSE";
         int pauseWidth = MeasureText(pauseText, 64);
-        DrawText(pauseText, SCREEN_WIDTH/2 - pauseWidth/2, 180, 64, WHITE);
+        DrawText(pauseText, SCREEN_WIDTH/2 - pauseWidth/2, 180, 64, YELLOW);
 
         const char* continueText = "Continue with [P]";
         int contWidth = MeasureText(continueText, 32);
-        DrawText(continueText, SCREEN_WIDTH/2 - contWidth/2, 250, 32, YELLOW);
+        DrawText(continueText, SCREEN_WIDTH/2 - contWidth/2, 250, 32, WHITE);
 
         const char* exitText = "Exit with [ESC]";
         int exitWidth = MeasureText(exitText, 25);
