@@ -36,29 +36,48 @@ public:
                 entries.push_back({score, name});
             }
             fileIn.close();
+            // Sortieren beim Laden, falls Datei unsortiert ist
+            std::sort(entries.begin(), entries.end(),
+                [](const auto& a, const auto& b) { return a.first > b.first; });
+            if (entries.size() > 10) entries.resize(10);
         }
     }
 
     int getHighscore() const {
         if (entries.empty()) return 0;
-        return std::max_element(entries.begin(), entries.end(),
-            [](const auto& a, const auto& b) { return a.first < b.first; })->first;
+        return entries.front().first;
     }
 
     std::string getHighscoreName() const {
         if (entries.empty()) return "None";
-        return std::max_element(entries.begin(), entries.end(),
-            [](const auto& a, const auto& b) { return a.first < b.first; })->second;
+        return entries.front().second;
     }
 
     bool tryUpdateHighscore(int score, const std::string& playerName) {
-        int currentHighscore = getHighscore();
-        if (score > currentHighscore) {
+        bool updated = false;
+        // Prüfe, ob Name schon existiert
+        auto it = std::find_if(entries.begin(), entries.end(),
+            [&](const auto& entry) { return entry.second == playerName; });
+
+        if (it != entries.end()) {
+            if (score > it->first) {
+                it->first = score;
+                updated = true;
+            }
+        } else {
             entries.push_back({score, playerName});
-            save();
-            return true;
+            updated = true;
         }
-        return false;
+
+        if (updated) {
+            // Sortiere absteigend nach Score
+            std::sort(entries.begin(), entries.end(),
+                [](const auto& a, const auto& b) { return a.first > b.first; });
+            // Nur Top 10 behalten
+            if (entries.size() > 10) entries.resize(10);
+            save();
+        }
+        return updated;
     }
 
     void save() {
@@ -162,13 +181,17 @@ public:
         int contWidth = MeasureText(continueText, 32);
         DrawText(continueText, SCREEN_WIDTH/2 - contWidth/2, 250, 32, YELLOW);
 
+        // "Exit with [ESC]" in Schriftgröße 25
         const char* exitText = "Exit with [ESC]";
-        int exitWidth = MeasureText(exitText, 24);
-        DrawText(exitText, SCREEN_WIDTH/2 - exitWidth/2, 300, 24, GRAY);
+        int exitWidth = MeasureText(exitText, 25);
+        int exitY = 300;
+        DrawText(exitText, SCREEN_WIDTH/2 - exitWidth/2, exitY, 25, GRAY);
 
-        const char* warnText = "Back to Main Menu with [Q] (Warning: Progress will be lost!)";
-        int warnWidth = MeasureText(warnText, 20);
-        DrawText(warnText, SCREEN_WIDTH/2 - warnWidth/2, 340, 20, RED);
+        // Warnung direkt darunter, 40px Abstand, gleiche Schriftgröße 25
+        const char* warnText = "Back to Main Menu with [Q] (Progress will be lost!)";
+        int warnWidth = MeasureText(warnText, 25);
+        int warnY = exitY + 40;
+        DrawText(warnText, SCREEN_WIDTH/2 - warnWidth/2, warnY, 25, RED);
 
         EndDrawing();
     }
@@ -464,18 +487,15 @@ public:
         std::string highscoreText = "Highscore: " + std::to_string(leaderboard.getHighscore()) + " (" + leaderboard.getHighscoreName() + ")";
         DrawText(highscoreText.c_str(), 10, 70, 20, WHITE);
 
-
         EndDrawing();
     }
 
     void waitForKeyRelease(int key) {
         while (IsKeyDown(key) && !WindowShouldClose()) {
-            // Einfach kurz warten und Events abholen
             BeginDrawing();
             EndDrawing();
         }
     }
-
 
     void run() {
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pac-Man Raylib");
@@ -530,7 +550,7 @@ public:
                         int w = MeasureText(warn, 32);
                         DrawText(warn, SCREEN_WIDTH/2 - w/2, SCREEN_HEIGHT/2, 32, RED);
                         EndDrawing();
-                        WaitTime(1.2); // kurze Pause, z. B. 1,2 Sekunden
+                        WaitTime(1.2);
                         *this = Game();
                         state = STATE_START_MENU;
                         getPlayerName();
