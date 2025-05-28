@@ -7,7 +7,7 @@
 #include <string>
 #include <limits>
 #include <algorithm>
-#include <cstring>
+
 
 const int WIDTH = 25;
 const int HEIGHT = 15;
@@ -47,8 +47,6 @@ public:
 
     // Generates a random maze and places coins
     void generateRandomMap();
-    // (Unused) Would place a fruit on the board
-    void placeFruit();
 };
 
 // Handles leaderboard file I/O and highscore logic
@@ -133,7 +131,7 @@ struct MazeCell {
 // All possible game states
 enum GameState {
     STATE_START_MENU,
-    STATE_ENTER_NAME,    // <--- NEU
+    STATE_ENTER_NAME,
     STATE_LEADERBOARD,
     STATE_PLAYING,
     STATE_PAUSED,
