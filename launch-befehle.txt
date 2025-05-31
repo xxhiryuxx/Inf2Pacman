@@ -19,7 +19,13 @@ indiviuellen Dateipfad z.B.:
 cd /c/Users/lmeub/Documents/UNI/InfLabor2/Inf2Pacman
 cd /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman
 
-wenn noch keine aktuelle .exe vorhanden
-g++ main.cpp -o main.exe -lraylib -lopengl32 -lgdi32 -lwinmm
+dann builden mit:
+mkdir build
+cd build
+cmake -G"MinGW Makefiles" ..
+make
 
-./main.exe
+und ausführen mit:
+./pacman.exe
+oder einfach nur
+pacman.exe
