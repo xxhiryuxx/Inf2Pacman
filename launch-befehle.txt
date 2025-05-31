@@ -26,6 +26,6 @@ cmake -G"MinGW Makefiles" ..
 make
 
 und ausführen mit:
-./pacman.exe
+./Pacman_Game.exe
 oder einfach nur
-pacman.exe
+Pacman_Game.exe
