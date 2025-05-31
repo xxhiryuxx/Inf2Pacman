@@ -34,10 +34,9 @@ bool Leaderboard::tryUpdateHighscore(int score, const std::string& name) {
 void Leaderboard::load() {
     entries.clear();
     std::ifstream file(filename);
-    int score;
     std::string name;
-    while (file >> score && std::getline(file, name)) {
-        if (!name.empty() && name[0] == ' ') name = name.substr(1);
+    int score;
+    while (file >> name >> score) {
         entries.emplace_back(score, name);
     }
 }
@@ -45,6 +44,6 @@ void Leaderboard::load() {
 void Leaderboard::save() const {
     std::ofstream file(filename);
     for (const auto& entry : entries) {
-        file << entry.first << " " << entry.second << "\n";
+        file << entry.second << " " << entry.first << "\n";
     }
 }
