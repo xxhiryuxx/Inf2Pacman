@@ -1,12 +1,15 @@
 
+// Implementation of Renderer: handles all drawing for the game
 #include "Renderer.h"
 #include "raylib.h"
 #include <fstream>
 #include "Constants.h"
 
+// Draws the main game screen: map, player, ghosts, score, coins, highscore
 void Renderer::drawGame(const GameBoard& board, const Player& pacman, const std::vector<Ghost>& ghosts, const Leaderboard& leaderboard) {
     BeginDrawing();
     ClearBackground(BLACK);
+    // Draw map (walls, coins, empty)
     for (int y = 0; y < HEIGHT; ++y) {
         for (int x = 0; x < WIDTH; ++x) {
             Rectangle rect = {
@@ -25,19 +28,23 @@ void Renderer::drawGame(const GameBoard& board, const Player& pacman, const std:
             }
         }
     }
+    // Draw fruit if present
     if (board.fruitPresent) {
         DrawCircle(board.fruitX * TILE_SIZE + TILE_SIZE/2,
                     board.fruitY * TILE_SIZE + TILE_SIZE/2,
                     12, RED);
     }
+    // Draw ghosts
     for (const auto& g : ghosts) {
         DrawCircle(g.x * TILE_SIZE + TILE_SIZE/2,
                     g.y * TILE_SIZE + TILE_SIZE/2,
                     TILE_SIZE/2 - 4, PURPLE);
     }
+    // Draw Pacman
     DrawCircle(pacman.x * TILE_SIZE + TILE_SIZE/2,
                 pacman.y * TILE_SIZE + TILE_SIZE/2,
                 TILE_SIZE/2 - 4, YELLOW);
+    // Draw score, coins left, and highscore
     std::string scoreText = "Score: " + std::to_string(pacman.score);
     DrawText(scoreText.c_str(), 10, 10, 24, WHITE);
     std::string coinsText = "Coins left: " + std::to_string(board.coinsLeft);
@@ -47,6 +54,7 @@ void Renderer::drawGame(const GameBoard& board, const Player& pacman, const std:
     EndDrawing();
 }
 
+// Draws the start menu screen
 void Renderer::drawStartMenu(int screenWidth, int screenHeight) {
     BeginDrawing();
     ClearBackground(BLACK);
@@ -65,6 +73,7 @@ void Renderer::drawStartMenu(int screenWidth, int screenHeight) {
     EndDrawing();
 }
 
+// Draws the pause menu screen
 void Renderer::drawPauseMenu(int screenWidth, int screenHeight) {
     BeginDrawing();
     ClearBackground(DARKGRAY);
@@ -85,6 +94,7 @@ void Renderer::drawPauseMenu(int screenWidth, int screenHeight) {
     EndDrawing();
 }
 
+// Draws the leaderboard screen (top 10 scores)
 void Renderer::drawLeaderboard(int screenWidth, int screenHeight, const std::string& filename) {
     BeginDrawing();
     ClearBackground(BLACK);
@@ -111,6 +121,7 @@ void Renderer::drawLeaderboard(int screenWidth, int screenHeight, const std::str
     EndDrawing();
 }
 
+// Draws the game over screen (win/lose, score, highscore)
 void Renderer::drawGameOver(int screenWidth, int screenHeight, int score, bool gameOver, const Leaderboard& leaderboard, const std::string& playerName, bool newHighscore) {
     BeginDrawing();
     ClearBackground(BLACK);

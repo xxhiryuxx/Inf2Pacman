@@ -1,3 +1,4 @@
+// Ghost struct: represents a ghost enemy
 #pragma once
 #include "Entity.h"
 

@@ -1,14 +1,17 @@
+// Main game logic implementation
 #include "Game.h"
 #include "raylib.h"
 #include "Renderer.h"
 #include "MazeCell.h"
+// Main game loop
 void Game::run() {
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pac-Man Raylib");
-    SetTargetFPS(60);
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pac-Man Raylib"); // Initialize the game window
+    SetTargetFPS(60); // Set the target frames per second
 
-    while (!WindowShouldClose()) {
+    while (!WindowShouldClose()) { // Main loop until window is closed
         switch (state) {
             case STATE_START_MENU:
+                // Draw the start menu and handle input
                 Renderer::drawStartMenu(SCREEN_WIDTH, SCREEN_HEIGHT);
                 if (IsKeyPressed(KEY_ENTER)) {
                     state = STATE_ENTER_NAME;
@@ -24,12 +27,14 @@ void Game::run() {
                 break;
 
             case STATE_ENTER_NAME:
+                // Prompt the player to enter their name
                 if (getPlayerName()) {
                     state = STATE_PLAYING;
                 }
                 break;
 
             case STATE_PLAYING:
+                // Main gameplay: move Pacman, ghosts, check collisions, draw game
                 if (IsKeyPressed(KEY_P)) {
                     state = STATE_PAUSED;
                     break;
@@ -46,11 +51,13 @@ void Game::run() {
                 break;
 
             case STATE_PAUSED:
+                // Draw pause menu and handle pause input
                 Renderer::drawPauseMenu(SCREEN_WIDTH, SCREEN_HEIGHT);
                 if (IsKeyPressed(KEY_P)) {
                     state = STATE_PLAYING;
                     waitForKeyRelease(KEY_P);
                 } else if (IsKeyPressed(KEY_Q)) {
+                    // Warn user and return to main menu
                     BeginDrawing();
                     ClearBackground(DARKGRAY);
                     const char* warn = "Progress will be lost! Returning to main menu...";
@@ -67,6 +74,7 @@ void Game::run() {
                 break;
 
             case STATE_LEADERBOARD:
+                // Show the leaderboard
                 Renderer::drawLeaderboard(SCREEN_WIDTH, SCREEN_HEIGHT, "Leaderboard.txt");
                 if (IsKeyPressed(KEY_L)) {
                     state = STATE_START_MENU;
@@ -75,6 +83,7 @@ void Game::run() {
                 break;
 
             case STATE_GAME_OVER: {
+                // Handle game over state and highscore
                 bool newHighscore = leaderboard.tryUpdateHighscore(pacman.score, playerName);
                 Renderer::drawGameOver(SCREEN_WIDTH, SCREEN_HEIGHT, pacman.score, gameOver, leaderboard, playerName, newHighscore);
                 if (IsKeyPressed(KEY_ENTER)) {
@@ -85,9 +94,10 @@ void Game::run() {
             }
         }
     }
-    CloseWindow();
+    CloseWindow(); // Clean up and close window
 }
 
+// Constructor: initializes game objects and generates the map
 Game::Game()
     : board(),
       pacman(1, 1),
@@ -96,13 +106,15 @@ Game::Game()
       gameOver(false),
       state(STATE_START_MENU)
 {
-    generateRandomMap();
+    board.generateRandomMap(); // Generate the initial map
+    // Remove coin from Pacman's starting position if present
     if (board.field[pacman.y][pacman.x] == COIN) {
         board.field[pacman.y][pacman.x] = EMPTY;
         board.coinsLeft--;
     }
 }
 
+// Shuffle the direction arrays for random maze generation
 void Game::shuffleDirections(int dx[], int dy[], int n) {
     for (int i = n - 1; i > 0; --i) {
         int j = rand() % (i + 1);
@@ -111,6 +123,7 @@ void Game::shuffleDirections(int dx[], int dy[], int n) {
     }
 }
 
+// Depth-first search for maze generation
 void Game::dfs(int x, int y, std::vector<std::vector<MazeCell>>& maze) {
     maze[y][x].visited = true;
     maze[y][x].wall = false;
@@ -129,40 +142,9 @@ void Game::dfs(int x, int y, std::vector<std::vector<MazeCell>>& maze) {
     }
 }
 
-void Game::generateRandomMap() {
-    const int mazeHeight = HEIGHT % 2 == 0 ? HEIGHT + 1 : HEIGHT;
-    const int mazeWidth = WIDTH % 2 == 0 ? WIDTH + 1 : WIDTH;
-    std::vector<std::vector<MazeCell>> maze(mazeHeight, std::vector<MazeCell>(mazeWidth));
-    dfs(1, 1, maze);
-    board.coinsLeft = 0;
-    board.field.resize(HEIGHT, std::vector<Cell>(WIDTH, WALL));
-    for (int y = 0; y < HEIGHT; ++y) {
-        for (int x = 0; x < WIDTH; ++x) {
-            if (y < mazeHeight && x < mazeWidth && !maze[y][x].wall) {
-                board.field[y][x] = COIN;
-                board.coinsLeft++;
-            } else {
-                board.field[y][x] = WALL;
-            }
-        }
-    }
-    int extraConnections = (WIDTH * HEIGHT) / 6;
-    for (int i = 0; i < extraConnections; ++i) {
-        int x = 1 + rand() % (WIDTH - 2);
-        int y = 1 + rand() % (HEIGHT - 2);
-        if (board.field[y][x] == WALL) {
-            if (board.field[y][x - 1] != WALL && board.field[y][x + 1] != WALL) {
-                board.field[y][x] = COIN;
-                board.coinsLeft++;
-            }
-            else if (board.field[y - 1][x] != WALL && board.field[y + 1][x] != WALL) {
-                board.field[y][x] = COIN;
-                board.coinsLeft++;
-            }
-        }
-    }
-}
 
+
+// Prompts the player to enter their name
 bool Game::getPlayerName() {
     char name[32] = {0};
     int letterCount = 0;
@@ -198,9 +180,10 @@ bool Game::getPlayerName() {
     return enterPressed;
 }
 
+// Handles Pacman's movement and coin/fruit collection
 void Game::movePacman() {
     static double lastMoveTime = 0.0;
-    if (GetTime() - lastMoveTime < 0.12) return;
+    if (GetTime() - lastMoveTime < 0.12) return; // Control movement speed
     lastMoveTime = GetTime();
     int dx = 0, dy = 0;
     if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) dy = -1;
@@ -225,9 +208,10 @@ void Game::movePacman() {
 }
 
 
+// Handles movement of all ghosts (random movement)
 void Game::moveGhosts() {
     static double lastGhostMove = 0.0;
-    if (GetTime() - lastGhostMove < 0.32) return;
+    if (GetTime() - lastGhostMove < 0.32) return; // Control ghost speed
     lastGhostMove = GetTime();
     for (auto &g : ghosts) {
         int tries = 0;
@@ -253,6 +237,7 @@ void Game::moveGhosts() {
     }
 }
 
+// Checks for collisions between Pacman and ghosts
 void Game::checkCollision() {
     for (auto &g : ghosts) {
         if (g.x == pacman.x && g.y == pacman.y) {
@@ -262,6 +247,7 @@ void Game::checkCollision() {
     }
 }
 
+// Randomly spawns a fruit on an empty cell
 void Game::spawnFruit() {
     if (board.fruitPresent || (rand() % 20) != 0) return;
 
@@ -282,6 +268,7 @@ void Game::spawnFruit() {
     }
 }
 
+// Waits until the specified key is released
 void Game::waitForKeyRelease(int key) {
     while (IsKeyDown(key) && !WindowShouldClose()) {
         BeginDrawing();

@@ -1,3 +1,4 @@
+// Game class declaration and main game state definitions
 #pragma once
 #include "raylib.h"
 #include "GameBoard.h"
@@ -9,35 +10,35 @@
 #include <vector>
 #include <string>
 
-// All possible game states
+// All possible game states for the Pacman game
 enum GameState {
-    STATE_START_MENU,
-    STATE_ENTER_NAME,
-    STATE_LEADERBOARD,
-    STATE_PLAYING,
-    STATE_PAUSED,
-    STATE_GAME_OVER
+    STATE_START_MENU,    // Main menu
+    STATE_ENTER_NAME,    // Enter player name
+    STATE_LEADERBOARD,  // Show leaderboard
+    STATE_PLAYING,      // Game is running
+    STATE_PAUSED,       // Game is paused
+    STATE_GAME_OVER     // Game over screen
 };
 
+// Main Game class: manages all game logic and state
 class Game {
 public:
-    GameBoard board;
-    Player pacman;
-    std::vector<Ghost> ghosts;
-    Leaderboard leaderboard;
-    std::string playerName;
-    bool gameOver;
-    GameState state;
+    GameBoard board;                // The game board (map, coins, walls, etc.)
+    Player pacman;                  // The player character
+    std::vector<Ghost> ghosts;      // All ghosts in the game
+    Leaderboard leaderboard;        // Highscore/leaderboard manager
+    std::string playerName;         // Current player's name
+    bool gameOver;                  // True if the game is over
+    GameState state;                // Current game state
 
     Game();
-    void shuffleDirections(int dx[], int dy[], int n);
-    void dfs(int x, int y, std::vector<std::vector<MazeCell>>& maze);
-    void generateRandomMap();
-    bool getPlayerName();
-    void movePacman();
-    void moveGhosts();
-    void run();
-    void checkCollision();
-    void spawnFruit();
-    void waitForKeyRelease(int key);
+    void shuffleDirections(int dx[], int dy[], int n); // Shuffle directions for maze generation
+    void dfs(int x, int y, std::vector<std::vector<MazeCell>>& maze); // DFS for maze
+    bool getPlayerName();           // Prompt for player name
+    void movePacman();              // Move Pacman
+    void moveGhosts();              // Move ghosts
+    void run();                     // Main game loop
+    void checkCollision();          // Check for collisions
+    void spawnFruit();              // Randomly spawn fruit
+    void waitForKeyRelease(int key);// Wait for key release
 };
