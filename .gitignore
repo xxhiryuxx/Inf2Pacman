@@ -1,0 +1,21 @@
+# Build-Ordner
+build/
+
+# CMake-Artefakte
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# macOS-spezifische Dateien
+.DS_Store
+
+# Editor-/Temp-Dateien
+*~
+*.swp
+*.swo
+
+# Ausführbare Dateien (je nach Plattform)
+*.exe
+*.out
+*.app

@@ -16,6 +16,22 @@ set(SOURCES
 
 add_executable(Pacman_Game ${SOURCES})
 
+# Plattformabhängige Konfiguration
+if(APPLE)
+    message(STATUS "Configuring for macOS")
+    # Optional: Falls Homebrew raylib nicht automatisch gefunden wird
+    set(CMAKE_PREFIX_PATH "/opt/homebrew/Cellar/raylib")
+elseif(WIN32)
+    message(STATUS "Configuring for Windows")
+    # Optional: Benutzerdefinierter raylib-Pfad für Windows (falls nötig)
+    # set(CMAKE_PREFIX_PATH "C:/libs/raylib")
+endif()
+
+# Raylib finden
 find_package(raylib REQUIRED)
 
+# Raylib einbinden
 target_link_libraries(Pacman_Game PRIVATE raylib)
+
+# Optional: Für bessere IDE-Erkennung (z. B. CLion, VSCode)
+target_include_directories(Pacman_Game PRIVATE ${raylib_INCLUDE_DIRS})
