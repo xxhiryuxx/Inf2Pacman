@@ -2,6 +2,7 @@
 #pragma once
 #include <vector>
 #include "Constants.h"
+#include "MazeCell.h"
 
 class GameBoard {
 public:
@@ -10,4 +11,7 @@ public:
     bool fruitPresent;
     int fruitX, fruitY;
     void generateRandomMap();
+private:
+    static void shuffleDirections(int dx[], int dy[], int n);
+    static void dfs(int x, int y, std::vector<std::vector<MazeCell>>& maze);
 };

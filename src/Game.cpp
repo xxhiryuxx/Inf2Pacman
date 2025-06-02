@@ -96,72 +96,14 @@ Game::Game()
       gameOver(false),
       state(STATE_START_MENU)
 {
-    generateRandomMap();
+    board.generateRandomMap();
     if (board.field[pacman.y][pacman.x] == COIN) {
         board.field[pacman.y][pacman.x] = EMPTY;
         board.coinsLeft--;
     }
 }
 
-void Game::shuffleDirections(int dx[], int dy[], int n) {
-    for (int i = n - 1; i > 0; --i) {
-        int j = rand() % (i + 1);
-        std::swap(dx[i], dx[j]);
-        std::swap(dy[i], dy[j]);
-    }
-}
 
-void Game::dfs(int x, int y, std::vector<std::vector<MazeCell>>& maze) {
-    maze[y][x].visited = true;
-    maze[y][x].wall = false;
-    int dx[4] = {2, -2, 0, 0};
-    int dy[4] = {0, 0, 2, -2};
-    shuffleDirections(dx, dy, 4);
-    for (int i = 0; i < 4; ++i) {
-        int nx = x + dx[i];
-        int ny = y + dy[i];
-        if (nx > 0 && nx < (int)maze[0].size() - 1 &&
-            ny > 0 && ny < (int)maze.size() - 1 &&
-            !maze[ny][nx].visited) {
-            maze[y + dy[i] / 2][x + dx[i] / 2].wall = false;
-            dfs(nx, ny, maze);
-        }
-    }
-}
-
-void Game::generateRandomMap() {
-    const int mazeHeight = HEIGHT % 2 == 0 ? HEIGHT + 1 : HEIGHT;
-    const int mazeWidth = WIDTH % 2 == 0 ? WIDTH + 1 : WIDTH;
-    std::vector<std::vector<MazeCell>> maze(mazeHeight, std::vector<MazeCell>(mazeWidth));
-    dfs(1, 1, maze);
-    board.coinsLeft = 0;
-    board.field.resize(HEIGHT, std::vector<Cell>(WIDTH, WALL));
-    for (int y = 0; y < HEIGHT; ++y) {
-        for (int x = 0; x < WIDTH; ++x) {
-            if (y < mazeHeight && x < mazeWidth && !maze[y][x].wall) {
-                board.field[y][x] = COIN;
-                board.coinsLeft++;
-            } else {
-                board.field[y][x] = WALL;
-            }
-        }
-    }
-    int extraConnections = (WIDTH * HEIGHT) / 6;
-    for (int i = 0; i < extraConnections; ++i) {
-        int x = 1 + rand() % (WIDTH - 2);
-        int y = 1 + rand() % (HEIGHT - 2);
-        if (board.field[y][x] == WALL) {
-            if (board.field[y][x - 1] != WALL && board.field[y][x + 1] != WALL) {
-                board.field[y][x] = COIN;
-                board.coinsLeft++;
-            }
-            else if (board.field[y - 1][x] != WALL && board.field[y + 1][x] != WALL) {
-                board.field[y][x] = COIN;
-                board.coinsLeft++;
-            }
-        }
-    }
-}
 
 bool Game::getPlayerName() {
     char name[32] = {0};

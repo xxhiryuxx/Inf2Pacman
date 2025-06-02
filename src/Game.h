@@ -30,9 +30,7 @@ public:
     GameState state;
 
     Game();
-    void shuffleDirections(int dx[], int dy[], int n);
-    void dfs(int x, int y, std::vector<std::vector<MazeCell>>& maze);
-    void generateRandomMap();
+    // Map generation helpers moved to GameBoard
     bool getPlayerName();
     void movePacman();
     void moveGhosts();
