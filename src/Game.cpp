@@ -2,35 +2,29 @@
 #include "raylib.h"
 #include "Renderer.h"
 #include "MazeCell.h"
-void Game::run() {
 
+// Main game loop and state management
+void Game::run() {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pac-Man Raylib");
     Renderer::init();
     SetTargetFPS(60);
 
+    // Main game loop
     while (!WindowShouldClose()) {
         switch (state) {
             case STATE_START_MENU:
                 Renderer::drawStartMenu(SCREEN_WIDTH, SCREEN_HEIGHT);
-                if (IsKeyPressed(KEY_ENTER)) {
-                    state = STATE_ENTER_NAME;
-                }
+                if (IsKeyPressed(KEY_ENTER)) state = STATE_ENTER_NAME;
                 if (IsKeyPressed(KEY_ESCAPE)) {
                     waitForKeyRelease(KEY_ESCAPE);
                     CloseWindow();
                     return;
                 }
-                if (IsKeyPressed(KEY_L)) {
-                    state = STATE_LEADERBOARD;
-                }
+                if (IsKeyPressed(KEY_L)) state = STATE_LEADERBOARD;
                 break;
-
             case STATE_ENTER_NAME:
-                if (getPlayerName()) {
-                    state = STATE_PLAYING;
-                }
+                if (getPlayerName()) state = STATE_PLAYING;
                 break;
-
             case STATE_PLAYING:
                 if (IsKeyPressed(KEY_P)) {
                     state = STATE_PAUSED;
@@ -46,7 +40,6 @@ void Game::run() {
                     state = STATE_GAME_OVER;
                 }
                 break;
-
             case STATE_PAUSED:
                 Renderer::drawPauseMenu(SCREEN_WIDTH, SCREEN_HEIGHT);
                 if (IsKeyPressed(KEY_P)) {
@@ -67,7 +60,6 @@ void Game::run() {
                     state = STATE_START_MENU;
                 }
                 break;
-
             case STATE_LEADERBOARD:
                 Renderer::drawLeaderboard(SCREEN_WIDTH, SCREEN_HEIGHT, "Leaderboard.txt");
                 if (IsKeyPressed(KEY_L)) {
@@ -75,7 +67,6 @@ void Game::run() {
                     waitForKeyRelease(KEY_L);
                 }
                 break;
-
             case STATE_GAME_OVER: {
                 bool newHighscore = leaderboard.tryUpdateHighscore(pacman.score, playerName);
                 Renderer::drawGameOver(SCREEN_WIDTH, SCREEN_HEIGHT, pacman.score, gameOver, leaderboard, playerName, newHighscore);
@@ -87,17 +78,19 @@ void Game::run() {
             }
         }
     }
+    // Cleanup resources
     Renderer::unload();
     CloseWindow();
 }
 
+// Constructs a new game and initializes all components
 Game::Game()
     : board(),
-    pacman(1, 1),
-    ghosts({Ghost(WIDTH - 2, HEIGHT - 2), Ghost(1, HEIGHT - 2), Ghost(WIDTH - 2, 1), Ghost(WIDTH / 2, HEIGHT / 2)}),
-    leaderboard("Leaderboard.txt"),
-    gameOver(false),
-    state(STATE_START_MENU)
+      pacman(1, 1),
+      ghosts({Ghost(WIDTH - 2, HEIGHT - 2), Ghost(1, HEIGHT - 2), Ghost(WIDTH - 2, 1), Ghost(WIDTH / 2, HEIGHT / 2)}),
+      leaderboard("Leaderboard.txt"),
+      gameOver(false),
+      state(STATE_START_MENU)
 {
     board.generateRandomMap();
     if (board.field[pacman.y][pacman.x] == COIN) {
@@ -108,6 +101,7 @@ Game::Game()
 
 
 
+// Handles player name input at the start of the game
 bool Game::getPlayerName() {
     char name[32] = {0};
     int letterCount = 0;
@@ -143,6 +137,7 @@ bool Game::getPlayerName() {
     return enterPressed;
 }
 
+// Handles Pac-Man movement and coin/fruit collection
 void Game::movePacman() {
     static double lastMoveTime = 0.0;
     if (GetTime() - lastMoveTime < 0.12) return;
@@ -170,6 +165,7 @@ void Game::movePacman() {
 }
 
 
+// Handles ghost movement logic
 void Game::moveGhosts() {
     static double lastGhostMove = 0.0;
     if (GetTime() - lastGhostMove < 0.32) return;
@@ -198,6 +194,7 @@ void Game::moveGhosts() {
     }
 }
 
+// Checks for collisions between Pac-Man and ghosts
 void Game::checkCollision() {
     for (auto &g : ghosts) {
         if (g.x == pacman.x && g.y == pacman.y) {
@@ -207,6 +204,7 @@ void Game::checkCollision() {
     }
 }
 
+// Spawns a fruit at a random empty location
 void Game::spawnFruit() {
     if (board.fruitPresent || (rand() % 20) != 0) return;
 
@@ -227,6 +225,7 @@ void Game::spawnFruit() {
     }
 }
 
+// Waits for a key to be released before continuing
 void Game::waitForKeyRelease(int key) {
     while (IsKeyDown(key) && !WindowShouldClose()) {
         BeginDrawing();

@@ -8,13 +8,15 @@
 #include "Leaderboard.h"
 
 
-// Only one definition of static members and methods
+
 Texture2D Renderer::pacmanTexture = {0};
 
+// Loads the Pac-Man texture from the assets folder
 void Renderer::init() {
     pacmanTexture = LoadTexture("../assets/Pacman.png");
 }
 
+// Unloads the Pac-Man texture
 void Renderer::unload() {
     if (pacmanTexture.id != 0) {
         UnloadTexture(pacmanTexture);
@@ -24,10 +26,12 @@ void Renderer::unload() {
 
 
 
+// Draws the main game screen: board, player, ghosts, and UI
 void Renderer::drawGame(const GameBoard& board, const Player& pacman, const std::vector<Ghost>& ghosts, const Leaderboard& leaderboard) {
     BeginDrawing();
     ClearBackground(BLACK);
 
+    // Draw the game board
     for (int y = 0; y < HEIGHT; ++y) {
         for (int x = 0; x < WIDTH; ++x) {
             Rectangle rect = {
@@ -47,29 +51,32 @@ void Renderer::drawGame(const GameBoard& board, const Player& pacman, const std:
         }
     }
 
+    // Draw the fruit if present
     if (board.fruitPresent) {
         DrawCircle(board.fruitX * TILE_SIZE + TILE_SIZE/2,
-                    board.fruitY * TILE_SIZE + TILE_SIZE/2,
-                    12, RED);
+                   board.fruitY * TILE_SIZE + TILE_SIZE/2,
+                   12, RED);
     }
 
+    // Draw all ghosts
     for (const auto& g : ghosts) {
         DrawCircle(g.x * TILE_SIZE + TILE_SIZE/2,
-                    g.y * TILE_SIZE + TILE_SIZE/2,
-                    TILE_SIZE/2 - 4, PURPLE);
+                   g.y * TILE_SIZE + TILE_SIZE/2,
+                   TILE_SIZE/2 - 4, PURPLE);
     }
 
-    // Pacman als Bild zeichnen
+    // Draw Pac-Man
     Rectangle sourceRec = { 0.0f, 0.0f, (float)pacmanTexture.width, (float)pacmanTexture.height };
     Rectangle destRec = {
-        pacman.x * TILE_SIZE,
-        pacman.y * TILE_SIZE,
+        (float)(pacman.x * TILE_SIZE),
+        (float)(pacman.y * TILE_SIZE),
         (float)TILE_SIZE,
         (float)TILE_SIZE
     };
     Vector2 origin = { 0.0f, 0.0f };
     DrawTexturePro(pacmanTexture, sourceRec, destRec, origin, 0.0f, WHITE);
 
+    // Draw UI
     std::string scoreText = "Score: " + std::to_string(pacman.score);
     DrawText(scoreText.c_str(), 10, 10, 24, WHITE);
 
@@ -82,6 +89,7 @@ void Renderer::drawGame(const GameBoard& board, const Player& pacman, const std:
     EndDrawing();
 }
 
+// Draws the start menu
 void Renderer::drawStartMenu(int screenWidth, int screenHeight) {
     BeginDrawing();
     ClearBackground(BLACK);
@@ -100,6 +108,7 @@ void Renderer::drawStartMenu(int screenWidth, int screenHeight) {
     EndDrawing();
 }
 
+// Draws the pause menu
 void Renderer::drawPauseMenu(int screenWidth, int screenHeight) {
     BeginDrawing();
     ClearBackground(DARKGRAY);
@@ -120,6 +129,7 @@ void Renderer::drawPauseMenu(int screenWidth, int screenHeight) {
     EndDrawing();
 }
 
+// Draws the leaderboard screen
 void Renderer::drawLeaderboard(int screenWidth, int screenHeight, const std::string& filename) {
     BeginDrawing();
     ClearBackground(BLACK);
@@ -146,6 +156,7 @@ void Renderer::drawLeaderboard(int screenWidth, int screenHeight, const std::str
     EndDrawing();
 }
 
+// Draws the game over screen
 void Renderer::drawGameOver(int screenWidth, int screenHeight, int score, bool gameOver, const Leaderboard& leaderboard, const std::string& playerName, bool newHighscore) {
     BeginDrawing();
     ClearBackground(BLACK);

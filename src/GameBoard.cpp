@@ -1,8 +1,12 @@
 
+
 #include "GameBoard.h"
 #include "MazeCell.h"
 #include <cstdlib>
 
+
+
+// Shuffle the direction arrays for random maze generation
 void GameBoard::shuffleDirections(int dx[], int dy[], int n) {
     for (int i = n - 1; i > 0; --i) {
         int j = rand() % (i + 1);
@@ -11,6 +15,7 @@ void GameBoard::shuffleDirections(int dx[], int dy[], int n) {
     }
 }
 
+// Depth-first search for maze generation
 void GameBoard::dfs(int x, int y, std::vector<std::vector<MazeCell>>& maze) {
     maze[y][x].visited = true;
     maze[y][x].wall = false;
@@ -29,6 +34,7 @@ void GameBoard::dfs(int x, int y, std::vector<std::vector<MazeCell>>& maze) {
     }
 }
 
+// Generate a random maze and fill the board with coins and walls
 void GameBoard::generateRandomMap() {
     const int mazeHeight = HEIGHT % 2 == 0 ? HEIGHT + 1 : HEIGHT;
     const int mazeWidth = WIDTH % 2 == 0 ? WIDTH + 1 : WIDTH;

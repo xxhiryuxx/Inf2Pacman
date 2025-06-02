@@ -9,6 +9,9 @@
 #include <vector>
 #include <string>
 
+
+
+
 // All possible game states
 enum GameState {
     STATE_START_MENU,
@@ -21,21 +24,28 @@ enum GameState {
 
 class Game {
 public:
-    GameBoard board;
-    Player pacman;
-    std::vector<Ghost> ghosts;
-    Leaderboard leaderboard;
-    std::string playerName;
-    bool gameOver;
-    GameState state;
+    GameBoard board;                // The game board
+    Player pacman;                  // The player character
+    std::vector<Ghost> ghosts;      // All ghosts
+    Leaderboard leaderboard;        // Leaderboard manager
+    std::string playerName;         // Current player's name
+    bool gameOver;                  // Is the game over?
+    GameState state;                // Current game state
 
+    // Constructs a new game and initializes all components
     Game();
-    // Map generation helpers moved to GameBoard
+    // Handles player name input at the start of the game
     bool getPlayerName();
+    // Handles Pac-Man movement and coin/fruit collection
     void movePacman();
+    // Handles ghost movement logic
     void moveGhosts();
+    // Main game loop and state management
     void run();
+    // Checks for collisions between Pac-Man and ghosts
     void checkCollision();
+    // Spawns a fruit at a random empty location
     void spawnFruit();
+    // Waits for a key to be released before continuing
     void waitForKeyRelease(int key);
 };
