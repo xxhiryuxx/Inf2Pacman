@@ -39,6 +39,6 @@ public:
     void moveGhosts();              // Move ghosts
     void run();                     // Main game loop
     void checkCollision();          // Check for collisions
-    void spawnFruit();              // Randomly spawn fruit
     void waitForKeyRelease(int key);// Wait for key release
+    void spawnFruit();              // Spawn fruit on the board
 };

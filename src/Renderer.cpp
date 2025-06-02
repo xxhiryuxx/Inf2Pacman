@@ -1,4 +1,3 @@
-
 // Implementation of Renderer: handles all drawing for the game
 #include "Renderer.h"
 #include "raylib.h"
@@ -9,41 +8,47 @@
 void Renderer::drawGame(const GameBoard& board, const Player& pacman, const std::vector<Ghost>& ghosts, const Leaderboard& leaderboard) {
     BeginDrawing();
     ClearBackground(BLACK);
-    // Draw map (walls, coins, empty)
-    for (int y = 0; y < HEIGHT; ++y) {
-        for (int x = 0; x < WIDTH; ++x) {
+    int screenWidth = GetScreenWidth();
+    int screenHeight = GetScreenHeight();
+    int cols = board.getWidth();
+    int rows = board.getHeight();
+
+    int cellSize = std::min(screenWidth / cols, screenHeight / rows);
+    int offsetX = (screenWidth - (cellSize * cols)) / 2;
+    int offsetY = (screenHeight - (cellSize * rows)) / 2;
+
+    for (int y = 0; y < rows; ++y) {
+        for (int x = 0; x < cols; ++x) {
             Rectangle rect = {
-                static_cast<float>(x * TILE_SIZE),
-                static_cast<float>(y * TILE_SIZE),
-                static_cast<float>(TILE_SIZE),
-                static_cast<float>(TILE_SIZE)
+                static_cast<float>(offsetX + x * cellSize),
+                static_cast<float>(offsetY + y * cellSize),
+                static_cast<float>(cellSize),
+                static_cast<float>(cellSize)
             };
             if (board.field[y][x] == WALL) {
                 DrawRectangleRec(rect, BLUE);
             } else {
                 DrawRectangleRec(rect, BLACK);
                 if (board.field[y][x] == COIN) {
-                    DrawCircle(rect.x + TILE_SIZE/2, rect.y + TILE_SIZE/2, 6, YELLOW);
+                    DrawCircle(rect.x + cellSize / 2, rect.y + cellSize / 2, cellSize * 0.15f, YELLOW);
+                } else if (board.field[y][x] == FRUIT) {
+                    DrawCircle(rect.x + cellSize / 2, rect.y + cellSize / 2, cellSize * 0.25f, RED);
                 }
             }
         }
     }
-    // Draw fruit if present
-    if (board.fruitPresent) {
-        DrawCircle(board.fruitX * TILE_SIZE + TILE_SIZE/2,
-                    board.fruitY * TILE_SIZE + TILE_SIZE/2,
-                    12, RED);
-    }
     // Draw ghosts
     for (const auto& g : ghosts) {
-        DrawCircle(g.x * TILE_SIZE + TILE_SIZE/2,
-                    g.y * TILE_SIZE + TILE_SIZE/2,
-                    TILE_SIZE/2 - 4, PURPLE);
+        DrawCircle(
+            offsetX + g.x * cellSize + cellSize / 2,
+            offsetY + g.y * cellSize + cellSize / 2,
+            cellSize / 2 - 4, PURPLE);
     }
     // Draw Pacman
-    DrawCircle(pacman.x * TILE_SIZE + TILE_SIZE/2,
-                pacman.y * TILE_SIZE + TILE_SIZE/2,
-                TILE_SIZE/2 - 4, YELLOW);
+    DrawCircle(
+        offsetX + pacman.x * cellSize + cellSize / 2,
+        offsetY + pacman.y * cellSize + cellSize / 2,
+        cellSize / 2 - 4, YELLOW);
     // Draw score, coins left, and highscore
     std::string scoreText = "Score: " + std::to_string(pacman.score);
     DrawText(scoreText.c_str(), 10, 10, 24, WHITE);

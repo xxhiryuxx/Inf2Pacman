@@ -1,7 +1,13 @@
-// Ghost struct: represents a ghost enemy
 #pragma once
 #include "Entity.h"
+#include "raylib.h"
 
-struct Ghost : public Entity {
-    Ghost(int startX, int startY) : Entity(startX, startY) {}
+class Ghost : public Entity {
+    public:
+    int startX, startY;
+    Color color;
+
+    Ghost(int startX, int startY, Color color);
+
+    void resetToStart();
 };

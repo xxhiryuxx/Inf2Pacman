@@ -3,6 +3,9 @@
 #include "raylib.h"
 #include "Renderer.h"
 #include "MazeCell.h"
+#include "Ghost.h"
+
+
 // Main game loop
 void Game::run() {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pac-Man Raylib"); // Initialize the game window
@@ -101,12 +104,20 @@ void Game::run() {
 Game::Game()
     : board(),
       pacman(1, 1),
-      ghosts({Ghost(WIDTH - 2, HEIGHT - 2), Ghost(1, HEIGHT - 2), Ghost(WIDTH - 2, 1), Ghost(WIDTH / 2, HEIGHT / 2)}),
+      ghosts(),
       leaderboard("Leaderboard.txt"),
       gameOver(false),
       state(STATE_START_MENU)
 {
     board.generateRandomMap(); // Generate the initial map
+    auto starts = board.getGhostStartPositions();
+    ghosts.clear();
+    if (starts.size() >= 4) {
+        ghosts.emplace_back(starts[0].first, starts[0].second, RED);
+        ghosts.emplace_back(starts[1].first, starts[1].second, BLUE);
+        ghosts.emplace_back(starts[2].first, starts[2].second, GREEN);
+        ghosts.emplace_back(starts[3].first, starts[3].second, PINK);
+    }
     // Remove coin from Pacman's starting position if present
     if (board.field[pacman.y][pacman.x] == COIN) {
         board.field[pacman.y][pacman.x] = EMPTY;
@@ -141,8 +152,6 @@ void Game::dfs(int x, int y, std::vector<std::vector<MazeCell>>& maze) {
         }
     }
 }
-
-
 
 // Prompts the player to enter their name
 bool Game::getPlayerName() {
@@ -201,9 +210,10 @@ void Game::movePacman() {
         pacman.score += 10;
         board.coinsLeft--;
     }
-    if (board.fruitPresent && board.fruitX == nx && board.fruitY == ny) {
+    if (board.field[ny][nx] == FRUIT) {
+        board.field[ny][nx] = EMPTY;
         pacman.score += 100;
-        board.fruitPresent = false;
+        board.coinsLeft--;
     }
 }
 
@@ -247,9 +257,22 @@ void Game::checkCollision() {
     }
 }
 
-// Randomly spawns a fruit on an empty cell
+// Spawns a fruit on an empty cell only every 9 seconds
 void Game::spawnFruit() {
-    if (board.fruitPresent || (rand() % 20) != 0) return;
+    static double lastFruitTime = 0.0;
+    if (GetTime() - lastFruitTime < 9.0) return;
+
+    bool fruitExists = false;
+    for (int y = 0; y < HEIGHT; ++y) {
+        for (int x = 0; x < WIDTH; ++x) {
+            if (board.field[y][x] == FRUIT) {
+                fruitExists = true;
+                break;
+            }
+        }
+        if (fruitExists) break;
+    }
+    if (fruitExists) return;
 
     std::vector<std::pair<int, int>> emptyCells;
     for (int y = 0; y < HEIGHT; ++y) {
@@ -262,9 +285,11 @@ void Game::spawnFruit() {
 
     if (!emptyCells.empty()) {
         int idx = rand() % emptyCells.size();
-        board.fruitX = emptyCells[idx].first;
-        board.fruitY = emptyCells[idx].second;
-        board.fruitPresent = true;
+        int x = emptyCells[idx].first;
+        int y = emptyCells[idx].second;
+        board.field[y][x] = FRUIT;
+        board.coinsLeft++;
+        lastFruitTime = GetTime();
     }
 }
 

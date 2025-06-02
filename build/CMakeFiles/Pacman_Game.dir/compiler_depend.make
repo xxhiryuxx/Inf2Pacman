@@ -1524,11 +1524,20 @@ CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.o: /Users/f.scheller/Public/Pruefun
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stddef.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stdint.h \
   /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Constants.h \
-  /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/GameBoard.h
+  /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/GameBoard.h \
+  /opt/homebrew/include/raylib.h
 
 CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.o: /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Ghost.cpp \
+  /Library/Developer/CommandLineTools/usr/lib/clang/17/include/__stdarg___gnuc_va_list.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/17/include/__stdarg___va_copy.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/17/include/__stdarg_header_macro.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/17/include/__stdarg_va_arg.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/17/include/__stdarg_va_copy.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/17/include/__stdarg_va_list.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stdarg.h \
   /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Entity.h \
-  /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Ghost.h
+  /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Ghost.h \
+  /opt/homebrew/include/raylib.h
 
 CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.o: /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Leaderboard.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/Availability.h \
