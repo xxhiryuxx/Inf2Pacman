@@ -3,7 +3,9 @@
 #include "Renderer.h"
 #include "MazeCell.h"
 void Game::run() {
+
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pac-Man Raylib");
+    Renderer::init();
     SetTargetFPS(60);
 
     while (!WindowShouldClose()) {
@@ -85,16 +87,17 @@ void Game::run() {
             }
         }
     }
+    Renderer::unload();
     CloseWindow();
 }
 
 Game::Game()
     : board(),
-      pacman(1, 1),
-      ghosts({Ghost(WIDTH - 2, HEIGHT - 2), Ghost(1, HEIGHT - 2), Ghost(WIDTH - 2, 1), Ghost(WIDTH / 2, HEIGHT / 2)}),
-      leaderboard("Leaderboard.txt"),
-      gameOver(false),
-      state(STATE_START_MENU)
+    pacman(1, 1),
+    ghosts({Ghost(WIDTH - 2, HEIGHT - 2), Ghost(1, HEIGHT - 2), Ghost(WIDTH - 2, 1), Ghost(WIDTH / 2, HEIGHT / 2)}),
+    leaderboard("Leaderboard.txt"),
+    gameOver(false),
+    state(STATE_START_MENU)
 {
     board.generateRandomMap();
     if (board.field[pacman.y][pacman.x] == COIN) {

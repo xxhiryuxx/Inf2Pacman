@@ -1,12 +1,33 @@
-
 #include "Renderer.h"
 #include "raylib.h"
 #include <fstream>
 #include "Constants.h"
+#include "GameBoard.h"
+#include "Player.h"
+#include "Ghost.h"
+#include "Leaderboard.h"
+
+
+// Only one definition of static members and methods
+Texture2D Renderer::pacmanTexture = {0};
+
+void Renderer::init() {
+    pacmanTexture = LoadTexture("../assets/Pacman.png");
+}
+
+void Renderer::unload() {
+    if (pacmanTexture.id != 0) {
+        UnloadTexture(pacmanTexture);
+        pacmanTexture.id = 0;
+    }
+}
+
+
 
 void Renderer::drawGame(const GameBoard& board, const Player& pacman, const std::vector<Ghost>& ghosts, const Leaderboard& leaderboard) {
     BeginDrawing();
     ClearBackground(BLACK);
+
     for (int y = 0; y < HEIGHT; ++y) {
         for (int x = 0; x < WIDTH; ++x) {
             Rectangle rect = {
@@ -25,25 +46,39 @@ void Renderer::drawGame(const GameBoard& board, const Player& pacman, const std:
             }
         }
     }
+
     if (board.fruitPresent) {
         DrawCircle(board.fruitX * TILE_SIZE + TILE_SIZE/2,
                     board.fruitY * TILE_SIZE + TILE_SIZE/2,
                     12, RED);
     }
+
     for (const auto& g : ghosts) {
         DrawCircle(g.x * TILE_SIZE + TILE_SIZE/2,
                     g.y * TILE_SIZE + TILE_SIZE/2,
                     TILE_SIZE/2 - 4, PURPLE);
     }
-    DrawCircle(pacman.x * TILE_SIZE + TILE_SIZE/2,
-                pacman.y * TILE_SIZE + TILE_SIZE/2,
-                TILE_SIZE/2 - 4, YELLOW);
+
+    // Pacman als Bild zeichnen
+    Rectangle sourceRec = { 0.0f, 0.0f, (float)pacmanTexture.width, (float)pacmanTexture.height };
+    Rectangle destRec = {
+        pacman.x * TILE_SIZE,
+        pacman.y * TILE_SIZE,
+        (float)TILE_SIZE,
+        (float)TILE_SIZE
+    };
+    Vector2 origin = { 0.0f, 0.0f };
+    DrawTexturePro(pacmanTexture, sourceRec, destRec, origin, 0.0f, WHITE);
+
     std::string scoreText = "Score: " + std::to_string(pacman.score);
     DrawText(scoreText.c_str(), 10, 10, 24, WHITE);
+
     std::string coinsText = "Coins left: " + std::to_string(board.coinsLeft);
     DrawText(coinsText.c_str(), 10, 40, 20, WHITE);
+
     std::string highscoreText = "Highscore: " + std::to_string(leaderboard.getHighscore()) + " (" + leaderboard.getHighscoreName() + ")";
     DrawText(highscoreText.c_str(), 10, 70, 20, WHITE);
+
     EndDrawing();
 }
 

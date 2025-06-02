@@ -1,7 +1,14 @@
 CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o: \
  C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Renderer.cpp \
  C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Renderer.h \
- C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/GameBoard.h \
+ C:/msys64/ucrt64/include/raylib.h \
+ C:/msys64/ucrt64/lib/gcc/x86_64-w64-mingw32/15.1.0/include/stdarg.h \
+ C:/msys64/ucrt64/include/stdarg.h \
+ C:/msys64/ucrt64/include/_mingw_stdarg.h \
+ C:/msys64/ucrt64/include/vadefs.h C:/msys64/ucrt64/include/_mingw.h \
+ C:/msys64/ucrt64/include/_mingw_mac.h \
+ C:/msys64/ucrt64/include/_mingw_secapi.h \
+ C:/msys64/ucrt64/include/sdks/_mingw_ddk.h \
  C:/msys64/ucrt64/include/c++/15.1.0/vector \
  C:/msys64/ucrt64/include/c++/15.1.0/bits/requires_hosted.h \
  C:/msys64/ucrt64/include/c++/15.1.0/x86_64-w64-mingw32/bits/c++config.h \
@@ -54,20 +61,10 @@ CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o: \
  C:/msys64/ucrt64/include/c++/15.1.0/cstddef \
  C:/msys64/ucrt64/lib/gcc/x86_64-w64-mingw32/15.1.0/include/stddef.h \
  C:/msys64/ucrt64/include/stddef.h C:/msys64/ucrt64/include/crtdefs.h \
- C:/msys64/ucrt64/include/corecrt.h C:/msys64/ucrt64/include/_mingw.h \
- C:/msys64/ucrt64/include/_mingw_mac.h \
- C:/msys64/ucrt64/include/_mingw_secapi.h \
- C:/msys64/ucrt64/include/vadefs.h \
- C:/msys64/ucrt64/include/sdks/_mingw_ddk.h \
+ C:/msys64/ucrt64/include/corecrt.h \
  C:/msys64/ucrt64/include/c++/15.1.0/bits/uses_allocator.h \
  C:/msys64/ucrt64/include/c++/15.1.0/bits/uses_allocator_args.h \
  C:/msys64/ucrt64/include/c++/15.1.0/tuple \
- C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Constants.h \
- C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/MazeCell.h \
- C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Player.h \
- C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Entity.h \
- C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Ghost.h \
- C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Leaderboard.h \
  C:/msys64/ucrt64/include/c++/15.1.0/string \
  C:/msys64/ucrt64/include/c++/15.1.0/bits/stringfwd.h \
  C:/msys64/ucrt64/include/c++/15.1.0/bits/char_traits.h \
@@ -110,10 +107,6 @@ CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o: \
  C:/msys64/ucrt64/include/c++/15.1.0/cerrno \
  C:/msys64/ucrt64/include/c++/15.1.0/bits/charconv.h \
  C:/msys64/ucrt64/include/c++/15.1.0/bits/basic_string.tcc \
- C:/msys64/ucrt64/include/raylib.h \
- C:/msys64/ucrt64/lib/gcc/x86_64-w64-mingw32/15.1.0/include/stdarg.h \
- C:/msys64/ucrt64/include/stdarg.h \
- C:/msys64/ucrt64/include/_mingw_stdarg.h \
  C:/msys64/ucrt64/include/c++/15.1.0/fstream \
  C:/msys64/ucrt64/include/c++/15.1.0/istream \
  C:/msys64/ucrt64/include/c++/15.1.0/ios \
@@ -162,4 +155,11 @@ CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o: \
  C:/msys64/ucrt64/include/c++/15.1.0/bits/codecvt.h \
  C:/msys64/ucrt64/include/c++/15.1.0/x86_64-w64-mingw32/bits/basic_file.h \
  C:/msys64/ucrt64/include/c++/15.1.0/x86_64-w64-mingw32/bits/c++io.h \
- C:/msys64/ucrt64/include/c++/15.1.0/bits/fstream.tcc
+ C:/msys64/ucrt64/include/c++/15.1.0/bits/fstream.tcc \
+ C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Constants.h \
+ C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/GameBoard.h \
+ C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/MazeCell.h \
+ C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Player.h \
+ C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Entity.h \
+ C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Ghost.h \
+ C:/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Leaderboard.h
