@@ -15,9 +15,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o.d"
   "CMakeFiles/Pacman_Game.dir/src/main.cpp.o"
   "CMakeFiles/Pacman_Game.dir/src/main.cpp.o.d"
-  "Pacman_Game.exe"
+  "Pacman_Game"
   "Pacman_Game.pdb"
-  "libPacman_Game.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.

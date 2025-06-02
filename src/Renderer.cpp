@@ -1,3 +1,4 @@
+// Implementation of Renderer: handles all drawing for the game
 #include "Renderer.h"
 #include "raylib.h"
 #include <fstream>
@@ -6,8 +7,6 @@
 #include "Player.h"
 #include "Ghost.h"
 #include "Leaderboard.h"
-
-
 
 Texture2D Renderer::pacmanTexture = {0};
 
@@ -24,48 +23,48 @@ void Renderer::unload() {
     }
 }
 
-
-
-// Draws the main game screen: board, player, ghosts, and UI
+// Draws the main game screen: map, player, ghosts, score, coins, highscore
 void Renderer::drawGame(const GameBoard& board, const Player& pacman, const std::vector<Ghost>& ghosts, const Leaderboard& leaderboard) {
     BeginDrawing();
     ClearBackground(BLACK);
+    int screenWidth = GetScreenWidth();
+    int screenHeight = GetScreenHeight();
+    int cols = board.getWidth();
+    int rows = board.getHeight();
 
-    // Draw the game board
-    for (int y = 0; y < HEIGHT; ++y) {
-        for (int x = 0; x < WIDTH; ++x) {
+    int cellSize = std::min(screenWidth / cols, screenHeight / rows);
+    int offsetX = (screenWidth - (cellSize * cols)) / 2;
+    int offsetY = (screenHeight - (cellSize * rows)) / 2;
+
+    for (int y = 0; y < rows; ++y) {
+        for (int x = 0; x < cols; ++x) {
             Rectangle rect = {
-                static_cast<float>(x * TILE_SIZE),
-                static_cast<float>(y * TILE_SIZE),
-                static_cast<float>(TILE_SIZE),
-                static_cast<float>(TILE_SIZE)
+                static_cast<float>(offsetX + x * cellSize),
+                static_cast<float>(offsetY + y * cellSize),
+                static_cast<float>(cellSize),
+                static_cast<float>(cellSize)
             };
-            if (board.field[y][x] == WALL) {
+            if (board.getCell(x, y) == WALL) {
                 DrawRectangleRec(rect, BLUE);
             } else {
                 DrawRectangleRec(rect, BLACK);
-                if (board.field[y][x] == COIN) {
-                    DrawCircle(rect.x + TILE_SIZE/2, rect.y + TILE_SIZE/2, 6, YELLOW);
+                if (board.getCell(x,y) == COIN) {
+                    DrawCircle(rect.x + cellSize / 2, rect.y + cellSize / 2, cellSize * 0.15f, YELLOW);
+                } else if (board.getCell(x,y) == FRUIT) {
+                    DrawCircle(rect.x + cellSize / 2, rect.y + cellSize / 2, cellSize * 0.25f, RED);
                 }
             }
         }
     }
-
-    // Draw the fruit if present
-    if (board.fruitPresent) {
-        DrawCircle(board.fruitX * TILE_SIZE + TILE_SIZE/2,
-                   board.fruitY * TILE_SIZE + TILE_SIZE/2,
-                   12, RED);
-    }
-
-    // Draw all ghosts
+    // Draw ghosts
     for (const auto& g : ghosts) {
-        DrawCircle(g.x * TILE_SIZE + TILE_SIZE/2,
-                   g.y * TILE_SIZE + TILE_SIZE/2,
-                   TILE_SIZE/2 - 4, PURPLE);
+        DrawCircle(
+            offsetX + g.x * cellSize + cellSize / 2,
+            offsetY + g.y * cellSize + cellSize / 2,
+            cellSize / 2 - 4, PURPLE);
     }
 
-    // Draw Pac-Man
+        // Draw Pac-Man
     Rectangle sourceRec = { 0.0f, 0.0f, (float)pacmanTexture.width, (float)pacmanTexture.height };
     Rectangle destRec = {
         (float)(pacman.x * TILE_SIZE),
@@ -89,7 +88,7 @@ void Renderer::drawGame(const GameBoard& board, const Player& pacman, const std:
     EndDrawing();
 }
 
-// Draws the start menu
+// Draws the start menu screen
 void Renderer::drawStartMenu(int screenWidth, int screenHeight) {
     BeginDrawing();
     ClearBackground(BLACK);
@@ -108,7 +107,7 @@ void Renderer::drawStartMenu(int screenWidth, int screenHeight) {
     EndDrawing();
 }
 
-// Draws the pause menu
+// Draws the pause menu screen
 void Renderer::drawPauseMenu(int screenWidth, int screenHeight) {
     BeginDrawing();
     ClearBackground(DARKGRAY);
@@ -129,7 +128,7 @@ void Renderer::drawPauseMenu(int screenWidth, int screenHeight) {
     EndDrawing();
 }
 
-// Draws the leaderboard screen
+// Draws the leaderboard screen (top 10 scores)
 void Renderer::drawLeaderboard(int screenWidth, int screenHeight, const std::string& filename) {
     BeginDrawing();
     ClearBackground(BLACK);
@@ -156,7 +155,7 @@ void Renderer::drawLeaderboard(int screenWidth, int screenHeight, const std::str
     EndDrawing();
 }
 
-// Draws the game over screen
+// Draws the game over screen (win/lose, score, highscore)
 void Renderer::drawGameOver(int screenWidth, int screenHeight, int score, bool gameOver, const Leaderboard& leaderboard, const std::string& playerName, bool newHighscore) {
     BeginDrawing();
     ClearBackground(BLACK);
@@ -180,3 +179,5 @@ void Renderer::drawGameOver(int screenWidth, int screenHeight, int score, bool g
     DrawText(menuText, screenWidth/2 - menuWidth/2, screenHeight/2 + 100, 24, GRAY);
     EndDrawing();
 }
+
+

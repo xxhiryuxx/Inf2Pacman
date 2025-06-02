@@ -67,6 +67,14 @@ void GameBoard::generateRandomMap() {
             }
         }
     }
-    fruitPresent = false;
-    fruitX = fruitY = 0;
+}
+
+const std::vector<std::pair<int, int>>& GameBoard::getGhostStartPositions() const {
+    static std::vector<std::pair<int, int>> starts = {
+        {WIDTH/2 - 1, HEIGHT/2},   // Links im Bunker
+        {WIDTH/2,     HEIGHT/2},   // Mitte
+        {WIDTH/2 + 1, HEIGHT/2},   // Rechts
+        {WIDTH/2,     HEIGHT/2 - 1} // Vor dem Ausgang
+    };
+    return starts;
 }

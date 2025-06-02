@@ -13,9 +13,15 @@ public:
     int coinsLeft;                        // Number of coins remaining
     bool fruitPresent;                    // Is a fruit currently present?
     int fruitX, fruitY;                   // Fruit position
+    Cell getCell(int x, int y) const { return field[y][x]; }
+    int getWidth() const { return WIDTH; }
+    int getHeight() const { return HEIGHT; }
+    const std::vector<std::pair<int, int>>& getGhostStartPositions() const;
+
 
     // Generates a random maze and fills the board with coins and walls
     void generateRandomMap();
+
 private:
     // Shuffles direction arrays for maze generation
     static void shuffleDirections(int dx[], int dy[], int n);

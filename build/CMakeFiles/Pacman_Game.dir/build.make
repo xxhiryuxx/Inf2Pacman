@@ -44,19 +44,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /usr/bin/cmake.exe
+CMAKE_COMMAND = /Applications/CMake.app/Contents/bin/cmake
 
 # The command to remove a file.
-RM = /usr/bin/cmake.exe -E rm -f
+RM = /Applications/CMake.app/Contents/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman
+CMAKE_SOURCE_DIR = /Users/f.scheller/Public/Pruefung/Inf2Pacman
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/build
+CMAKE_BINARY_DIR = /Users/f.scheller/Public/Pruefung/Inf2Pacman/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/Pacman_Game.dir/depend.make
@@ -73,116 +73,116 @@ CMakeFiles/Pacman_Game.dir/codegen:
 .PHONY : CMakeFiles/Pacman_Game.dir/codegen
 
 CMakeFiles/Pacman_Game.dir/src/main.cpp.o: CMakeFiles/Pacman_Game.dir/flags.make
-CMakeFiles/Pacman_Game.dir/src/main.cpp.o: /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/main.cpp
+CMakeFiles/Pacman_Game.dir/src/main.cpp.o: /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/main.cpp
 CMakeFiles/Pacman_Game.dir/src/main.cpp.o: CMakeFiles/Pacman_Game.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Pacman_Game.dir/src/main.cpp.o"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/main.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/main.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/main.cpp.o -c /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/f.scheller/Public/Pruefung/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Pacman_Game.dir/src/main.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/main.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/main.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/main.cpp.o -c /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/main.cpp
 
 CMakeFiles/Pacman_Game.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Pacman_Game.dir/src/main.cpp.i"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/main.cpp > CMakeFiles/Pacman_Game.dir/src/main.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/main.cpp > CMakeFiles/Pacman_Game.dir/src/main.cpp.i
 
 CMakeFiles/Pacman_Game.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Pacman_Game.dir/src/main.cpp.s"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/main.cpp -o CMakeFiles/Pacman_Game.dir/src/main.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/main.cpp -o CMakeFiles/Pacman_Game.dir/src/main.cpp.s
 
 CMakeFiles/Pacman_Game.dir/src/Game.cpp.o: CMakeFiles/Pacman_Game.dir/flags.make
-CMakeFiles/Pacman_Game.dir/src/Game.cpp.o: /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Game.cpp
+CMakeFiles/Pacman_Game.dir/src/Game.cpp.o: /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Game.cpp
 CMakeFiles/Pacman_Game.dir/src/Game.cpp.o: CMakeFiles/Pacman_Game.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Pacman_Game.dir/src/Game.cpp.o"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/Game.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/Game.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/Game.cpp.o -c /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Game.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/f.scheller/Public/Pruefung/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Pacman_Game.dir/src/Game.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/Game.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/Game.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/Game.cpp.o -c /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Game.cpp
 
 CMakeFiles/Pacman_Game.dir/src/Game.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Pacman_Game.dir/src/Game.cpp.i"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Game.cpp > CMakeFiles/Pacman_Game.dir/src/Game.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Game.cpp > CMakeFiles/Pacman_Game.dir/src/Game.cpp.i
 
 CMakeFiles/Pacman_Game.dir/src/Game.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Pacman_Game.dir/src/Game.cpp.s"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Game.cpp -o CMakeFiles/Pacman_Game.dir/src/Game.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Game.cpp -o CMakeFiles/Pacman_Game.dir/src/Game.cpp.s
 
 CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o: CMakeFiles/Pacman_Game.dir/flags.make
-CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o: /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Renderer.cpp
+CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o: /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Renderer.cpp
 CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o: CMakeFiles/Pacman_Game.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o -c /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Renderer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/f.scheller/Public/Pruefung/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o -c /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Renderer.cpp
 
 CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.i"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Renderer.cpp > CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Renderer.cpp > CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.i
 
 CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.s"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Renderer.cpp -o CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Renderer.cpp -o CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.s
 
 CMakeFiles/Pacman_Game.dir/src/Player.cpp.o: CMakeFiles/Pacman_Game.dir/flags.make
-CMakeFiles/Pacman_Game.dir/src/Player.cpp.o: /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Player.cpp
+CMakeFiles/Pacman_Game.dir/src/Player.cpp.o: /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Player.cpp
 CMakeFiles/Pacman_Game.dir/src/Player.cpp.o: CMakeFiles/Pacman_Game.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/Pacman_Game.dir/src/Player.cpp.o"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/Player.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/Player.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/Player.cpp.o -c /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Player.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/f.scheller/Public/Pruefung/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/Pacman_Game.dir/src/Player.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/Player.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/Player.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/Player.cpp.o -c /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Player.cpp
 
 CMakeFiles/Pacman_Game.dir/src/Player.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Pacman_Game.dir/src/Player.cpp.i"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Player.cpp > CMakeFiles/Pacman_Game.dir/src/Player.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Player.cpp > CMakeFiles/Pacman_Game.dir/src/Player.cpp.i
 
 CMakeFiles/Pacman_Game.dir/src/Player.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Pacman_Game.dir/src/Player.cpp.s"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Player.cpp -o CMakeFiles/Pacman_Game.dir/src/Player.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Player.cpp -o CMakeFiles/Pacman_Game.dir/src/Player.cpp.s
 
 CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.o: CMakeFiles/Pacman_Game.dir/flags.make
-CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.o: /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Ghost.cpp
+CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.o: /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Ghost.cpp
 CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.o: CMakeFiles/Pacman_Game.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.o"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.o -c /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Ghost.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/f.scheller/Public/Pruefung/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.o -c /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Ghost.cpp
 
 CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.i"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Ghost.cpp > CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Ghost.cpp > CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.i
 
 CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.s"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Ghost.cpp -o CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Ghost.cpp -o CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.s
 
 CMakeFiles/Pacman_Game.dir/src/Entity.cpp.o: CMakeFiles/Pacman_Game.dir/flags.make
-CMakeFiles/Pacman_Game.dir/src/Entity.cpp.o: /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Entity.cpp
+CMakeFiles/Pacman_Game.dir/src/Entity.cpp.o: /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Entity.cpp
 CMakeFiles/Pacman_Game.dir/src/Entity.cpp.o: CMakeFiles/Pacman_Game.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/Pacman_Game.dir/src/Entity.cpp.o"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/Entity.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/Entity.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/Entity.cpp.o -c /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Entity.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/f.scheller/Public/Pruefung/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/Pacman_Game.dir/src/Entity.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/Entity.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/Entity.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/Entity.cpp.o -c /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Entity.cpp
 
 CMakeFiles/Pacman_Game.dir/src/Entity.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Pacman_Game.dir/src/Entity.cpp.i"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Entity.cpp > CMakeFiles/Pacman_Game.dir/src/Entity.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Entity.cpp > CMakeFiles/Pacman_Game.dir/src/Entity.cpp.i
 
 CMakeFiles/Pacman_Game.dir/src/Entity.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Pacman_Game.dir/src/Entity.cpp.s"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Entity.cpp -o CMakeFiles/Pacman_Game.dir/src/Entity.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Entity.cpp -o CMakeFiles/Pacman_Game.dir/src/Entity.cpp.s
 
 CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.o: CMakeFiles/Pacman_Game.dir/flags.make
-CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.o: /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/GameBoard.cpp
+CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.o: /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/GameBoard.cpp
 CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.o: CMakeFiles/Pacman_Game.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.o"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.o -c /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/GameBoard.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/f.scheller/Public/Pruefung/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.o -c /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/GameBoard.cpp
 
 CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.i"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/GameBoard.cpp > CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/GameBoard.cpp > CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.i
 
 CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.s"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/GameBoard.cpp -o CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/GameBoard.cpp -o CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.s
 
 CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.o: CMakeFiles/Pacman_Game.dir/flags.make
-CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.o: /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Leaderboard.cpp
+CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.o: /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Leaderboard.cpp
 CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.o: CMakeFiles/Pacman_Game.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.o"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.o -c /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Leaderboard.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/f.scheller/Public/Pruefung/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.o -MF CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.o.d -o CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.o -c /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Leaderboard.cpp
 
 CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.i"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Leaderboard.cpp > CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Leaderboard.cpp > CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.i
 
 CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.s"
-	/ucrt64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/src/Leaderboard.cpp -o CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Leaderboard.cpp -o CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.s
 
 # Object files for target Pacman_Game
 Pacman_Game_OBJECTS = \
@@ -198,22 +198,22 @@ Pacman_Game_OBJECTS = \
 # External object files for target Pacman_Game
 Pacman_Game_EXTERNAL_OBJECTS =
 
-Pacman_Game.exe: CMakeFiles/Pacman_Game.dir/src/main.cpp.o
-Pacman_Game.exe: CMakeFiles/Pacman_Game.dir/src/Game.cpp.o
-Pacman_Game.exe: CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o
-Pacman_Game.exe: CMakeFiles/Pacman_Game.dir/src/Player.cpp.o
-Pacman_Game.exe: CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.o
-Pacman_Game.exe: CMakeFiles/Pacman_Game.dir/src/Entity.cpp.o
-Pacman_Game.exe: CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.o
-Pacman_Game.exe: CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.o
-Pacman_Game.exe: CMakeFiles/Pacman_Game.dir/build.make
-Pacman_Game.exe: C:/msys64/ucrt64/lib/libraylib.dll.a
-Pacman_Game.exe: CMakeFiles/Pacman_Game.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable Pacman_Game.exe"
+Pacman_Game: CMakeFiles/Pacman_Game.dir/src/main.cpp.o
+Pacman_Game: CMakeFiles/Pacman_Game.dir/src/Game.cpp.o
+Pacman_Game: CMakeFiles/Pacman_Game.dir/src/Renderer.cpp.o
+Pacman_Game: CMakeFiles/Pacman_Game.dir/src/Player.cpp.o
+Pacman_Game: CMakeFiles/Pacman_Game.dir/src/Ghost.cpp.o
+Pacman_Game: CMakeFiles/Pacman_Game.dir/src/Entity.cpp.o
+Pacman_Game: CMakeFiles/Pacman_Game.dir/src/GameBoard.cpp.o
+Pacman_Game: CMakeFiles/Pacman_Game.dir/src/Leaderboard.cpp.o
+Pacman_Game: CMakeFiles/Pacman_Game.dir/build.make
+Pacman_Game: /opt/homebrew/lib/libraylib.dylib
+Pacman_Game: CMakeFiles/Pacman_Game.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/f.scheller/Public/Pruefung/Inf2Pacman/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable Pacman_Game"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Pacman_Game.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-CMakeFiles/Pacman_Game.dir/build: Pacman_Game.exe
+CMakeFiles/Pacman_Game.dir/build: Pacman_Game
 .PHONY : CMakeFiles/Pacman_Game.dir/build
 
 CMakeFiles/Pacman_Game.dir/clean:
@@ -221,6 +221,6 @@ CMakeFiles/Pacman_Game.dir/clean:
 .PHONY : CMakeFiles/Pacman_Game.dir/clean
 
 CMakeFiles/Pacman_Game.dir/depend:
-	cd /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/build /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/build /c/Users/meub.lorin-it24/Documents/Semester2Abgabe/Inf2Pacman/build/CMakeFiles/Pacman_Game.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /Users/f.scheller/Public/Pruefung/Inf2Pacman/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/f.scheller/Public/Pruefung/Inf2Pacman /Users/f.scheller/Public/Pruefung/Inf2Pacman /Users/f.scheller/Public/Pruefung/Inf2Pacman/build /Users/f.scheller/Public/Pruefung/Inf2Pacman/build /Users/f.scheller/Public/Pruefung/Inf2Pacman/build/CMakeFiles/Pacman_Game.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/Pacman_Game.dir/depend
 

@@ -6,4 +6,4 @@ const int TILE_SIZE = 50;
 const int SCREEN_WIDTH = WIDTH * TILE_SIZE;
 const int SCREEN_HEIGHT = HEIGHT * TILE_SIZE;
 
-enum Cell { WALL, EMPTY, COIN };
+enum Cell { WALL, EMPTY, COIN , FRUIT};
