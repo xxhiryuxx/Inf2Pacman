@@ -11,7 +11,7 @@
 void Game::run() {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pac-Man Raylib");
     Renderer::init();
-    SetTargetFPS(60);
+    SetTargetFPS(120);
 
     // Main game loop
     while (!WindowShouldClose()) {
@@ -83,7 +83,7 @@ void Game::run() {
 
             case STATE_LEADERBOARD:
                 // Show the leaderboard
-                Renderer::drawLeaderboard(SCREEN_WIDTH, SCREEN_HEIGHT, "Leaderboard.txt");
+                Renderer::drawLeaderboard(SCREEN_WIDTH, SCREEN_HEIGHT, "../Leaderboard.txt");
                 if (IsKeyPressed(KEY_L)) {
                     state = STATE_START_MENU;
                     waitForKeyRelease(KEY_L);
@@ -112,7 +112,7 @@ Game::Game()
     : board(),
       pacman(1, 1),
       ghosts(),
-      leaderboard("Leaderboard.txt"),
+      leaderboard("../Leaderboard.txt"),
       gameOver(false),
       state(STATE_START_MENU)
 {
