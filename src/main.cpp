@@ -1,4 +1,3 @@
-
 // Main entry point for Pacman game
 #include "raylib.h"
 #include <vector>

@@ -5,6 +5,7 @@
 #include "Renderer.h"
 #include "MazeCell.h"
 #include "Ghost.h"
+#include "Player.h"
 
 
 // Main game loop and state management
@@ -46,11 +47,13 @@ void Game::run() {
                     break;
                 }
                 if (!gameOver && board.coinsLeft > 0) {
-                    movePacman();
+                    pacman.movePacman(board);
                     for (auto& ghost : ghosts) {
                         ghost.update(board, pacman);
                     }
-                    checkCollision();
+                    if (pacman.checkCollision(ghosts)) {
+                    gameOver = true;
+}
                     spawnFruit();
                     Renderer::drawGame(board, pacman, ghosts, leaderboard);
                 } else {
@@ -194,44 +197,6 @@ bool Game::getPlayerName() {
     }
     playerName = (letterCount > 0) ? std::string(name) : "Player";
     return enterPressed;
-}
-
-// Handles Pacman's movement and coin/fruit collection
-void Game::movePacman() {
-    static double lastMoveTime = 0.0;
-    if (GetTime() - lastMoveTime < 0.12) return; // Control movement speed
-    lastMoveTime = GetTime();
-    int dx = 0, dy = 0;
-    if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) dy = -1;
-    else if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) dy = 1;
-    else if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) dx = -1;
-    else if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) dx = 1;
-    int nx = pacman.x + dx;
-    int ny = pacman.y + dy;
-    if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) return;
-    if (board.field[ny][nx] == WALL) return;
-    pacman.x = nx;
-    pacman.y = ny;
-    if (board.field[ny][nx] == COIN) {
-        board.field[ny][nx] = EMPTY;
-        pacman.score += 10;
-        board.coinsLeft--;
-    }
-    if (board.field[ny][nx] == FRUIT) {
-        board.field[ny][nx] = EMPTY;
-        pacman.score += 100;
-        board.coinsLeft--;
-    }
-}
-
-// Checks for collisions between Pacman and ghosts
-void Game::checkCollision() {
-    for (auto &g : ghosts) {
-        if (g.x == pacman.x && g.y == pacman.y) {
-            gameOver = true;
-            return;
-        }
-    }
 }
 
 // Spawns a fruit on an empty cell only every 9 seconds

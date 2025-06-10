@@ -1,4 +1,5 @@
 #pragma once
+
 struct MazeCell {
     bool visited;
     bool wall;

@@ -815,9 +815,9 @@ CMakeFiles/Pacman_Game.dir/src/main.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/u8path.h \
   /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Entity.h \
   /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Player.h \
-  /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Ghost.h \
   /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/GameBoard.h \
   /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Constants.h \
   /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/MazeCell.h \
+  /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Ghost.h \
   /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Leaderboard.h \
   /Users/f.scheller/Public/Pruefung/Inf2Pacman/src/Game.h

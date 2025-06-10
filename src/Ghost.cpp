@@ -8,12 +8,9 @@
 #include <cmath>
 
 Ghost::Ghost(int startX, int startY, Color color)
-    : startX(startX), startY(startY), color(color) {
-    x = startX;
-    y = startY;
+    : Entity(startX, startY), startX(startX), startY(startY), color(color) {
     speed = 20;       // Höhere Frequenz = flüssigere Bewegung
     moveCounter = 0;
-    dx = 0; dy = -1; // Startrichtung nach oben
 }
 
 void Ghost::resetToStart() {

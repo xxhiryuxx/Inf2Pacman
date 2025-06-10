@@ -1,5 +1,4 @@
 #include "Leaderboard.h"
-
 #include <fstream>
 #include <algorithm>
 
