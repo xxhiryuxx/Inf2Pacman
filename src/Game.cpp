@@ -135,34 +135,6 @@ Game::Game()
     }
 }
 
-// Shuffle the direction arrays for random maze generation
-void Game::shuffleDirections(int dx[], int dy[], int n) {
-    for (int i = n - 1; i > 0; --i) {
-        int j = rand() % (i + 1);
-        std::swap(dx[i], dx[j]);
-        std::swap(dy[i], dy[j]);
-    }
-}
-
-// Depth-first search for maze generation
-void Game::dfs(int x, int y, std::vector<std::vector<MazeCell>>& maze) {
-    maze[y][x].visited = true;
-    maze[y][x].wall = false;
-    int dx[4] = {2, -2, 0, 0};
-    int dy[4] = {0, 0, 2, -2};
-    shuffleDirections(dx, dy, 4);
-    for (int i = 0; i < 4; ++i) {
-        int nx = x + dx[i];
-        int ny = y + dy[i];
-        if (nx > 0 && nx < (int)maze[0].size() - 1 &&
-            ny > 0 && ny < (int)maze.size() - 1 &&
-            !maze[ny][nx].visited) {
-            maze[y + dy[i] / 2][x + dx[i] / 2].wall = false;
-            dfs(nx, ny, maze);
-        }
-    }
-}
-
 // Prompts the player to enter their name
 bool Game::getPlayerName() {
     char name[32] = {0};
