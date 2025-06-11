@@ -9,7 +9,7 @@
 
 Ghost::Ghost(int startX, int startY, Color color)
     : Entity(startX, startY), startX(startX), startY(startY), color(color) {
-    speed = 25;       // Höhere Frequenz = flüssigere Bewegung
+    speed = 30;       // Höhere Frequenz = flüssigere Bewegung
     moveCounter = 0;
 }
 
