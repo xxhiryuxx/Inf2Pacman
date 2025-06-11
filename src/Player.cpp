@@ -33,7 +33,6 @@ void Player::movePacman(GameBoard& board) {
     } else if (board.field[ny][nx] == Cell::FRUIT) {
         board.field[ny][nx] = Cell::EMPTY;
         score += 100;
-        board.coinsLeft--;
     }
 }
 

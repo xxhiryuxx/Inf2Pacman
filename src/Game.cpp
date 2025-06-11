@@ -199,10 +199,10 @@ bool Game::getPlayerName() {
     return enterPressed;
 }
 
-// Spawns a fruit on an empty cell only every 9 seconds
+// Spawns a fruit on an empty cell only every 10 seconds
 void Game::spawnFruit() {
     static double lastFruitTime = 0.0;
-    if (GetTime() - lastFruitTime < 7.0) return;
+    if (GetTime() - lastFruitTime < 10.0) return;
 
     bool fruitExists = false;
     for (int y = 0; y < HEIGHT; ++y) {
@@ -230,7 +230,6 @@ void Game::spawnFruit() {
         int x = emptyCells[idx].first;
         int y = emptyCells[idx].second;
         board.field[y][x] = FRUIT;
-        board.coinsLeft++;
         lastFruitTime = GetTime();
     }
 }
