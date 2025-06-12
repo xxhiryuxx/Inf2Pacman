@@ -6,6 +6,7 @@
 #include "Game.h"
 #include <vector>
 
+// Player constructor initializes Pacman's starting position and score
 Player::Player(int startX, int startY, int score) 
     : Entity(startX, startY), score(score) {}
 
