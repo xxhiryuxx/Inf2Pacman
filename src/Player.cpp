@@ -1,9 +1,13 @@
 #include "Player.h"
+#include "Entity.h"
 #include "GameBoard.h"
 #include "Constants.h"
 #include "Ghost.h"
 #include "Game.h"
 #include <vector>
+
+Player::Player(int startX, int startY, int score) 
+    : Entity(startX, startY), score(score) {}
 
 // Handle Pacman's movement based on keyboard input
 void Player::movePacman(GameBoard& board) {

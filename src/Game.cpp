@@ -123,7 +123,7 @@ void Game::run() {
 // Constructor: initializes game objects and generates the map
 Game::Game()
     : board(),
-      pacman(1, 1),
+      pacman(1, 1, 0),
       ghosts(),
       leaderboard("../Leaderboard.txt"),
       gameOver(false),

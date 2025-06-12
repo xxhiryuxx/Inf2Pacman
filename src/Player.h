@@ -8,7 +8,7 @@ public:
     int score;
     GameBoard board;    // The game board (map, coins, walls, etc.)
     
-    Player(int startX, int startY) : Entity(startX, startY), score(0) {}
+    Player(int startX, int startY, int score);
     void movePacman(GameBoard& board);
     bool checkCollision(const std::vector<class Ghost>& ghosts) const;
 };
