@@ -5,14 +5,17 @@
 #include "Player.h"
 
 class Ghost : public Entity {
-public:
+private:
     int startX, startY;     // Starting position
     Color color;            // Ghost color for rendering
-    int speed = 0;          // Frames between movements
-    int moveCounter = 0;    // Counter for movement frames
+    int speed;              // Frames between movements
+    int moveCounter;        // Counter for movement frames
 
+public:
+    // Constructor to initialize ghost with starting position and color
     Ghost(int startX, int startY, Color color);
-
-    //void resetToStart();   // Function to reset ghost to starting position and direction, but not implemented 
+    // Function to move the ghost towards Pacman
     void update(const GameBoard& board, const Player& pacman);
+    
+    //void resetToStart();   // Function to reset ghost to starting position and direction, but not implemented 
 };

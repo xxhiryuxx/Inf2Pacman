@@ -9,7 +9,10 @@
 
 // Ghost constructor initializes the ghost's starting position, color, speed, and move counter
 Ghost::Ghost(int startX, int startY, Color color)
-    : Entity(startX, startY), startX(startX), startY(startY), color(color) {
+    : Entity(startX, startY), 
+    startX(startX), 
+    startY(startY), 
+    color(color) {
     speed = 30;       // Lower numbers for faster ghosts
     moveCounter = 0;
 }

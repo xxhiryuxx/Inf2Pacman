@@ -76,7 +76,7 @@ void Renderer::drawGame(const GameBoard& board, const Player& pacman, const std:
     DrawTexturePro(pacmanTexture, sourceRec, destRec, origin, 0.0f, WHITE);
 
     // Draw UI
-    std::string scoreText = "Score: " + std::to_string(pacman.score);
+    std::string scoreText = "Score: " + std::to_string(pacman.getScore());
     DrawText(scoreText.c_str(), 10, 10, 24, WHITE);
 
     std::string coinsText = "Coins left: " + std::to_string(board.coinsLeft);

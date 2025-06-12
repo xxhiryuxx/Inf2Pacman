@@ -29,5 +29,4 @@ public:
 private:
     // Pac-Man texture
     static Texture2D pacmanTexture;
-
 };

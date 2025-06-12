@@ -103,10 +103,10 @@ void Game::run() {
 
             case STATE_GAME_OVER: { // Display gameover screen and highscore
                 // Check for a new highscore and update leaderboard
-                bool newHighscore = leaderboard.tryUpdateHighscore(pacman.score, playerName);
+                bool newHighscore = leaderboard.tryUpdateHighscore(pacman.getScore(), playerName);
 
                 // Draw the game over screen
-                Renderer::drawGameOver(SCREEN_WIDTH, SCREEN_HEIGHT, pacman.score, gameOver, leaderboard, playerName, newHighscore);
+                Renderer::drawGameOver(SCREEN_WIDTH, SCREEN_HEIGHT, pacman.getScore(), gameOver, leaderboard, playerName, newHighscore);
                 if (IsKeyPressed(KEY_ENTER)) {
                     *this = Game();
                     state = STATE_START_MENU;

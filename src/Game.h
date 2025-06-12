@@ -22,7 +22,7 @@ enum GameState {
 
 // Main Game class: manages all game logic and state
 class Game {
-public:
+private:
     GameBoard board;                // The game board (map, coins, walls, etc.)
     Player pacman;                  // The player character
     std::vector<Ghost> ghosts;      // All ghosts in the game
@@ -30,15 +30,22 @@ public:
     std::string playerName;         // Current player's name
     bool gameOver;                  // True if the game is over
     GameState state;                // Current game state
-
-    // Constructs a new game and initializes all components
-    Game();
     // Handles player name input at the start of the game
     bool getPlayerName();
-    // Handles Pac-Man movement and coin/fruit collection
-    void run();
     // Checks for collisions between Pac-Man and ghosts
     void spawnFruit();
     // Waits for a key to be released before continuing
     void waitForKeyRelease(int key);
+
+public:
+    // Constructs a new game and initializes all components
+    Game();
+    // Handles Pac-Man movement and coin/fruit collection
+    void run();
+    // Returns wether or not the game is over
+    bool isGameOver() const { return gameOver; }
+    // getter function for the game state
+    GameState getState() const { return state; }
+    // getter function for the player name
+    const std::string& getPlayerName() const { return playerName; }
 };
