@@ -17,9 +17,11 @@ void Game::run() {
     // Main game loop
     while (!WindowShouldClose()) {
         switch (state) {
-            case STATE_START_MENU:
-                // Draw the start menu and handle input
+            case STATE_START_MENU:  // Display the start menu and handle starting logic
+                // Draw the start menu
                 Renderer::drawStartMenu(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+                // Handle input for starting the game, entering name, or showing leaderboard
                 if (IsKeyPressed(KEY_ENTER)) {
                     state = STATE_ENTER_NAME;
                 }
@@ -33,19 +35,21 @@ void Game::run() {
                 }
                 break;
 
-            case STATE_ENTER_NAME:
-                // Prompt the player to enter their name
+            case STATE_ENTER_NAME:  // Prompt the player to enter their name
+                // Handle player name input
                 if (getPlayerName()) {
                     state = STATE_PLAYING;
                 }
                 break;
 
-            case STATE_PLAYING:
-                // Main gameplay: move Pacman, ghosts, check collisions, draw game
+            case STATE_PLAYING: // Main gameplay: move Pacman, ghosts, check collisions, draw game
+                // Switch to STATE_PAUSED
                 if (IsKeyPressed(KEY_P)) {
                     state = STATE_PAUSED;
                     break;
                 }
+
+                // Handle game logic and check game over conditions 
                 if (!gameOver && board.coinsLeft > 0) {
                     pacman.movePacman(board);
                     for (auto& ghost : ghosts) {
@@ -61,9 +65,11 @@ void Game::run() {
                 }
                 break;
 
-            case STATE_PAUSED:
-                // Draw pause menu and handle pause input
+            case STATE_PAUSED:  // Display pause menu
+                // Draw the pause menu
                 Renderer::drawPauseMenu(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+                // Handle input for resuming or quitting
                 if (IsKeyPressed(KEY_P)) {
                     state = STATE_PLAYING;
                     waitForKeyRelease(KEY_P);
@@ -84,18 +90,22 @@ void Game::run() {
                 }
                 break;
 
-            case STATE_LEADERBOARD:
-                // Show the leaderboard
+            case STATE_LEADERBOARD: // Display the leaderboard
+                // Draw the leaderboard
                 Renderer::drawLeaderboard(SCREEN_WIDTH, SCREEN_HEIGHT, "../Leaderboard.txt");
+
+                // Handle input for returning to the start menu
                 if (IsKeyPressed(KEY_L)) {
                     state = STATE_START_MENU;
                     waitForKeyRelease(KEY_L);
                 }
                 break;
 
-            case STATE_GAME_OVER: {
-                // Handle game over state and highscore
+            case STATE_GAME_OVER: { // Display gameover screen and highscore
+                // Check for a new highscore and update leaderboard
                 bool newHighscore = leaderboard.tryUpdateHighscore(pacman.score, playerName);
+
+                // Draw the game over screen
                 Renderer::drawGameOver(SCREEN_WIDTH, SCREEN_HEIGHT, pacman.score, gameOver, leaderboard, playerName, newHighscore);
                 if (IsKeyPressed(KEY_ENTER)) {
                     *this = Game();
@@ -119,7 +129,8 @@ Game::Game()
       gameOver(false),
       state(STATE_START_MENU)
 {
-    board.generateRandomMap(); // Generate the initial map
+    // Generate the initial map and place ghosts
+    board.generateRandomMap(); 
     auto starts = board.getGhostStartPositions();
     ghosts.clear();
     if (starts.size() >= 4) {
@@ -128,6 +139,7 @@ Game::Game()
         ghosts.emplace_back(starts[2].first, starts[2].second, GREEN);
         ghosts.emplace_back(starts[3].first, starts[3].second, PINK);
     }
+
     // Remove coin from Pacman's starting position if present
     if (board.field[pacman.y][pacman.x] == COIN) {
         board.field[pacman.y][pacman.x] = EMPTY;
@@ -135,11 +147,13 @@ Game::Game()
     }
 }
 
-// Prompts the player to enter their name
+// Prompt the player to enter their name
 bool Game::getPlayerName() {
     char name[32] = {0};
     int letterCount = 0;
     bool enterPressed = false;
+
+    // Interactive name input loop
     while (!enterPressed && !WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(DARKGRAY);
@@ -158,6 +172,8 @@ bool Game::getPlayerName() {
             }
             key = GetCharPressed();
         }
+
+        // Handle backspace and enter inputs
         if (IsKeyPressed(KEY_BACKSPACE)) {
             letterCount--;
             if (letterCount < 0) letterCount = 0;
@@ -167,15 +183,17 @@ bool Game::getPlayerName() {
             enterPressed = true;
         }
     }
+    // Store the player's name-input or set default name
     playerName = (letterCount > 0) ? std::string(name) : "Player";
     return enterPressed;
 }
 
-// Spawns a fruit on an empty cell only every 10 seconds
+// Spawn a fruit on an empty cell every 10 seconds
 void Game::spawnFruit() {
     static double lastFruitTime = 0.0;
     if (GetTime() - lastFruitTime < 10.0) return;
 
+    // Check if a fruit already exists on the board
     bool fruitExists = false;
     for (int y = 0; y < HEIGHT; ++y) {
         for (int x = 0; x < WIDTH; ++x) {
@@ -188,6 +206,7 @@ void Game::spawnFruit() {
     }
     if (fruitExists) return;
 
+    // Store all empty cells except Pacman's position
     std::vector<std::pair<int, int>> emptyCells;
     for (int y = 0; y < HEIGHT; ++y) {
         for (int x = 0; x < WIDTH; ++x) {
@@ -197,6 +216,7 @@ void Game::spawnFruit() {
         }
     }
 
+    // Randomly select an empty cell to place a new fruit
     if (!emptyCells.empty()) {
         int idx = rand() % emptyCells.size();
         int x = emptyCells[idx].first;
@@ -206,7 +226,7 @@ void Game::spawnFruit() {
     }
 }
 
-// Waits until the specified key is released
+// Wait until the specified key is released
 void Game::waitForKeyRelease(int key) {
     while (IsKeyDown(key) && !WindowShouldClose()) {
         BeginDrawing();

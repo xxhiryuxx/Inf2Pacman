@@ -5,11 +5,10 @@
 
 class Player : public Entity {
 public:
-    // Player-specific attributes
     int score;
-    Player(int startX, int startY) : Entity(startX, startY), score(0) {}
     GameBoard board;                // The game board (map, coins, walls, etc.)
-
+    
+    Player(int startX, int startY) : Entity(startX, startY), score(0) {}
     void movePacman(GameBoard& board);
     bool checkCollision(const std::vector<class Ghost>& ghosts) const;
 };

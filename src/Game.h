@@ -41,7 +41,4 @@ public:
     void spawnFruit();
     // Waits for a key to be released before continuing
     void waitForKeyRelease(int key);
-
-    void shuffleDirections(int dx[], int dy[], int n); // Shuffle directions for maze generation
-    void dfs(int x, int y, std::vector<std::vector<MazeCell>>& maze); // DFS for maze
 };
