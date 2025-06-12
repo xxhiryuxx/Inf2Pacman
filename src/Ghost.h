@@ -13,6 +13,6 @@ public:
 
     Ghost(int startX, int startY, Color color);
 
-    void resetToStart();    
+    //void resetToStart();   // Function to reset ghost to starting position and direction, but not implemented 
     void update(const GameBoard& board, const Player& pacman);
 };

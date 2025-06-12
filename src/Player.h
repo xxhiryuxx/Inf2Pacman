@@ -6,7 +6,7 @@
 class Player : public Entity {
 public:
     int score;
-    GameBoard board;                // The game board (map, coins, walls, etc.)
+    GameBoard board;    // The game board (map, coins, walls, etc.)
     
     Player(int startX, int startY) : Entity(startX, startY), score(0) {}
     void movePacman(GameBoard& board);

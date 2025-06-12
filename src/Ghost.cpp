@@ -14,6 +14,7 @@ Ghost::Ghost(int startX, int startY, Color color)
     moveCounter = 0;
 }
 
+/* Function that resets the ghost's position and direction, but no usage in the current code
 // Set ghosts to their starting positions and set initial direction
 void Ghost::resetToStart() {
     x = startX;
@@ -21,7 +22,7 @@ void Ghost::resetToStart() {
     dx = 0;
     dy = -1;
     moveCounter = 0;
-}
+}*/
 
 // Update ghost position based on Pacman's position and game board state
 void Ghost::update(const GameBoard& board, const Player& pacman) {
