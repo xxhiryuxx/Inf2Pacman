@@ -70,11 +70,11 @@ void GameBoard::generateRandomMap() {
 }
 
 const std::vector<std::pair<int, int>>& GameBoard::getGhostStartPositions() const {
-    static std::vector<std::pair<int, int>> starts = {
-        {WIDTH/2 - 1, HEIGHT/2},   // Links im Bunker
-        {WIDTH/2,     HEIGHT/2},   // Mitte
-        {WIDTH/2 + 1, HEIGHT/2},   // Rechts
-        {WIDTH/2,     HEIGHT/2 - 1} // Vor dem Ausgang
+    static std::vector<std::pair<int, int>> starts = {  // Start positions for the ghosts set to the center of the board
+        {WIDTH/2 - 1, HEIGHT/2},   // Left
+        {WIDTH/2,     HEIGHT/2},   // Middle
+        {WIDTH/2 + 1, HEIGHT/2},   // Right
+        {WIDTH/2,     HEIGHT/2 - 1} // Middle Up
     };
     return starts;
 }
